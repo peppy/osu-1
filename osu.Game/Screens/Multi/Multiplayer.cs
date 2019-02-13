@@ -43,8 +43,14 @@ namespace osu.Game.Screens.Multi
 
         public override bool RemoveWhenNotAlive => false;
 
+<<<<<<< Updated upstream
         private readonly MultiplayerWaveContainer waves;
 
+||||||| merged common ancestors
+        public override bool AllowBeatmapRulesetChange => currentSubScreen?.AllowBeatmapRulesetChange ?? base.AllowBeatmapRulesetChange;
+
+=======
+>>>>>>> Stashed changes
         private readonly OsuButton createButton;
         private readonly LoungeSubScreen loungeSubScreen;
         private readonly ScreenStack screenStack;

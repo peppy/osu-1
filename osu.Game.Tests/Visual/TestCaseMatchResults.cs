@@ -53,7 +53,13 @@ namespace osu.Game.Tests.Visual
             {
             }
 
+<<<<<<< Updated upstream
             protected override IEnumerable<IResultPageInfo> CreateResultPages() => new[] { new TestRoomLeaderboardPageInfo(Score, Beatmap) };
+||||||| merged common ancestors
+            protected override IEnumerable<IResultPageInfo> CreateResultPages() => new[] { new TestRoomLeaderboardPageInfo(Score, Beatmap, room) };
+=======
+            protected override IEnumerable<IResultPageInfo> CreateResultPages() => new[] { new TestRoomLeaderboardPageInfo(Score, Beatmap.Value, room) };
+>>>>>>> Stashed changes
         }
 
         private class TestRoomLeaderboardPageInfo : RoomLeaderboardPageInfo

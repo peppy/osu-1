@@ -3,8 +3,13 @@
 
 using System;
 using Humanizer;
+<<<<<<< Updated upstream
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
+||||||| merged common ancestors
+=======
+using osu.Framework.Screens;
+>>>>>>> Stashed changes
 using osu.Game.Online.Multiplayer;
 using osu.Game.Screens.Multi;
 
@@ -39,6 +44,22 @@ namespace osu.Game.Screens.Select
                 this.Exit();
 
             return true;
+        }
+
+        protected override bool OnExiting(Screen next)
+        {
+            Beatmap.Disabled = true;
+            Ruleset.Disabled = true;
+
+            return base.OnExiting(next);
+        }
+
+        protected override void OnEntering(Screen last)
+        {
+            base.OnEntering(last);
+
+            Beatmap.Disabled = false;
+            Ruleset.Disabled = false;
         }
     }
 }

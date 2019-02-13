@@ -18,9 +18,19 @@ namespace osu.Game.Screens.Multi.Ranking
 
         protected override IEnumerable<IResultPageInfo> CreateResultPages() => new IResultPageInfo[]
         {
+<<<<<<< Updated upstream
             new ScoreOverviewPageInfo(Score, Beatmap),
             new LocalLeaderboardPageInfo(Score, Beatmap),
             new RoomLeaderboardPageInfo(Score, Beatmap),
+||||||| merged common ancestors
+            new ScoreOverviewPageInfo(Score, Beatmap),
+            new LocalLeaderboardPageInfo(Score, Beatmap),
+            new RoomLeaderboardPageInfo(Score, Beatmap, room),
+=======
+            new ScoreOverviewPageInfo(Score, Beatmap.Value),
+            new LocalLeaderboardPageInfo(Score, Beatmap.Value),
+            new RoomLeaderboardPageInfo(Score, Beatmap.Value, room),
+>>>>>>> Stashed changes
         };
     }
 }

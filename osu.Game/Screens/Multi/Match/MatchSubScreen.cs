@@ -21,7 +21,18 @@ namespace osu.Game.Screens.Multi.Match
 {
     public class MatchSubScreen : MultiplayerSubScreen
     {
+<<<<<<< Updated upstream
         public override bool AllowBeatmapRulesetChange => false;
+||||||| merged common ancestors
+        public override bool AllowBeatmapRulesetChange => false;
+        public override string Title => room.RoomID.Value == null ? "New room" : room.Name.Value;
+        public override string ShortTitle => "room";
+=======
+        protected override bool DisallowExternalBeatmapRulesetChanges => true;
+
+        public override string Title => room.RoomID.Value == null ? "New room" : room.Name.Value;
+        public override string ShortTitle => "room";
+>>>>>>> Stashed changes
 
         public override string Title { get; }
 
@@ -166,7 +177,24 @@ namespace osu.Game.Screens.Multi.Match
                     },
                 };
 
+<<<<<<< Updated upstream
                 header.Tabs.Current.BindValueChanged(t =>
+||||||| merged common ancestors
+            header.OnRequestSelectBeatmap = () => Push(new MatchSongSelect { Selected = addPlaylistItem });
+            header.Tabs.Current.ValueChanged += t =>
+            {
+                const float fade_duration = 500;
+                if (t is SettingsMatchPage)
+=======
+            header.OnRequestSelectBeatmap = () =>
+            {
+                Push(new MatchSongSelect { Selected = addPlaylistItem });
+            };
+            header.Tabs.Current.ValueChanged += t =>
+            {
+                const float fade_duration = 500;
+                if (t is SettingsMatchPage)
+>>>>>>> Stashed changes
                 {
                     const float fade_duration = 500;
                     if (t is SettingsMatchPage)
@@ -192,17 +220,33 @@ namespace osu.Game.Screens.Multi.Match
             {
                 base.LoadComplete();
 
+<<<<<<< Updated upstream
                 CurrentBeatmap.BindValueChanged(setBeatmap, true);
                 CurrentRuleset.BindValueChanged(setRuleset, true);
             }
+||||||| merged common ancestors
+            game?.ForcefullySetBeatmap(beatmapManager.GetWorkingBeatmap(localBeatmap));
+        }
+=======
+            Beatmap.Value = beatmapManager.GetWorkingBeatmap(localBeatmap);
+        }
+>>>>>>> Stashed changes
 
             private void setBeatmap(BeatmapInfo beatmap)
             {
                 // Retrieve the corresponding local beatmap, since we can't directly use the playlist's beatmap info
                 var localBeatmap = beatmap == null ? null : beatmapManager.QueryBeatmap(b => b.OnlineBeatmapID == beatmap.OnlineBeatmapID);
 
+<<<<<<< Updated upstream
                 game?.ForcefullySetBeatmap(beatmapManager.GetWorkingBeatmap(localBeatmap));
             }
+||||||| merged common ancestors
+            game?.ForcefullySetRuleset(ruleset);
+        }
+=======
+            Ruleset.Value = ruleset;
+        }
+>>>>>>> Stashed changes
 
             private void setRuleset(RulesetInfo ruleset)
             {
@@ -217,8 +261,18 @@ namespace osu.Game.Screens.Multi.Match
                 if (gameBeatmap.Value != beatmapManager.DefaultBeatmap)
                     return;
 
+<<<<<<< Updated upstream
                 if (CurrentBeatmap.Value == null)
                     return;
+||||||| merged common ancestors
+            if (localBeatmap != null)
+                game?.ForcefullySetBeatmap(beatmapManager.GetWorkingBeatmap(localBeatmap));
+        });
+=======
+            if (localBeatmap != null)
+                Beatmap.Value = beatmapManager.GetWorkingBeatmap(localBeatmap);
+        });
+>>>>>>> Stashed changes
 
                 // Try to retrieve the corresponding local beatmap
                 var localBeatmap = beatmapManager.QueryBeatmap(b => b.OnlineBeatmapID == CurrentBeatmap.Value.OnlineBeatmapID);

@@ -723,6 +723,7 @@ namespace osu.Game
         {
             base.UpdateAfterChildren();
 
+<<<<<<< Updated upstream
             // we only want to apply these restrictions when we are inside a screen stack.
             // the use case for not applying is in visual/unit tests.
             bool applyBeatmapRulesetRestrictions = !(screenStack.CurrentScreen as IOsuScreen)?.AllowBeatmapRulesetChange ?? false;
@@ -730,12 +731,30 @@ namespace osu.Game
             ruleset.Disabled = applyBeatmapRulesetRestrictions;
             Beatmap.Disabled = applyBeatmapRulesetRestrictions;
 
+||||||| merged common ancestors
+            // we only want to apply these restrictions when we are inside a screen stack.
+            // the use case for not applying is in visual/unit tests.
+            bool applyBeatmapRulesetRestrictions = !currentScreen?.AllowBeatmapRulesetChange ?? false;
+
+            ruleset.Disabled = applyBeatmapRulesetRestrictions;
+            Beatmap.Disabled = applyBeatmapRulesetRestrictions;
+
+=======
+>>>>>>> Stashed changes
             screenContainer.Padding = new MarginPadding { Top = ToolbarOffset };
+<<<<<<< Updated upstream
             overlayContent.Padding = new MarginPadding { Top = ToolbarOffset };
 
             MenuCursorContainer.CanShowCursor = (screenStack.CurrentScreen as IOsuScreen)?.CursorVisible ?? false;
+||||||| merged common ancestors
+
+            MenuCursorContainer.CanShowCursor = currentScreen?.CursorVisible ?? false;
+=======
+            MenuCursorContainer.CanShowCursor = currentScreen?.CursorVisible ?? false;
+>>>>>>> Stashed changes
         }
 
+<<<<<<< Updated upstream
         /// <summary>
         /// Sets <see cref="Beatmap"/> while ignoring any beatmap.
         /// </summary>
@@ -763,6 +782,37 @@ namespace osu.Game
         }
 
         protected virtual void ScreenChanged(IScreen lastScreen, IScreen newScreen)
+||||||| merged common ancestors
+        /// <summary>
+        /// Sets <see cref="Beatmap"/> while ignoring any beatmap.
+        /// </summary>
+        /// <param name="beatmap">The beatmap to set.</param>
+        public void ForcefullySetBeatmap(WorkingBeatmap beatmap)
+        {
+            var beatmapDisabled = Beatmap.Disabled;
+
+            Beatmap.Disabled = false;
+            Beatmap.Value = beatmap;
+            Beatmap.Disabled = beatmapDisabled;
+        }
+
+        /// <summary>
+        /// Sets <see cref="Ruleset"/> while ignoring any ruleset restrictions.
+        /// </summary>
+        /// <param name="beatmap">The beatmap to set.</param>
+        public void ForcefullySetRuleset(RulesetInfo ruleset)
+        {
+            var rulesetDisabled = this.ruleset.Disabled;
+
+            this.ruleset.Disabled = false;
+            this.ruleset.Value = ruleset;
+            this.ruleset.Disabled = rulesetDisabled;
+        }
+
+        protected virtual void ScreenChanged(OsuScreen current, Screen newScreen)
+=======
+        protected virtual void ScreenChanged(OsuScreen current, Screen newScreen)
+>>>>>>> Stashed changes
         {
             switch (newScreen)
             {

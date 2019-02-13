@@ -50,15 +50,72 @@ namespace osu.Game.Screens
 
         protected new OsuGameBase Game => base.Game as OsuGameBase;
 
+<<<<<<< Updated upstream
         public virtual bool AllowBeatmapRulesetChange => true;
+||||||| merged common ancestors
+        private OsuLogo logo;
 
-        protected readonly Bindable<WorkingBeatmap> Beatmap = new Bindable<WorkingBeatmap>();
+        /// <summary>
+        /// Whether the beatmap or ruleset should be allowed to be changed by the user or game.
+        /// Used to mark exclusive areas where this is strongly prohibited, like gameplay.
+        /// </summary>
+        public virtual bool AllowBeatmapRulesetChange => true;
+=======
+        private OsuLogo logo;
 
-        public virtual float BackgroundParallaxAmount => 1;
+        protected virtual float BackgroundParallaxAmount => 1;
 
-        protected readonly Bindable<RulesetInfo> Ruleset = new Bindable<RulesetInfo>();
+        private ParallaxContainer backgroundParallaxContainer;
+
+        protected Bindable<WorkingBeatmap> Beatmap;
+
+        protected Bindable<RulesetInfo> Ruleset;
+
+        /// <summary>
+        /// Disallow changes to game-wise Beatmap/Ruleset bindables for this screen (and all children).
+        /// </summary>
+        protected virtual bool DisallowExternalBeatmapRulesetChanges => false;
+>>>>>>> Stashed changes
 
         private SampleChannel sampleExit;
+        private bool leaseOwner;
+
+<<<<<<< Updated upstream
+        public virtual float BackgroundParallaxAmount => 1;
+||||||| merged common ancestors
+        protected virtual float BackgroundParallaxAmount => 1;
+
+        private ParallaxContainer backgroundParallaxContainer;
+=======
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
+        {
+            var dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
+            if (DisallowExternalBeatmapRulesetChanges)
+            {
+                Beatmap = dependencies.Get<LeasedBindable<WorkingBeatmap>>()?.GetBoundCopy();
+                if (Beatmap == null)
+                {
+                    leaseOwner = true;
+                    dependencies.Cache(Beatmap = dependencies.Get<Bindable<WorkingBeatmap>>().BeginLease(true));
+                }
+>>>>>>> Stashed changes
+
+                Ruleset = dependencies.Get<LeasedBindable<RulesetInfo>>()?.GetBoundCopy();
+                if (Ruleset == null)
+                {
+                    leaseOwner = true;
+                    dependencies.Cache(Ruleset = dependencies.Get<Bindable<RulesetInfo>>().BeginLease(true));
+                }
+            }
+            else
+            {
+                Beatmap = (dependencies.Get<LeasedBindable<WorkingBeatmap>>() ?? dependencies.Get<Bindable<WorkingBeatmap>>()).GetBoundCopy();
+                Ruleset = (dependencies.Get<LeasedBindable<RulesetInfo>>() ?? dependencies.Get<Bindable<RulesetInfo>>()).GetBoundCopy();
+            }
+
+            return dependencies;
+        }
 
         protected BackgroundScreen Background => backgroundStack?.CurrentScreen as BackgroundScreen;
 
@@ -77,11 +134,44 @@ namespace osu.Game.Screens
         }
 
         [BackgroundDependencyLoader(true)]
-        private void load(BindableBeatmap beatmap, OsuGame osu, AudioManager audio, Bindable<RulesetInfo> ruleset)
+        private void load(OsuGame osu, AudioManager audio)
         {
+<<<<<<< Updated upstream
             Beatmap.BindTo(beatmap);
             Ruleset.BindTo(ruleset);
 
+||||||| merged common ancestors
+            Beatmap.BindTo(beatmap);
+            Ruleset.BindTo(ruleset);
+
+            if (osu != null)
+            {
+                OverlayActivationMode.BindTo(osu.OverlayActivationMode);
+
+                updateOverlayStates = () =>
+                {
+                    if (HideOverlaysOnEnter)
+                        osu.CloseAllOverlays();
+                    else
+                        osu.Toolbar.State = Visibility.Visible;
+                };
+            }
+
+=======
+            if (osu != null)
+            {
+                OverlayActivationMode.BindTo(osu.OverlayActivationMode);
+
+                updateOverlayStates = () =>
+                {
+                    if (HideOverlaysOnEnter)
+                        osu.CloseAllOverlays();
+                    else
+                        osu.Toolbar.State = Visibility.Visible;
+                };
+            }
+
+>>>>>>> Stashed changes
             sampleExit = audio.Sample.Get(@"UI/screen-back");
         }
 
@@ -131,10 +221,26 @@ namespace osu.Game.Screens
             if (base.OnExiting(next))
                 return true;
 
+<<<<<<< Updated upstream
             if (localBackground != null && backgroundStack?.CurrentScreen == localBackground)
                 backgroundStack?.Exit();
 
             Beatmap.UnbindAll();
+||||||| merged common ancestors
+            Beatmap.UnbindAll();
+=======
+            if (leaseOwner)
+            {
+                ((LeasedBindable<WorkingBeatmap>)Beatmap).Return();
+                ((LeasedBindable<RulesetInfo>)Ruleset).Return();
+            }
+            else
+            {
+                Beatmap.UnbindAll();
+                Ruleset.UnbindAll();
+            }
+
+>>>>>>> Stashed changes
             return false;
         }
 
