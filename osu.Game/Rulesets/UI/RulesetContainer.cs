@@ -25,6 +25,7 @@ using osu.Game.Replays;
 using osu.Game.Rulesets.Configuration;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Scoring;
+using osu.Game.Screens.Play;
 
 namespace osu.Game.Rulesets.UI
 {
@@ -135,7 +136,20 @@ namespace osu.Game.Rulesets.UI
         /// Allows potentially delaying the resume process until an interaction is performed.
         /// </summary>
         /// <param name="continueResume">The action to run when resuming is to be completed.</param>
-        public void RequestResume(Action continueResume) => continueResume();
+        public void RequestResume(Action continueResume)
+        {
+            if (ResumeOverlay != null && (Cursor == null || Contains(Cursor.ActiveCursor.ScreenSpaceDrawQuad.Centre)))
+            {
+                ResumeOverlay.ResumeAction = continueResume;
+                ResumeOverlay.Show();
+            }
+            else
+                continueResume();
+        }
+
+        public ResumeOverlay ResumeOverlay { get; private set; }
+
+        protected virtual ResumeOverlay CreateResumeOverlay() => null;
 
         protected virtual ReplayInputHandler CreateReplayInputHandler(Replay replay) => null;
 
@@ -271,6 +285,8 @@ namespace osu.Game.Rulesets.UI
                 },
                 Playfield
             });
+
+            var poop = CreateInputManager();
 
             InternalChildren = new Drawable[]
             {
