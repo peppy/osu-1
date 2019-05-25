@@ -16,11 +16,12 @@ namespace osu.Game.Rulesets
     public class RulesetConfigCache : Component
     {
         private readonly ConcurrentDictionary<int, IRulesetConfigManager> configCache = new ConcurrentDictionary<int, IRulesetConfigManager>();
-        private readonly SettingsStore settingsStore;
 
-        public RulesetConfigCache(SettingsStore settingsStore)
+        private readonly SettingsStore settings;
+
+        public RulesetConfigCache(SettingsStore settings)
         {
-            this.settingsStore = settingsStore;
+            this.settings = settings;
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace osu.Game.Rulesets
             if (ruleset.RulesetInfo.ID == null)
                 throw new InvalidOperationException("The provided ruleset doesn't have a valid id.");
 
-            return configCache.GetOrAdd(ruleset.RulesetInfo.ID.Value, _ => ruleset.CreateConfig(settingsStore));
+            return configCache.GetOrAdd(ruleset.RulesetInfo.ID.Value, _ => ruleset.CreateConfig(settings));
         }
     }
 }

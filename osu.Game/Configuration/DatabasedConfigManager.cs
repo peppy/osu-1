@@ -6,6 +6,7 @@ using System.Linq;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Game.Rulesets;
+using osu.Game.Skinning;
 
 namespace osu.Game.Configuration
 {
@@ -20,12 +21,15 @@ namespace osu.Game.Configuration
 
         private readonly RulesetInfo ruleset;
 
+        private readonly SkinInfo skin;
+
         private readonly bool legacySettingsExist;
 
-        protected DatabasedConfigManager(SettingsStore settings, RulesetInfo ruleset = null, int? variant = null)
+        protected DatabasedConfigManager(SettingsStore settings, RulesetInfo ruleset = null, int? variant = null, SkinInfo skin = null)
         {
             this.settings = settings;
             this.ruleset = ruleset;
+            this.skin = skin;
             this.variant = variant;
 
             databasedSettings = settings.Query(ruleset?.ID, variant);
@@ -71,6 +75,7 @@ namespace osu.Game.Configuration
                     Key = lookup.ToString(),
                     Value = bindable.Value,
                     RulesetID = ruleset?.ID,
+                    SkinInfoID = skin?.ID,
                     Variant = variant,
                 });
 

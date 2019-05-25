@@ -12,6 +12,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Platform;
+using osu.Game.Configuration;
 using osu.Game.Database;
 using osu.Game.IO.Archives;
 
@@ -20,6 +21,7 @@ namespace osu.Game.Skinning
     public class SkinManager : ArchiveModelManager<SkinInfo, SkinFileInfo>, ISkinSource
     {
         private readonly AudioManager audio;
+        private readonly SettingsStore settings;
 
         public readonly Skin Default = new DefaultSkin();
 
@@ -34,10 +36,11 @@ namespace osu.Game.Skinning
 
         protected override string ImportFromStablePath => "Skins";
 
-        public SkinManager(Storage storage, DatabaseContextFactory contextFactory, IIpcHost importHost, AudioManager audio)
+        public SkinManager(Storage storage, DatabaseContextFactory contextFactory, IIpcHost importHost, AudioManager audio, SettingsStore settings)
             : base(storage, contextFactory, new SkinStore(contextFactory, storage), importHost)
         {
             this.audio = audio;
+            this.settings = settings;
 
             ItemRemoved += removedInfo =>
             {
@@ -105,7 +108,7 @@ namespace osu.Game.Skinning
             if (skinInfo == SkinInfo.Default)
                 return Default;
 
-            return new LegacySkin(skinInfo, Files.Store, audio);
+            return new DatabasedLegacySkin(skinInfo, Files.Store, audio, settings);
         }
 
         /// <summary>

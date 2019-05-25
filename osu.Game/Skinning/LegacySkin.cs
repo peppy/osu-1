@@ -23,21 +23,28 @@ namespace osu.Game.Skinning
 
         protected SampleManager Samples;
 
-        public LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager)
-            : this(skin, new LegacySkinResourceStore<SkinFileInfo>(skin, storage), audioManager, "skin.ini")
+        /// <summary>
+        /// Create a skin sourcing configuration from a file.
+        /// </summary>
+        protected LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, string filename)
+            : this(skin, storage, audioManager, readSkinIni(storage, filename))
         {
         }
 
-        protected LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, string filename)
-            : base(skin)
+        private static SkinConfiguration readSkinIni(IResourceStore<byte[]> storage, string filename)
         {
             Stream stream = storage.GetStream(filename);
             if (stream != null)
                 using (StreamReader reader = new StreamReader(stream))
-                    Configuration = new LegacySkinDecoder().Decode(reader);
+                    return new LegacySkinDecoder().Decode(reader);
             else
-                Configuration = new SkinConfiguration();
+                return new SkinConfiguration();
+        }
 
+        protected LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, SkinConfiguration configuration)
+            : base(skin)
+        {
+            Configuration = configuration;
             Samples = audioManager.GetSampleManager(storage);
             Textures = new TextureStore(new TextureLoaderStore(storage));
         }

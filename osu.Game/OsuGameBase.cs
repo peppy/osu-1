@@ -154,9 +154,6 @@ namespace osu.Game
 
             runMigrations();
 
-            dependencies.Cache(SkinManager = new SkinManager(Host.Storage, contextFactory, Host, Audio));
-            dependencies.CacheAs<ISkinSource>(SkinManager);
-
             API = new APIAccess(LocalConfig);
 
             dependencies.CacheAs<IAPIProvider>(API);
@@ -186,6 +183,9 @@ namespace osu.Game
             dependencies.Cache(SettingsStore = new SettingsStore(contextFactory));
             dependencies.Cache(RulesetConfigCache = new RulesetConfigCache(SettingsStore));
             dependencies.Cache(new OsuColour());
+
+            dependencies.Cache(SkinManager = new SkinManager(Host.Storage, contextFactory, Host, Audio, SettingsStore));
+            dependencies.CacheAs<ISkinSource>(SkinManager);
 
             fileImporters.Add(BeatmapManager);
             fileImporters.Add(ScoreManager);

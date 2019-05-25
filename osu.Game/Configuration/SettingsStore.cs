@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Game.Database;
+using osu.Game.Skinning;
 
 namespace osu.Game.Configuration
 {
@@ -22,9 +23,10 @@ namespace osu.Game.Configuration
         /// </summary>
         /// <param name="rulesetId">The ruleset's internal ID.</param>
         /// <param name="variant">An optional variant.</param>
+        /// <param name="skinId">An optional <see cref="SkinInfo"/> ID.</param>
         /// <returns></returns>
-        public List<DatabasedSetting> Query(int? rulesetId = null, int? variant = null) =>
-            ContextFactory.Get().DatabasedSetting.Where(b => b.RulesetID == rulesetId && b.Variant == variant).ToList();
+        public List<DatabasedSetting> Query(int? rulesetId = null, int? variant = null, int? skinId = null) =>
+            ContextFactory.Get().DatabasedSetting.Where(b => b.RulesetID == rulesetId && b.Variant == variant && b.SkinInfoID == skinId).ToList();
 
         public void Update(DatabasedSetting setting)
         {
