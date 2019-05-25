@@ -7,10 +7,10 @@ namespace osu.Game.Skinning
 {
     public interface ISkinConfiguration : IHasComboColours, IHasCustomColours
     {
-        string HitCircleFont { get; set; }
-        int HitCircleOverlap { get; set; }
-        float? SliderBorderSize { get; set; }
-        bool? CursorExpand { get; set; }
-        SkinInfo SkinInfo { get; set; }
+        string HitCircleFont { get; }
+        int HitCircleOverlap { get; }
+        float? SliderBorderSize { get; }
+        bool? CursorExpand { get; }
+        SkinInfo SkinInfo { get; }
     }
 }

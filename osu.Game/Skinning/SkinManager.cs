@@ -84,7 +84,7 @@ namespace osu.Game.Skinning
         {
             base.Populate(model, archive);
 
-            Skin reference = getSkin(model);
+            Skin reference = new LegacySkin(model, Files.Store, audio, "skin.ini");
 
             if (!string.IsNullOrEmpty(reference.Configuration.SkinInfo.Name))
             {

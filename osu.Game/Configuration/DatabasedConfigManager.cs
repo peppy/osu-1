@@ -32,7 +32,7 @@ namespace osu.Game.Configuration
             this.skin = skin;
             this.variant = variant;
 
-            databasedSettings = settings.Query(ruleset?.ID, variant);
+            databasedSettings = settings.Query(ruleset?.ID, variant, skin?.ID);
             legacySettingsExist = databasedSettings.Any(s => int.TryParse(s.Key, out var _));
 
             InitialiseDefaults();

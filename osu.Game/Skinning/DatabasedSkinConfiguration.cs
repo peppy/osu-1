@@ -9,12 +9,10 @@ namespace osu.Game.Skinning
 {
     public class DatabasedSkinConfiguration : DatabasedConfigManager<SkinSetting>, ISkinConfiguration
     {
-        private readonly SettingsStore settings;
-
         public DatabasedSkinConfiguration(SkinInfo skin, SettingsStore settings)
             : base(settings, null, null, skin)
         {
-            this.settings = settings;
+            SkinInfo = skin;
         }
 
         protected override void InitialiseDefaults()
@@ -29,7 +27,9 @@ namespace osu.Game.Skinning
         public string HitCircleFont { get; set; }
         public int HitCircleOverlap { get; set; }
         public float? SliderBorderSize { get; set; }
-        public bool? CursorExpand { get; set; }
+
+        public bool? CursorExpand => Get<bool>(SkinSetting.CursorExpand);
+
         public SkinInfo SkinInfo { get; set; }
     }
 }

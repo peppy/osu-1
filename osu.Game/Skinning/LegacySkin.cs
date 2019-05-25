@@ -26,7 +26,7 @@ namespace osu.Game.Skinning
         /// <summary>
         /// Create a skin sourcing configuration from a file.
         /// </summary>
-        protected LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, string filename)
+        public LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, string filename)
             : this(skin, storage, audioManager, readSkinIni(storage, filename))
         {
         }
