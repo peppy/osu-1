@@ -41,7 +41,7 @@ namespace osu.Game.Skinning
                 return new SkinConfiguration();
         }
 
-        protected LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, SkinConfiguration configuration)
+        protected LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, ISkinConfiguration configuration)
             : base(skin)
         {
             Configuration = configuration;

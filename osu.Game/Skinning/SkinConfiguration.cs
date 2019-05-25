@@ -2,14 +2,13 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
-using osu.Game.Beatmaps.Formats;
 using osuTK.Graphics;
 
 namespace osu.Game.Skinning
 {
-    public class SkinConfiguration : IHasComboColours, IHasCustomColours
+    public class SkinConfiguration : ISkinConfiguration
     {
-        public readonly SkinInfo SkinInfo = new SkinInfo();
+        public SkinInfo SkinInfo { get; set; } = new SkinInfo();
 
         public List<Color4> ComboColours { get; set; } = new List<Color4>
         {

@@ -12,7 +12,7 @@ namespace osu.Game.Skinning
     {
         public readonly SkinInfo SkinInfo;
 
-        public virtual SkinConfiguration Configuration { get; protected set; }
+        public virtual ISkinConfiguration Configuration { get; protected set; }
 
         public abstract Drawable GetDrawableComponent(string componentName);
 
@@ -20,7 +20,7 @@ namespace osu.Game.Skinning
 
         public abstract Texture GetTexture(string componentName);
 
-        public TValue GetValue<TConfiguration, TValue>(Func<TConfiguration, TValue> query) where TConfiguration : SkinConfiguration
+        public TValue GetValue<TConfiguration, TValue>(Func<TConfiguration, TValue> query) where TConfiguration : ISkinConfiguration
             => Configuration is TConfiguration conf ? query.Invoke(conf) : default;
 
         protected Skin(SkinInfo skin)

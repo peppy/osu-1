@@ -128,7 +128,7 @@ namespace osu.Game.Tests.Visual.Gameplay
 
             public SampleChannel GetSample(string sampleName) => throw new NotImplementedException();
 
-            public TValue GetValue<TConfiguration, TValue>(Func<TConfiguration, TValue> query) where TConfiguration : SkinConfiguration => throw new NotImplementedException();
+            public TValue GetValue<TConfiguration, TValue>(Func<TConfiguration, TValue> query) where TConfiguration : ISkinConfiguration => throw new NotImplementedException();
         }
 
         private class SkinSourceContainer : Container, ISkin
@@ -139,7 +139,7 @@ namespace osu.Game.Tests.Visual.Gameplay
 
             public SampleChannel GetSample(string sampleName) => throw new NotImplementedException();
 
-            public TValue GetValue<TConfiguration, TValue>(Func<TConfiguration, TValue> query) where TConfiguration : SkinConfiguration => throw new NotImplementedException();
+            public TValue GetValue<TConfiguration, TValue>(Func<TConfiguration, TValue> query) where TConfiguration : ISkinConfiguration => throw new NotImplementedException();
         }
     }
 }

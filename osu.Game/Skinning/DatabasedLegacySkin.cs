@@ -17,18 +17,8 @@ namespace osu.Game.Skinning
         /// <param name="audioManager"></param>
         /// <param name="settings"></param>
         public DatabasedLegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager, SettingsStore settings)
-            : base(skin, new LegacySkinResourceStore<SkinFileInfo>(skin, storage), audioManager, new DatabasedSkinConfiguration(settings))
+            : base(skin, new LegacySkinResourceStore<SkinFileInfo>(skin, storage), audioManager, new DatabasedSkinConfiguration(skin, settings))
         {
-        }
-    }
-
-    public class DatabasedSkinConfiguration : SkinConfiguration
-    {
-        private readonly SettingsStore settings;
-
-        public DatabasedSkinConfiguration(SettingsStore settings)
-        {
-            this.settings = settings;
         }
     }
 }
