@@ -8,11 +8,11 @@ using osu.Framework.Graphics.Textures;
 
 namespace osu.Game.Skinning
 {
-    public abstract class Skin : IDisposable, ISkin
+    public abstract class Skin : IDisposable, ISkin, IEquatable<Skin>
     {
         public readonly SkinInfo SkinInfo;
 
-        public virtual ISkinConfiguration Configuration { get; protected set; }
+        public ISkinConfiguration Configuration { get; protected set; }
 
         public abstract Drawable GetDrawableComponent(string componentName);
 
@@ -52,5 +52,24 @@ namespace osu.Game.Skinning
         }
 
         #endregion
+
+        public bool Equals(Skin other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Equals(SkinInfo, other.SkinInfo);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+
+            return Equals((Skin)obj);
+        }
+
+        public override int GetHashCode() => (SkinInfo != null ? SkinInfo.GetHashCode() : 0);
     }
 }
