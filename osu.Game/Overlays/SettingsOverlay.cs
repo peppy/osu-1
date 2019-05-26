@@ -20,7 +20,7 @@ namespace osu.Game.Overlays
             new GraphicsSection(),
             new GameplaySection(),
             new AudioSection(),
-            new SkinSection(),
+            new SkinSection(createSubPanel(new SkinningPanel())),
             new InputSection(createSubPanel(new KeyBindingPanel())),
             new OnlineSection(),
             new MaintenanceSection(),

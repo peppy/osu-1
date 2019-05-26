@@ -15,6 +15,7 @@ namespace osu.Game.Overlays.Settings.Sections
 {
     public class SkinSection : SettingsSection
     {
+        private readonly SkinningPanel skinningPanel;
         private SkinSettingsDropdown skinDropdown;
 
         public override string Header => "Skin";
@@ -26,6 +27,11 @@ namespace osu.Game.Overlays.Settings.Sections
 
         private SkinManager skins;
 
+        public SkinSection(SkinningPanel skinningPanel)
+        {
+            this.skinningPanel = skinningPanel;
+        }
+
         [BackgroundDependencyLoader]
         private void load(OsuConfigManager config, SkinManager skins)
         {
@@ -35,6 +41,12 @@ namespace osu.Game.Overlays.Settings.Sections
             Children = new Drawable[]
             {
                 skinDropdown = new SkinSettingsDropdown(),
+                new SettingsButton
+                {
+                    Text = "Skin configuration",
+                    TooltipText = "Change advanced skinning settings",
+                    Action = skinningPanel.ToggleVisibility
+                },
                 new SettingsSlider<double, SizeSlider>
                 {
                     LabelText = "Menu cursor size",
