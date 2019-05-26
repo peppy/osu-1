@@ -9,6 +9,8 @@ namespace osu.Game.Skinning
 {
     public class DatabasedLegacySkin : LegacySkin
     {
+        public new DatabasedSkinConfiguration Configuration => (DatabasedSkinConfiguration)base.Configuration;
+
         /// <summary>
         /// Create a skin sourcing configuration from database.
         /// </summary>
