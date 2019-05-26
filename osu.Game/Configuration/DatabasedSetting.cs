@@ -23,7 +23,7 @@ namespace osu.Game.Configuration
         [Column("Value")]
         public string StringValue
         {
-            get => Value.ToString();
+            get => Value?.ToString();
             set => Value = value;
         }
 

@@ -19,7 +19,7 @@ namespace osu.Game.Skinning
         {
             base.InitialiseDefaults();
 
-            Set(SkinSetting.CursorExpand, true);
+            Set<bool?>(SkinSetting.CursorExpand, null);
         }
 
         public List<Color4> ComboColours { get; set; }
@@ -28,7 +28,7 @@ namespace osu.Game.Skinning
         public int HitCircleOverlap { get; set; }
         public float? SliderBorderSize { get; set; }
 
-        public bool? CursorExpand => Get<bool>(SkinSetting.CursorExpand);
+        public bool? CursorExpand => Get<bool?>(SkinSetting.CursorExpand);
 
         public SkinInfo SkinInfo { get; set; }
     }

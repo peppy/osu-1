@@ -66,7 +66,8 @@ namespace osu.Game.Configuration
 
             if (setting != null)
             {
-                bindable.Parse(setting.Value);
+                if (setting.Value != null)
+                    bindable.Parse(setting.Value);
             }
             else
             {
