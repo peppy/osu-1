@@ -24,8 +24,12 @@ namespace osu.Game.Skinning
     {
         private readonly AudioManager audio;
 
+        public readonly Skin Default = new DefaultSkin();
+
         public readonly Bindable<Skin> CurrentSkin = new Bindable<Skin>(new DefaultSkin());
         public readonly Bindable<SkinInfo> CurrentSkinInfo = new Bindable<SkinInfo>(SkinInfo.Default) { Default = SkinInfo.Default };
+
+        public readonly Skin UserSkin;
 
         public override string[] HandledExtensions => new[] { ".osk" };
 
@@ -53,6 +57,8 @@ namespace osu.Game.Skinning
 
                 SourceChanged?.Invoke();
             };
+
+            UserSkin = getSkin(Query(s => s.Name == "user") ?? Import(new SkinInfo { Name = "user", Creator = "user" }));
         }
 
         protected override bool ShouldDeleteArchive(string path) => Path.GetExtension(path)?.ToLowerInvariant() == ".osk";
@@ -102,7 +108,7 @@ namespace osu.Game.Skinning
         public Skin GetSkin(SkinInfo skinInfo)
         {
             if (skinInfo == SkinInfo.Default)
-                return new DefaultSkin();
+                return Default;
 
             return new LegacySkin(skinInfo, Files.Store, audio);
         }
