@@ -79,12 +79,10 @@ namespace osu.Game.Overlays.Skinning
                 AddRangeInternal(new Drawable[]
                 {
                     new RemoveOverrideButton { Action = () => isOverriding.Value = false },
-                    overrideText = new OsuButton
+                    overrideText = new OverrideButton
                     {
-                        Text = "override",
                         Alpha = 0,
                         Action = () => isOverriding.Value = true,
-                        Width = SkinningPanel.CELL_SIZE,
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                     },
@@ -114,6 +112,15 @@ namespace osu.Game.Overlays.Skinning
 
                 //if (isOverriding.Value)
                 //    lastUsableValue = checkboxValue.Value;
+            }
+
+            private class OverrideButton : OsuButton
+            {
+                public OverrideButton()
+                {
+                    Text = "override";
+                    Width = SkinningPanel.CELL_SIZE;
+                }
             }
 
             private class RemoveOverrideButton : ClickableContainer, IHasTooltip
