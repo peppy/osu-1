@@ -224,6 +224,9 @@ namespace osu.Game.Skinning
 
             private string getPathForFile(string filename)
             {
+                if (source.Files == null)
+                    return null;
+
                 bool hasExtension = filename.Contains('.');
 
                 string lastPiece = filename.Split('/').Last();
