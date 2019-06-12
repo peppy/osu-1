@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -58,7 +60,7 @@ namespace osu.Game.Skinning
                 SourceChanged?.Invoke();
             };
 
-            UserSkin = getSkin(Query(s => s.Name == "user") ?? Import(new SkinInfo { Name = "user", Creator = "user" }));
+            UserSkin = getSkin(Query(s => s.Name == "user") ?? Import(new SkinInfo { Name = "user", Creator = "user" }).Result);
         }
 
         /// <summary>
@@ -80,9 +82,9 @@ namespace osu.Game.Skinning
 
         protected override SkinInfo CreateModel(ArchiveReader archive) => new SkinInfo { Name = archive.Name };
 
-        protected override void Populate(SkinInfo model, ArchiveReader archive)
+        protected override async Task Populate(SkinInfo model, ArchiveReader archive, CancellationToken cancellationToken = default)
         {
-            base.Populate(model, archive);
+            await base.Populate(model, archive, cancellationToken);
 
             Skin reference = new LegacySkin(model, Files.Store, audio, "skin.ini");
 
@@ -105,6 +107,9 @@ namespace osu.Game.Skinning
         /// <returns>A <see cref="Skin"/> instance correlating to the provided <see cref="SkinInfo"/>.</returns>
         private Skin getSkin(SkinInfo skinInfo)
         {
+            if (skinInfo == null)
+                return null;
+
             if (skinInfo == SkinInfo.Default)
                 return Default;
 
