@@ -58,7 +58,7 @@ namespace osu.Game.Skinning
                 SourceChanged?.Invoke();
             };
 
-            UserSkin = getSkin(Query(s => s.Name == "user") ?? Import(new SkinInfo { Name = "user", Creator = "user" }).Result);
+            UserSkin = getSkin(Query(s => s.Name == "user") ?? Import(new SkinInfo { Name = "User Overrides", Creator = "user" }).Result);
         }
 
         protected override bool ShouldDeleteArchive(string path) => Path.GetExtension(path)?.ToLowerInvariant() == ".osk";
