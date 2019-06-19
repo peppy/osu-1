@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 
 namespace osu.Game.Skinning
@@ -13,15 +14,17 @@ namespace osu.Game.Skinning
         {
         }
 
-        protected override void SkinChanged(ISkinSource skin, bool allowFallback)
+        protected override void DrawableLoaded(Drawable drawable)
         {
-            base.SkinChanged(skin, allowFallback);
+            base.DrawableLoaded(drawable);
+            this.drawable = drawable as IHasText;
 
-            if (Drawable is IHasText textDrawable)
-                textDrawable.Text = Text;
+            updateText();
         }
 
         private string text;
+
+        private IHasText drawable;
 
         public string Text
         {
@@ -33,9 +36,14 @@ namespace osu.Game.Skinning
 
                 text = value;
 
-                if (Drawable is IHasText textDrawable)
-                    textDrawable.Text = value;
+                updateText();
             }
+        }
+
+        private void updateText()
+        {
+            if (drawable != null)
+                drawable.Text = text;
         }
     }
 }

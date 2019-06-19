@@ -2,7 +2,10 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Threading;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osuTK;
 
 namespace osu.Game.Skinning
@@ -18,11 +21,6 @@ namespace osu.Game.Skinning
     public class SkinnableDrawable<T> : SkinReloadableDrawable
         where T : Drawable
     {
-        /// <summary>
-        /// The displayed component. May or may not be a type-<typeparamref name="T"/> member.
-        /// </summary>
-        protected Drawable Drawable { get; private set; }
-
         private readonly Func<string, T> createDefault;
 
         private readonly string componentName;
@@ -46,32 +44,74 @@ namespace osu.Game.Skinning
             RelativeSizeAxes = Axes.Both;
         }
 
+        private CancellationTokenSource cts;
+
         protected override void SkinChanged(ISkinSource skin, bool allowFallback)
         {
-            Drawable = skin.GetDrawableComponent(componentName);
+            cts?.Cancel();
 
-            if (Drawable != null)
+            var loader = new AsyncLoadDrawable(skin, componentName, allowFallback, createDefault, restrictSize);
+
+            LoadComponentAsync(loader, d =>
             {
-                if (restrictSize)
+                DrawableLoaded(d.Drawable);
+                InternalChild = d;
+            }, (cts = new CancellationTokenSource()).Token);
+        }
+
+        protected virtual void DrawableLoaded(Drawable drawable)
+        {
+        }
+
+        private class AsyncLoadDrawable : CompositeDrawable
+        {
+            private readonly ISkinSource skin;
+            private readonly string componentName;
+            private readonly bool allowFallback;
+            private readonly Func<string, T> createDefault;
+            private readonly bool restrictSize;
+
+            public Drawable Drawable { get; private set; }
+
+            public AsyncLoadDrawable(ISkinSource skin, string componentName, bool allowFallback, Func<string, T> createDefault, bool restrictSize)
+            {
+                this.skin = skin;
+                this.componentName = componentName;
+                this.allowFallback = allowFallback;
+                this.createDefault = createDefault;
+                this.restrictSize = restrictSize;
+
+                RelativeSizeAxes = Axes.Both;
+            }
+
+            [BackgroundDependencyLoader]
+            private void load()
+            {
+                Drawable = skin.GetDrawableComponent(componentName);
+
+                if (Drawable != null)
                 {
-                    Drawable.RelativeSizeAxes = Axes.Both;
-                    Drawable.Size = Vector2.One;
-                    Drawable.Scale = Vector2.One;
-                    Drawable.FillMode = FillMode.Fit;
+                    if (restrictSize)
+                    {
+                        Drawable.RelativeSizeAxes = Axes.Both;
+                        Drawable.Size = Vector2.One;
+                        Drawable.Scale = Vector2.One;
+                        Drawable.FillMode = FillMode.Fit;
+                    }
                 }
-            }
-            else if (allowFallback)
-                Drawable = createDefault(componentName);
+                else if (allowFallback)
+                    Drawable = createDefault(componentName);
 
-            if (Drawable != null)
-            {
-                Drawable.Origin = Anchor.Centre;
-                Drawable.Anchor = Anchor.Centre;
+                if (Drawable != null)
+                {
+                    Drawable.Origin = Anchor.Centre;
+                    Drawable.Anchor = Anchor.Centre;
 
-                InternalChild = Drawable;
+                    InternalChild = Drawable;
+                }
+                else
+                    Expire();
             }
-            else
-                ClearInternal();
         }
     }
 }

@@ -89,12 +89,19 @@ namespace osu.Game.Tests.Visual.Gameplay
 
         private class SkinConsumer : SkinnableDrawable
         {
-            public new Drawable Drawable => base.Drawable;
+            public Drawable Drawable;
+
             public int SkinChangedCount { get; private set; }
 
             public SkinConsumer(string name, Func<string, Drawable> defaultImplementation, Func<ISkinSource, bool> allowFallback = null, bool restrictSize = true)
                 : base(name, defaultImplementation, allowFallback, restrictSize)
             {
+            }
+
+            protected override void DrawableLoaded(Drawable drawable)
+            {
+                base.DrawableLoaded(drawable);
+                Drawable = drawable;
             }
 
             protected override void SkinChanged(ISkinSource skin, bool allowFallback)
