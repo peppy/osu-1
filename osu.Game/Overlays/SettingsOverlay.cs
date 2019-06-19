@@ -30,7 +30,7 @@ namespace osu.Game.Overlays
 
         private readonly List<SettingsSubPanel> subPanels = new List<SettingsSubPanel>();
 
-        protected override Drawable CreateHeader() => new SettingsHeader("settings", "Change the way osu! behaves");
+        protected override Drawable CreateHeader() => new SettingsHeader("settings", "change the way osu! behaves");
         protected override Drawable CreateFooter() => new SettingsFooter();
 
         public SettingsOverlay()

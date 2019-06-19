@@ -18,6 +18,8 @@ namespace osu.Game.Overlays
         public const float TITLE_SIZE = 140;
         public const float PADDING = 5;
 
+        protected override Drawable CreateHeader() => new SettingsHeader("skin overrides", "override default or custom skin settings");
+
         [BackgroundDependencyLoader]
         private void load(SkinManager skinManager)
         {
