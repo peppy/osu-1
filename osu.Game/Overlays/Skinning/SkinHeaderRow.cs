@@ -23,7 +23,7 @@ namespace osu.Game.Overlays.Skinning
             {
                 new OsuSpriteText
                 {
-                    Text = $"{skin.SkinInfo.Name} ({skin.SkinInfo.ID})",
+                    Text = $"{skin.SkinInfo.Name}",
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
                     Font = OsuFont.GetFont(weight: FontWeight.Bold, size: 14),
