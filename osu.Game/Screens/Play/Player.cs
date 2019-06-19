@@ -95,7 +95,7 @@ namespace osu.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(AudioManager audio, IAPIProvider api, OsuConfigManager config)
+        private void load(AudioManager audio, IAPIProvider api, OsuConfigManager config, SkinManager skins)
         {
             this.api = api;
 
@@ -123,13 +123,9 @@ namespace osu.Game.Screens.Play
             {
                 StoryboardContainer = CreateStoryboardContainer(),
                 new ScalingContainer(ScalingMode.Gameplay)
-                {
-                    Child = new LocalSkinOverrideContainer(working.Skin)
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Child = DrawableRuleset
-                    }
-                },
+                    .WithChild(new LocalSkinOverrideContainer(working.Skin)
+                        .WithChild(new LocalSkinOverrideContainer(skins.UserSkin)
+                            .WithChild(DrawableRuleset))),
                 new BreakOverlay(working.Beatmap.BeatmapInfo.LetterboxInBreaks, ScoreProcessor)
                 {
                     Anchor = Anchor.Centre,

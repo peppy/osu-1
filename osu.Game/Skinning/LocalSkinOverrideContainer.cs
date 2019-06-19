@@ -28,6 +28,8 @@ namespace osu.Game.Skinning
         public LocalSkinOverrideContainer(ISkin skin)
         {
             this.skin = skin;
+
+            RelativeSizeAxes = Axes.Both;
         }
 
         public Drawable GetDrawableComponent(string componentName)
