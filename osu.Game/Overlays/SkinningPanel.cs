@@ -42,7 +42,7 @@ namespace osu.Game.Overlays
                 Children = new Drawable[]
                 {
                     new SkinHeaderRow("Information", availableSkins),
-                    new SkinCheckboxRow("Expand Mouse", availableSkins),
+                    new SkinCheckboxRow("Expand Mouse", SkinSetting.CursorExpand, availableSkins),
                 };
             }
         }

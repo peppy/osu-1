@@ -1,7 +1,6 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -21,22 +20,22 @@ namespace osu.Game.Overlays.Skinning
 {
     public class SkinCheckboxRow : SkinSettingsRow
     {
-        public SkinCheckboxRow(string title, Skin[] sources)
+        private readonly SkinSetting lookup;
+
+        public SkinCheckboxRow(string title, SkinSetting lookup, Skin[] sources)
             : base(title, sources)
         {
+            this.lookup = lookup;
         }
 
-        // todo: temporary
-        private readonly List<object> bindableReferences = new List<object>();
-
-        protected override Drawable CreateCellContent(Skin skin) => new CheckboxCell(skin);
+        protected override Drawable CreateCellContent(Skin skin) => new CheckboxCell(skin, lookup);
 
         private class CheckboxCell : CompositeDrawable
         {
             // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
             private readonly Bindable<bool?> bindable;
 
-            public CheckboxCell(Skin skin)
+            public CheckboxCell(Skin skin, SkinSetting lookup)
             {
                 RelativeSizeAxes = Axes.Both;
 
@@ -54,10 +53,8 @@ namespace osu.Game.Overlays.Skinning
                     }
                 };
 
-                var bindableConfiguration = skin.Configuration as DatabasedSkinConfiguration;
-
                 // in some cases this is a read-only value.
-                if (bindableConfiguration == null)
+                if (!(skin.Configuration is DatabasedSkinConfiguration bindableConfiguration))
                 {
                     if (skin.Configuration.CursorExpand.HasValue)
                     {
@@ -88,7 +85,7 @@ namespace osu.Game.Overlays.Skinning
                     },
                 });
 
-                bindable = bindableConfiguration.GetBindable<bool?>(SkinSetting.CursorExpand);
+                bindable = bindableConfiguration.GetBindable<bool?>(lookup);
 
                 if (bindable.Value.HasValue)
                 {

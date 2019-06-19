@@ -8,6 +8,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Overlays;
 using osu.Game.Overlays.Settings;
+using osu.Game.Overlays.Skinning;
 
 namespace osu.Game.Tests.Visual.Settings
 {
@@ -21,6 +22,8 @@ namespace osu.Game.Tests.Visual.Settings
         {
             typeof(SettingsFooter),
             typeof(SettingsOverlay),
+            typeof(SkinSettingsRow),
+            typeof(SkinCheckboxRow),
         };
 
         public TestSceneSettingsPanel()
