@@ -29,6 +29,9 @@ namespace osu.Game.Skinning
         {
             this.skin = skin;
 
+            if (skin is ISkinSource source)
+                source.SourceChanged += onSourceChanged;
+
             RelativeSizeAxes = Axes.Both;
         }
 
@@ -94,6 +97,9 @@ namespace osu.Game.Skinning
 
         protected override void Dispose(bool isDisposing)
         {
+            if (skin is ISkinSource source)
+                source.SourceChanged -= onSourceChanged;
+
             // Must be done before base.Dispose()
             SourceChanged = null;
 
