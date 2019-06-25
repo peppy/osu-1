@@ -173,6 +173,16 @@ namespace osu.Game.Screens.Play
                         Restart();
                     },
                 },
+                new HotkeyExitOverlay
+                {
+                    Action = () =>
+                    {
+                        if (!this.IsCurrentScreen()) return;
+
+                        fadeOut(true);
+                        performUserRequestedExit();
+                    },
+                },
                 failAnimation = new FailAnimation(DrawableRuleset) { OnComplete = onFailComplete, }
             };
 
@@ -240,6 +250,11 @@ namespace osu.Game.Screens.Play
         private void performUserRequestedExit()
         {
             if (!this.IsCurrentScreen()) return;
+
+            // if a restart has been requested, cancel any pending completion (user has shown intent to restart).
+            onCompletionEvent = null;
+
+            ValidForResume = false;
 
             this.Exit();
         }

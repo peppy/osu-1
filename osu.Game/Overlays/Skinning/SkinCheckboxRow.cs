@@ -49,7 +49,7 @@ namespace osu.Game.Overlays.Skinning
                     RelativeSizeAxes = Axes.Both,
                     Children = new Drawable[]
                     {
-                        checkbox = new CenteredCheckbox { Bindable = checkboxValue, },
+                        checkbox = new CenteredCheckbox { Current = checkboxValue, },
                     }
                 };
 
