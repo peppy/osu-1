@@ -1,7 +1,6 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +19,7 @@ using SharpCompress.Archives.Zip;
 namespace osu.Game.Tests.Beatmaps.IO
 {
     [TestFixture]
-    public class ImportBeatmapTest
+    public class ImportBeatmapTest : HeadlessOsuTest
     {
         [Test]
         public async Task TestImportWhenClosed()
@@ -335,7 +334,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     ensureLoaded(osu);
 
-                    waitForOrAssert(() => !File.Exists(temp), "Temporary still exists after IPC import", 5000);
+                    WaitForOrAssert(() => !File.Exists(temp), "Temporary still exists after IPC import", 5000);
                 }
                 finally
                 {
@@ -378,10 +377,12 @@ namespace osu.Game.Tests.Beatmaps.IO
 
             ensureLoaded(osu);
 
-            waitForOrAssert(() => !File.Exists(temp), "Temporary file still exists after standard import", 5000);
+            WaitForOrAssert(() => !File.Exists(temp), "Temporary file still exists after standard import", 5000);
 
             return imported.LastOrDefault();
         }
+
+        private OsuGameBase loadOsu(HeadlessGameHost host) => LoadGameIntoHost(host, new OsuGameBase());
 
         private void deleteBeatmapSet(BeatmapSetInfo imported, OsuGameBase osu)
         {
@@ -414,19 +415,11 @@ namespace osu.Game.Tests.Beatmaps.IO
             Assert.AreEqual(expected, osu.Dependencies.Get<FileStore>().QueryFiles(f => f.ReferenceCount == 1).Count());
         }
 
-        private OsuGameBase loadOsu(GameHost host)
-        {
-            var osu = new OsuGameBase();
-            Task.Run(() => host.Run(osu));
-            waitForOrAssert(() => osu.IsLoaded, @"osu! failed to start in a reasonable amount of time");
-            return osu;
-        }
-
         private static void ensureLoaded(OsuGameBase osu, int timeout = 60000)
         {
             IEnumerable<BeatmapSetInfo> resultSets = null;
             var store = osu.Dependencies.Get<BeatmapManager>();
-            waitForOrAssert(() => (resultSets = store.QueryBeatmapSets(s => s.OnlineBeatmapSetID == 241526)).Any(),
+            WaitForOrAssert(() => (resultSets = store.QueryBeatmapSets(s => s.OnlineBeatmapSetID == 241526)).Any(),
                 @"BeatmapSet did not import to the database in allocated time.", timeout);
 
             //ensure we were stored to beatmap database backing...
@@ -435,13 +428,13 @@ namespace osu.Game.Tests.Beatmaps.IO
             IEnumerable<BeatmapSetInfo> queryBeatmapSets() => store.QueryBeatmapSets(s => s.OnlineBeatmapSetID == 241526);
 
             //if we don't re-check here, the set will be inserted but the beatmaps won't be present yet.
-            waitForOrAssert(() => queryBeatmaps().Count() == 12,
+            WaitForOrAssert(() => queryBeatmaps().Count() == 12,
                 @"Beatmaps did not import to the database in allocated time", timeout);
-            waitForOrAssert(() => queryBeatmapSets().Count() == 1,
+            WaitForOrAssert(() => queryBeatmapSets().Count() == 1,
                 @"BeatmapSet did not import to the database in allocated time", timeout);
             int countBeatmapSetBeatmaps = 0;
             int countBeatmaps = 0;
-            waitForOrAssert(() =>
+            WaitForOrAssert(() =>
                     (countBeatmapSetBeatmaps = queryBeatmapSets().First().Beatmaps.Count) ==
                     (countBeatmaps = queryBeatmaps().Count()),
                 $@"Incorrect database beatmap count post-import ({countBeatmaps} but should be {countBeatmapSetBeatmaps}).", timeout);
@@ -458,16 +451,6 @@ namespace osu.Game.Tests.Beatmaps.IO
             Assert.IsTrue(beatmap?.HitObjects.Any() == true);
             beatmap = store.GetWorkingBeatmap(set.Beatmaps.First(b => b.RulesetID == 3))?.Beatmap;
             Assert.IsTrue(beatmap?.HitObjects.Any() == true);
-        }
-
-        private static void waitForOrAssert(Func<bool> result, string failureMessage, int timeout = 60000)
-        {
-            Task task = Task.Run(() =>
-            {
-                while (!result()) Thread.Sleep(200);
-            });
-
-            Assert.IsTrue(task.Wait(timeout), failureMessage);
         }
     }
 }
