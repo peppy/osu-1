@@ -21,7 +21,7 @@ namespace osu.Game.Screens.Menu
 {
     public class Disclaimer : StartupScreen
     {
-        private Intro intro;
+        private IntroTriangles intro;
         private SpriteIcon icon;
         private Color4 iconColour;
         private LinkFlowContainer textFlow;
@@ -146,7 +146,7 @@ namespace osu.Game.Screens.Menu
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            LoadComponentAsync(intro = new Intro());
+            LoadComponentAsync(intro = new IntroTriangles());
         }
 
         public override void OnEntering(IScreen last)
