@@ -10,6 +10,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Screens;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.MathUtils;
@@ -91,8 +92,8 @@ namespace osu.Game.Screens.Menu
             seeya = audio.Samples.Get(@"seeya");
         }
 
-        private const double delay_step_one = 2800;
-        private const double delay_step_two = 600;
+        private const double delay_step_one = 4000;
+        private const double delay_step_two = 0;
 
         public const int EXIT_DELAY = 3000;
 
@@ -137,6 +138,7 @@ namespace osu.Game.Screens.Menu
 
             if (!resuming)
             {
+                logo.MoveTo(new Vector2(0.5f));
                 logo.Hide();
 
                 AddInternal(new TrianglesIntroSequence(logo)
@@ -201,16 +203,21 @@ namespace osu.Game.Screens.Menu
             private readonly Container rulesetsScale;
             private readonly Sprite logoLineArt;
 
+            private readonly GlitchingTriangles triangles;
+            private Box flash;
+
             private const double text_0 = 200;
             private const double text_1 = 400;
             private const double text_2 = 700;
             private const double text_3 = 900;
+            private const double text_glitch = 1060;
 
-            private const double rulesets_0 = 1400;
-            private const double rulesets_1 = 1600;
-            private const double rulesets_2 = 1800;
+            private const double rulesets_0 = 1450;
+            private const double rulesets_1 = 1650;
+            private const double rulesets_2 = 1850;
 
             private const double logo_0 = 2100;
+            private const double logo_1 = 3000;
 
             public TrianglesIntroSequence(OsuLogo logo)
             {
@@ -218,6 +225,13 @@ namespace osu.Game.Screens.Menu
 
                 InternalChildren = new Drawable[]
                 {
+                    triangles = new GlitchingTriangles
+                    {
+                        Alpha = 0,
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Size = new Vector2(0.4f, 0.16f)
+                    },
                     welcomeText = new OsuSpriteText
                     {
                         Anchor = Anchor.Centre,
@@ -241,7 +255,13 @@ namespace osu.Game.Screens.Menu
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                    }
+                    },
+                    flash = new Box
+                    {
+                        Colour = Color4.White,
+                        RelativeSizeAxes = Axes.Both,
+                        Blending = BlendingMode.Additive,
+                    },
                 };
             }
 
@@ -271,7 +291,16 @@ namespace osu.Game.Screens.Menu
                     rulesets.Delay(logo_0).FadeOut();
 
                     logoLineArt.Hide();
-                    logoLineArt.Delay(logo_0).FadeIn().ScaleTo(2.4f).Then().ScaleTo(1, 1000, Easing.InQuint);
+                    logoLineArt.Delay(logo_0).FadeIn().ScaleTo(3f).Then().ScaleTo(0, 980, Easing.InQuint);
+
+                    triangles.Delay(text_glitch).FadeIn();
+                    triangles.Delay(rulesets_0).FadeOut();
+
+                    flash.Hide();
+                    flash.Delay(logo_1).FadeIn().Then().FadeOut(1000);
+
+                    logoLineArt.Delay(logo_1).FadeOut();
+                    logo.Delay(logo_1).FadeIn();
                 }
             }
 
@@ -314,6 +343,69 @@ namespace osu.Game.Screens.Menu
 
                     Anchor = Anchor.Centre;
                     Origin = Anchor.Centre;
+                }
+            }
+
+            private class GlitchingTriangles : CompositeDrawable
+            {
+                public GlitchingTriangles()
+                {
+                    RelativeSizeAxes = Axes.Both;
+                }
+
+                private double? lastGenTime;
+
+                private const double time_between_triangles = 22;
+
+                protected override void Update()
+                {
+                    base.Update();
+
+                    if (lastGenTime == null || Time.Current - lastGenTime > time_between_triangles)
+                    {
+                        lastGenTime = (lastGenTime ?? Time.Current) + time_between_triangles;
+
+                        Drawable triangle = new OutlineTriangle(RNG.NextBool(), (RNG.NextSingle() + 0.2f) * 80)
+                        {
+                            RelativePositionAxes = Axes.Both,
+                            Position = new Vector2(RNG.NextSingle(), RNG.NextSingle()),
+                        };
+
+                        AddInternal(triangle);
+
+                        triangle.FadeOutFromOne(120);
+                    }
+                }
+
+                /// <summary>
+                /// Represents a sprite that is drawn in a triangle shape, instead of a rectangle shape.
+                /// </summary>
+                public class OutlineTriangle : BufferedContainer
+                {
+                    public OutlineTriangle(bool outlineOnly, float size)
+                    {
+                        Size = new Vector2(size);
+
+                        InternalChildren = new Drawable[]
+                        {
+                            new Triangle { RelativeSizeAxes = Axes.Both },
+                        };
+
+                        if (outlineOnly)
+                        {
+                            AddInternal(new Triangle
+                            {
+                                Anchor = Anchor.Centre,
+                                Origin = Anchor.Centre,
+                                Colour = Color4.Black,
+                                Size = new Vector2(size - 5),
+                                Blending = BlendingMode.None,
+                            });
+                        }
+
+                        Blending = BlendingMode.Additive;
+                        CacheDrawnFrameBuffer = true;
+                    }
                 }
             }
         }
