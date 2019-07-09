@@ -113,6 +113,12 @@ namespace osu.Game.Screens.Menu
             }
         }
 
+        public override void OnResuming(IScreen last)
+        {
+            base.OnResuming(last);
+            background.FadeOut(100);
+        }
+
         public override void OnSuspending(IScreen next)
         {
             track = null;
