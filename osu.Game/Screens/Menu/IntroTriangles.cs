@@ -34,7 +34,7 @@ namespace osu.Game.Screens.Menu
 
         private SampleChannel welcome;
 
-        protected override BackgroundScreen CreateBackground() => new BackgroundScreenBlack();
+        //protected override BackgroundScreen CreateBackground() => background = new BackgroundScreenDefault();
 
         [Resolved]
         private AudioManager audio { get; set; }
@@ -42,6 +42,8 @@ namespace osu.Game.Screens.Menu
         private Bindable<bool> menuMusic;
         private Track track;
         private WorkingBeatmap introBeatmap;
+
+        private BackgroundScreenDefault background;
 
         [BackgroundDependencyLoader]
         private void load(OsuConfigManager config, BeatmapManager beatmaps, Framework.Game game)
@@ -75,11 +77,16 @@ namespace osu.Game.Screens.Menu
             track = introBeatmap.Track;
 
             track.Stop();
-            track.Restart();
 
             if (config.Get<bool>(OsuSetting.MenuVoice) && !menuMusic.Value)
                 // triangles has welcome sound included in the track. only play this if the user doesn't want menu music.
                 welcome = audio.Samples.Get(@"welcome");
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+            track.Restart();
         }
 
         private const double intro_length = 3000;
@@ -101,7 +108,7 @@ namespace osu.Game.Screens.Menu
 
                 PrepareMenuLoad();
 
-                AddInternal(new TrianglesIntroSequence(logo)
+                AddInternal(new TrianglesIntroSequence(logo, background)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Clock = new FramedClock(track)
@@ -122,6 +129,7 @@ namespace osu.Game.Screens.Menu
         private class TrianglesIntroSequence : CompositeDrawable
         {
             private readonly OsuLogo logo;
+            private readonly BackgroundScreenDefault background;
             private readonly OsuSpriteText welcomeText;
 
             private readonly RulesetFlow rulesets;
@@ -145,9 +153,10 @@ namespace osu.Game.Screens.Menu
             private const double logo_0 = 2100;
             private const double logo_1 = 3000;
 
-            public TrianglesIntroSequence(OsuLogo logo)
+            public TrianglesIntroSequence(OsuLogo logo, BackgroundScreenDefault background)
             {
                 this.logo = logo;
+                this.background = background;
 
                 InternalChildren = new Drawable[]
                 {
@@ -227,6 +236,9 @@ namespace osu.Game.Screens.Menu
 
                     logoLineArt.Delay(logo_1).FadeOut();
                     logo.Delay(logo_1).FadeIn();
+
+                    //background.Hide();
+                    //background.Delay(logo_1).FadeIn();
                 }
             }
 
