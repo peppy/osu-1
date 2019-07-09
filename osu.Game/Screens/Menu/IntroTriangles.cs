@@ -28,27 +28,17 @@ using osuTK.Graphics;
 
 namespace osu.Game.Screens.Menu
 {
-    public class IntroTriangles : StartupScreen
+    public class IntroTriangles : IntroScreen
     {
         private const string menu_music_beatmap_hash = "a1556d0801b3a6b175dda32ef546f0ec812b400499f575c44fccbe9c67f9b1e5";
 
-        /// <summary>
-        /// Whether we have loaded the menu previously.
-        /// </summary>
-        public bool DidLoadMenu;
-
-        private MainMenu mainMenu;
         private SampleChannel welcome;
-        private SampleChannel seeya;
 
         protected override BackgroundScreen CreateBackground() => new BackgroundScreenBlack();
-
-        private readonly BindableDouble exitingVolumeFade = new BindableDouble(1);
 
         [Resolved]
         private AudioManager audio { get; set; }
 
-        private Bindable<bool> menuVoice;
         private Bindable<bool> menuMusic;
         private Track track;
         private WorkingBeatmap introBeatmap;
@@ -56,7 +46,6 @@ namespace osu.Game.Screens.Menu
         [BackgroundDependencyLoader]
         private void load(OsuConfigManager config, BeatmapManager beatmaps, Framework.Game game)
         {
-            menuVoice = config.GetBindable<bool>(OsuSetting.MenuVoice);
             menuMusic = config.GetBindable<bool>(OsuSetting.MenuMusic);
 
             BeatmapSetInfo setInfo = null;
@@ -88,14 +77,12 @@ namespace osu.Game.Screens.Menu
             track.Stop();
             track.Restart();
 
-            welcome = audio.Samples.Get(@"welcome");
-            seeya = audio.Samples.Get(@"seeya");
+            if (config.Get<bool>(OsuSetting.MenuVoice) && !menuMusic.Value)
+                // triangles has welcome sound included in the track. only play this if the user doesn't want menu music.
+                welcome = audio.Samples.Get(@"welcome");
         }
 
-        private const double delay_step_one = 4000;
-        private const double delay_step_two = 0;
-
-        public const int EXIT_DELAY = 3000;
+        private const double intro_length = 3000;
 
         protected override void LogoArriving(OsuLogo logo, bool resuming)
         {
@@ -106,92 +93,30 @@ namespace osu.Game.Screens.Menu
                 Beatmap.Value = introBeatmap;
                 introBeatmap = null;
 
-                if (menuVoice.Value && !menuMusic.Value)
-                    // triangles has welcome sound included in the track. only play this if the user doesn't want menu music.
-                    welcome.Play();
+                welcome?.Play();
 
-                Scheduler.AddDelayed(delegate
-                {
-                    // Only start the current track if it is the menu music. A beatmap's track is started when entering the Main Manu.
-                    if (menuMusic.Value)
-                    {
-                        track.Start();
-                        track = null;
-                    }
+                // Only start the current track if it is the menu music. A beatmap's track is started when entering the Main Manu.
+                if (menuMusic.Value)
+                    track.Start();
 
-                    LoadComponentAsync(mainMenu = new MainMenu());
-
-                    Scheduler.AddDelayed(delegate
-                    {
-                        DidLoadMenu = true;
-                        this.Push(mainMenu);
-                    }, delay_step_one);
-                }, delay_step_two);
-            }
-
-            logo.Colour = Color4.White;
-            logo.Ripple = false;
-
-            const int quick_appear = 350;
-
-            int initialMovementTime = logo.Alpha > 0.2f ? quick_appear : 0;
-
-            if (!resuming)
-            {
-                logo.MoveTo(new Vector2(0.5f));
-                logo.Hide();
+                PrepareMenuLoad();
 
                 AddInternal(new TrianglesIntroSequence(logo)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Clock = new FramedClock(track)
                 });
-            }
-            else
-            {
-                logo.MoveTo(new Vector2(0.5f), initialMovementTime, Easing.OutQuint);
 
-                logo.Triangles = false;
-
-                logo
-                    .ScaleTo(1, initialMovementTime, Easing.OutQuint)
-                    .FadeIn(quick_appear, Easing.OutQuint)
-                    .Then()
-                    .RotateTo(20, EXIT_DELAY * 1.5f)
-                    .FadeOut(EXIT_DELAY);
+                Scheduler.AddDelayed(LoadMenu, intro_length);
             }
         }
 
         public override void OnSuspending(IScreen next)
         {
+            track = null;
+
             this.FadeOut(300);
             base.OnSuspending(next);
-        }
-
-        public override bool OnExiting(IScreen next)
-        {
-            //cancel exiting if we haven't loaded the menu yet.
-            return !DidLoadMenu;
-        }
-
-        public override void OnResuming(IScreen last)
-        {
-            this.FadeIn(300);
-
-            double fadeOutTime = EXIT_DELAY;
-            //we also handle the exit transition.
-            if (menuVoice.Value)
-                seeya.Play();
-            else
-                fadeOutTime = 500;
-
-            audio.AddAdjustment(AdjustableProperty.Volume, exitingVolumeFade);
-            this.TransformBindableTo(exitingVolumeFade, 0, fadeOutTime).OnComplete(_ => this.Exit());
-
-            //don't want to fade out completely else we will stop running updates.
-            Game.FadeTo(0.01f, fadeOutTime);
-
-            base.OnResuming(last);
         }
 
         private class TrianglesIntroSequence : CompositeDrawable
@@ -204,7 +129,8 @@ namespace osu.Game.Screens.Menu
             private readonly Sprite logoLineArt;
 
             private readonly GlitchingTriangles triangles;
-            private Box flash;
+
+            private readonly Box flash;
 
             private const double text_0 = 200;
             private const double text_1 = 400;
