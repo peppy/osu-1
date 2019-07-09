@@ -1,6 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -34,7 +35,9 @@ namespace osu.Game.Screens.Menu
 
         private SampleChannel welcome;
 
-        //protected override BackgroundScreen CreateBackground() => background = new BackgroundScreenDefault();
+        protected override BackgroundScreen CreateBackground() => background = new BackgroundScreenDefault(false);
+
+        private const double flash_length = 1000;
 
         [Resolved]
         private AudioManager audio { get; set; }
@@ -77,19 +80,12 @@ namespace osu.Game.Screens.Menu
             track = introBeatmap.Track;
 
             track.Stop();
+            track.Reset();
 
             if (config.Get<bool>(OsuSetting.MenuVoice) && !menuMusic.Value)
                 // triangles has welcome sound included in the track. only play this if the user doesn't want menu music.
                 welcome = audio.Samples.Get(@"welcome");
         }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-            track.Restart();
-        }
-
-        private const double intro_length = 3000;
 
         protected override void LogoArriving(OsuLogo logo, bool resuming)
         {
@@ -106,15 +102,14 @@ namespace osu.Game.Screens.Menu
                 if (menuMusic.Value)
                     track.Start();
 
-                PrepareMenuLoad();
-
                 AddInternal(new TrianglesIntroSequence(logo, background)
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Clock = new FramedClock(track)
+                    Clock = new FramedClock(track),
+                    LoadMenu = LoadMenu
                 });
 
-                Scheduler.AddDelayed(LoadMenu, intro_length);
+                PrepareMenuLoad();
             }
         }
 
@@ -122,7 +117,7 @@ namespace osu.Game.Screens.Menu
         {
             track = null;
 
-            this.FadeOut(300);
+            this.FadeOut(flash_length);
             base.OnSuspending(next);
         }
 
@@ -138,7 +133,7 @@ namespace osu.Game.Screens.Menu
 
             private readonly GlitchingTriangles triangles;
 
-            private readonly Box flash;
+            public Action LoadMenu;
 
             private const double text_0 = 200;
             private const double text_1 = 400;
@@ -191,19 +186,16 @@ namespace osu.Game.Screens.Menu
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                     },
-                    flash = new Box
-                    {
-                        Colour = Color4.White,
-                        RelativeSizeAxes = Axes.Both,
-                        Blending = BlendingMode.Additive,
-                    },
                 };
             }
 
+            private OsuGameBase game;
+
             [BackgroundDependencyLoader]
-            private void load(TextureStore textures)
+            private void load(TextureStore textures, OsuGameBase game)
             {
                 logoLineArt.Texture = textures.Get(@"Menu/logo");
+                this.game = game;
             }
 
             protected override void LoadComplete()
@@ -231,14 +223,25 @@ namespace osu.Game.Screens.Menu
                     triangles.Delay(text_glitch).FadeIn();
                     triangles.Delay(rulesets_0).FadeOut();
 
-                    flash.Hide();
-                    flash.Delay(logo_1).FadeIn().Then().FadeOut(1000);
-
                     logoLineArt.Delay(logo_1).FadeOut();
-                    logo.Delay(logo_1).FadeIn();
+                    logo.Delay(logo_1).FadeIn().OnComplete(_ =>
+                    {
+                        Box flash;
 
-                    //background.Hide();
-                    //background.Delay(logo_1).FadeIn();
+                        game.Add(flash = new Box
+                        {
+                            Colour = Color4.White,
+                            RelativeSizeAxes = Axes.Both,
+                            Blending = BlendingMode.Additive,
+                        });
+
+                        flash.FadeOutFromOne(flash_length, Easing.Out);
+
+                        LoadMenu();
+                    });
+
+                    background.Hide();
+                    background.Delay(logo_1).FadeIn();
                 }
             }
 
