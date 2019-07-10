@@ -41,8 +41,6 @@ namespace osu.Game.Screens.Menu
             Alpha = 0,
         };
 
-        private const double flash_length = 1000;
-
         [Resolved]
         private AudioManager audio { get; set; }
 
@@ -101,20 +99,22 @@ namespace osu.Game.Screens.Menu
                 Beatmap.Value = introBeatmap;
                 introBeatmap = null;
 
-                welcome?.Play();
+                PrepareMenuLoad();
 
-                // Only start the current track if it is the menu music. A beatmap's track is started when entering the Main Manu.
-                if (menuMusic.Value)
-                    track.Start();
-
-                AddInternal(new TrianglesIntroSequence(logo, background)
+                LoadComponentAsync(new TrianglesIntroSequence(logo, background)
                 {
                     RelativeSizeAxes = Axes.Both,
                     Clock = new FramedClock(track),
                     LoadMenu = LoadMenu
-                });
+                }, t =>
+                {
+                    AddInternal(t);
+                    welcome?.Play();
 
-                PrepareMenuLoad();
+                    // Only start the current track if it is the menu music. A beatmap's track is started when entering the Main Manu.
+                    if (menuMusic.Value)
+                        track.Start();
+                });
             }
         }
 
@@ -127,8 +127,6 @@ namespace osu.Game.Screens.Menu
         public override void OnSuspending(IScreen next)
         {
             track = null;
-
-            this.FadeOut(flash_length);
             base.OnSuspending(next);
         }
 
@@ -140,26 +138,12 @@ namespace osu.Game.Screens.Menu
 
             private RulesetFlow rulesets;
             private Container rulesetsScale;
-            private Drawable logoTransformContainer;
-            private Drawable logoLineArt;
+            private Drawable logoContainerSecondary;
+            private Drawable logoContainer;
 
             private GlitchingTriangles triangles;
 
             public Action LoadMenu;
-
-            private const double text_0 = 200;
-            private const double text_1 = 400;
-            private const double text_2 = 700;
-            private const double text_3 = 900;
-            private const double text_glitch = 1060;
-
-            private const double rulesets_0 = 1450;
-            private const double rulesets_1 = 1650;
-            private const double rulesets_2 = 1850;
-
-            private const double logo_0 = 2080;
-            private const double logo_scale_duration = 920;
-            private const double logo_1 = logo_0 + logo_scale_duration;
 
             public TrianglesIntroSequence(OsuLogo logo, BackgroundScreenDefault background)
             {
@@ -174,7 +158,7 @@ namespace osu.Game.Screens.Menu
             {
                 this.game = game;
 
-                InternalChildren = new Drawable[]
+                InternalChildren = new[]
                 {
                     triangles = new GlitchingTriangles
                     {
@@ -202,12 +186,12 @@ namespace osu.Game.Screens.Menu
                             rulesets = new RulesetFlow()
                         }
                     },
-                    logoTransformContainer = new Container
+                    logoContainerSecondary = new Container
                     {
                         RelativeSizeAxes = Axes.Both,
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        Child = logoLineArt = new LazerLogo(textures.GetStream("Menu/logo-triangles.mp4"))
+                        Child = logoContainer = new LazerLogo(textures.GetStream("Menu/logo-triangles.mp4"))
                         {
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
@@ -216,73 +200,110 @@ namespace osu.Game.Screens.Menu
                 };
             }
 
+            private const double text_1 = 200;
+            private const double text_2 = 400;
+            private const double text_3 = 700;
+            private const double text_4 = 900;
+            private const double text_glitch = 1060;
+
+            private const double rulesets_1 = 1450;
+            private const double rulesets_2 = 1650;
+            private const double rulesets_3 = 1850;
+
+            private const double logo_scale_duration = 920;
+            private const double logo_1 = 2080;
+            private const double logo_2 = logo_1 + logo_scale_duration;
+
             protected override void LoadComplete()
             {
                 base.LoadComplete();
 
+                const float scale_start = 1.2f;
+                const float scale_adjust = 0.8f;
+
+                rulesets.Hide();
+                logoContainer.Hide();
+                background.Hide();
+
                 using (BeginAbsoluteSequence(0, true))
                 {
-                    welcomeText.Delay(text_3).TransformTo(nameof(welcomeText.Spacing), new Vector2(50, 0), 5000);
-                    welcomeText.Delay(rulesets_0).FadeOut();
+                    using (BeginDelayedSequence(text_1, true))
+                        welcomeText.FadeIn().OnComplete(t => t.Text = "wel");
 
-                    rulesetsScale.Delay(rulesets_0).ScaleTo(0.8f, 1000);
-                    rulesetsScale.Delay(rulesets_2).ScaleTo(1.3f, 1000);
+                    using (BeginDelayedSequence(text_2, true))
+                        welcomeText.FadeIn().OnComplete(t => t.Text = "welcome");
 
-                    rulesets.Hide();
-                    rulesets.Delay(rulesets_0).FadeIn().ScaleTo(1).TransformSpacingTo(new Vector2(200, 0));
-                    rulesets.Delay(rulesets_1).ScaleTo(2).TransformSpacingTo(new Vector2(30, 0));
-                    rulesets.Delay(rulesets_2).ScaleTo(4).TransformSpacingTo(new Vector2(10, 0));
+                    using (BeginDelayedSequence(text_3, true))
+                        welcomeText.FadeIn().OnComplete(t => t.Text = "welcome to");
 
-                    rulesets.Delay(logo_0).FadeOut();
-
-                    const float scale_start = 1.2f;
-                    const float scale_adjust = 0.8f;
-
-                    logoLineArt.Hide();
-                    logoLineArt.Delay(logo_0).FadeIn().ScaleTo(scale_start).Then().Delay(logo_scale_duration * 0.7f).ScaleTo(scale_start - scale_adjust, logo_scale_duration * 0.3f, Easing.InQuint);
-                    logoTransformContainer.Delay(logo_0).ScaleTo(scale_start).Then().ScaleTo(scale_start - scale_adjust * 0.25f, logo_scale_duration, Easing.InQuad);
-
-                    triangles.Delay(text_glitch).FadeIn();
-                    triangles.Delay(rulesets_0).FadeOut();
-
-                    logoLineArt.Delay(logo_1).FadeOut().OnComplete(_ =>
+                    using (BeginDelayedSequence(text_4, true))
                     {
-                        logo.FadeIn();
+                        welcomeText.FadeIn().OnComplete(t => t.Text = "welcome to osu!");
+                        welcomeText.TransformTo(nameof(welcomeText.Spacing), new Vector2(50, 0), 5000);
+                    }
 
-                        Box flash;
+                    using (BeginDelayedSequence(text_glitch, true))
+                        triangles.FadeIn();
 
-                        game.Add(flash = new Box
+                    using (BeginDelayedSequence(rulesets_1, true))
+                    {
+                        rulesetsScale.ScaleTo(0.8f, 1000);
+                        rulesets.FadeIn().ScaleTo(1).TransformSpacingTo(new Vector2(200, 0));
+                        welcomeText.FadeOut();
+                        triangles.FadeOut();
+                    }
+
+                    using (BeginDelayedSequence(rulesets_2, true))
+                    {
+                        rulesets.ScaleTo(2).TransformSpacingTo(new Vector2(30, 0));
+                    }
+
+                    using (BeginDelayedSequence(rulesets_3, true))
+                    {
+                        rulesets.ScaleTo(4).TransformSpacingTo(new Vector2(10, 0));
+                        rulesetsScale.ScaleTo(1.3f, 1000);
+                    }
+
+                    using (BeginDelayedSequence(logo_1, true))
+                    {
+                        rulesets.FadeOut();
+
+                        // matching flyte curve y = 0.25x^2 + (max(0, x - 0.7) / 0.3) ^ 5
+                        logoContainer.FadeIn().ScaleTo(scale_start).Then().Delay(logo_scale_duration * 0.7f).ScaleTo(scale_start - scale_adjust, logo_scale_duration * 0.3f, Easing.InQuint);
+                        logoContainerSecondary.ScaleTo(scale_start).Then().ScaleTo(scale_start - scale_adjust * 0.25f, logo_scale_duration, Easing.InQuad);
+                    }
+
+                    using (BeginDelayedSequence(logo_2, true))
+                    {
+                        logoContainer.FadeOut().OnComplete(_ =>
                         {
-                            Colour = Color4.White,
-                            RelativeSizeAxes = Axes.Both,
-                            Blending = BlendingMode.Additive,
+                            logo.FadeIn();
+                            background.FadeIn();
+
+                            game.Add(new GameWideFlash());
+
+                            LoadMenu();
                         });
-
-                        flash.FadeOutFromOne(flash_length, Easing.Out);
-
-                        LoadMenu();
-
-                        background.FadeIn();
-                    });
-
-                    background.Hide();
+                    }
                 }
             }
 
-            protected override void Update()
+            private class GameWideFlash : Box
             {
-                base.Update();
+                private const double flash_length = 1000;
 
-                if (Clock.CurrentTime > text_3)
-                    welcomeText.Text = "welcome to osu!";
-                else if (Clock.CurrentTime > text_2)
-                    welcomeText.Text = "welcome to";
-                else if (Clock.CurrentTime > text_1)
-                    welcomeText.Text = "welcome";
-                else if (Clock.CurrentTime > text_0)
-                    welcomeText.Text = "wel";
-                else
-                    welcomeText.Text = "";
+                public GameWideFlash()
+                {
+                    Colour = Color4.White;
+                    RelativeSizeAxes = Axes.Both;
+                    Blending = BlendingMode.Additive;
+                }
+
+                protected override void LoadComplete()
+                {
+                    base.LoadComplete();
+                    this.FadeOutFromOne(flash_length, Easing.Out);
+                }
             }
 
             private class LazerLogo : CompositeDrawable
@@ -294,7 +315,7 @@ namespace osu.Game.Screens.Menu
                     InternalChild = new VideoSprite(videoStream)
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Clock = new FramedOffsetClock(Clock) { Offset = -logo_0 }
+                        Clock = new FramedOffsetClock(Clock) { Offset = -logo_1 }
                     };
                 }
             }
