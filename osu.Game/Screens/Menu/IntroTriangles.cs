@@ -81,9 +81,8 @@ namespace osu.Game.Screens.Menu
             }
 
             introBeatmap = beatmaps.GetWorkingBeatmap(setInfo.Beatmaps[0]);
-            track = introBeatmap.Track;
 
-            track.Stop();
+            track = introBeatmap.Track;
             track.Reset();
 
             if (config.Get<bool>(OsuSetting.MenuVoice) && !menuMusic.Value)
