@@ -35,7 +35,10 @@ namespace osu.Game.Screens.Menu
 
         private SampleChannel welcome;
 
-        protected override BackgroundScreen CreateBackground() => background = new BackgroundScreenDefault(false);
+        protected override BackgroundScreen CreateBackground() => background = new BackgroundScreenDefault(false)
+        {
+            Alpha = 0,
+        };
 
         private const double flash_length = 1000;
 
