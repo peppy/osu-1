@@ -55,6 +55,8 @@ namespace osu.Game.Overlays
         private Container dragContainer;
         private Container playerContainer;
 
+        public bool IsUserPaused { get; private set; }
+
         [Resolved]
         private Bindable<WorkingBeatmap> beatmap { get; set; }
 
@@ -157,7 +159,7 @@ namespace osu.Game.Overlays
                                                     Origin = Anchor.Centre,
                                                     Scale = new Vector2(1.4f),
                                                     IconScale = new Vector2(1.4f),
-                                                    Action = play,
+                                                    Action = togglePause,
                                                     Icon = FontAwesome.Regular.PlayCircle,
                                                 },
                                                 nextButton = new MusicIconButton
@@ -218,15 +220,9 @@ namespace osu.Game.Overlays
             beatmapSets.Insert(index, beatmapSetInfo);
         }
 
-        private void handleBeatmapAdded(BeatmapSetInfo obj, bool existing)
-        {
-            if (existing)
-                return;
+        private void handleBeatmapAdded(BeatmapSetInfo set) => Schedule(() => beatmapSets.Add(set));
 
-            Schedule(() => beatmapSets.Add(obj));
-        }
-
-        private void handleBeatmapRemoved(BeatmapSetInfo obj) => Schedule(() => beatmapSets.RemoveAll(s => s.ID == obj.ID));
+        private void handleBeatmapRemoved(BeatmapSetInfo set) => Schedule(() => beatmapSets.RemoveAll(s => s.ID == set.ID));
 
         protected override void LoadComplete()
         {
@@ -259,6 +255,12 @@ namespace osu.Game.Overlays
         {
             base.Update();
 
+            if (pendingBeatmapSwitch != null)
+            {
+                pendingBeatmapSwitch();
+                pendingBeatmapSwitch = null;
+            }
+
             var track = current?.TrackLoaded ?? false ? current.Track : null;
 
             if (track?.IsDummyDevice == false)
@@ -276,7 +278,7 @@ namespace osu.Game.Overlays
             }
         }
 
-        private void play()
+        private void togglePause()
         {
             var track = current?.Track;
 
@@ -288,9 +290,15 @@ namespace osu.Game.Overlays
             }
 
             if (track.IsRunning)
+            {
+                IsUserPaused = true;
                 track.Stop();
+            }
             else
+            {
                 track.Start();
+                IsUserPaused = false;
+            }
         }
 
         private void prev()
@@ -368,15 +376,12 @@ namespace osu.Game.Overlays
                 mod.ApplyToClock(track);
         }
 
-        private ScheduledDelegate pendingBeatmapSwitch;
+        private Action pendingBeatmapSwitch;
 
         private void updateDisplay(WorkingBeatmap beatmap, TransformDirection direction)
         {
-            //we might be off-screen when this update comes in.
-            //rather than Scheduling, manually handle this to avoid possible memory contention.
-            pendingBeatmapSwitch?.Cancel();
-
-            pendingBeatmapSwitch = Schedule(delegate
+            // avoid using scheduler as our scheduler may not be run for a long time, holding references to beatmaps.
+            pendingBeatmapSwitch = delegate
             {
                 // todo: this can likely be replaced with WorkingBeatmap.GetBeatmapAsync()
                 Task.Run(() =>
@@ -416,7 +421,7 @@ namespace osu.Game.Overlays
 
                     playerContainer.Add(newBackground);
                 });
-            });
+            };
         }
 
         protected override void PopIn()
