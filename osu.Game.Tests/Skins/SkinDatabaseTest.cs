@@ -49,9 +49,8 @@ namespace osu.Game.Tests.Skins
 
             await skinManager.Import(test);
 
-            var skins = skinManager.GetAllUsableSkins();
-
-            Assert.AreEqual(1, skins.Count);
+            Assert.AreEqual(1, skinManager.GetAllUserSkins().Count);
+            Assert.AreEqual(2, skinManager.GetAllUsableSkins().Count);
         }
 
         private class SkinOsuGameBase : OsuGameBase
