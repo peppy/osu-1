@@ -4,6 +4,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Input;
 using osu.Framework.Input.Events;
 using osu.Framework.Platform;
 using osu.Game;
@@ -52,7 +53,7 @@ namespace osu.Presentation.Slides
             OsuGame game = new OsuGame();
             game.SetHost(host);
 
-            var container = new Container
+            var container = new InputRedirection
             {
                 Masking = true,
                 RelativeSizeAxes = Axes.Both,
@@ -88,5 +89,9 @@ namespace osu.Presentation.Slides
 
             return ratio - new Vector2(0.01f);
         }
+    }
+
+    internal class InputRedirection : PassThroughInputManager
+    {
     }
 }
