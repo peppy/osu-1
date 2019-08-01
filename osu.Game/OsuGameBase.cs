@@ -43,6 +43,7 @@ namespace osu.Game
     /// Unlike <see cref="OsuGame"/>, this class will not load any kind of UI, allowing it to be used
     /// for provide dependencies to test cases without interfering with them.
     /// </summary>
+    [Cached(typeof(Framework.Game))]
     public class OsuGameBase : Framework.Game, ICanAcceptFiles
     {
         public const string CLIENT_STREAM_NAME = "lazer";
