@@ -35,6 +35,8 @@ namespace osu.Presentation.Slides
 
         protected override bool OnKeyDown(KeyDownEvent e)
         {
+            if (e.Repeat) return false;
+
             switch (e.Key)
             {
                 case Key.Slash:
