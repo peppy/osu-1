@@ -14,18 +14,10 @@ namespace osu.Presentation.Slides
         }
     }
 
-    public class SlideOpenSourceContributors : SlideWithImage
+    public class SlideOpenSourceContributors : SlideWithImages
     {
         public SlideOpenSourceContributors()
             : base("contributors / bounty", "bounty")
-        {
-        }
-    }
-
-    public class SlideOpenSourceContributors2 : SlideWithImage
-    {
-        public SlideOpenSourceContributors2()
-            : base("contributors / bounty", "bounty2")
         {
         }
     }

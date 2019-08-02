@@ -5,12 +5,12 @@ namespace osu.Presentation.Slides
         public SlideCoreFocuses()
             : base("core focuses", new[]
             {
+                "open source",
                 "high performance",
                 "immaculate code quality",
-                "open source",
+                "backwards compatibility",
                 "extensibility",
                 "cross platform",
-                "backwards compatibility",
             })
         {
         }

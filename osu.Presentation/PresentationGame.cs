@@ -8,6 +8,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
 using osu.Framework.IO.Stores;
+using osu.Framework.Platform;
 using osu.Framework.Screens;
 using osu.Presentation.Slides;
 using osuTK.Input;
@@ -20,22 +21,35 @@ namespace osu.Presentation
         {
             typeof(SlideTitle),
 
-            typeof(SlideHistory),
-
-            typeof(SlideCoreFocuses),
-            typeof(SlideOpenSource),
-            typeof(SlideOpenSourceContributors),
-            typeof(SlideOpenSourceContributors2),
-            typeof(SlideHighPerformance),
-            typeof(SlideCodeQuality),
-            typeof(SlideBackwardsCompatibility),
-            typeof(SlideExtensibility),
-            typeof(SlideCrossPlatform),
+            typeof(SlideTransitional),
+            typeof(SlideTransitionalVideo),
 
             typeof(SlideFramework),
+            typeof(SlideFrameworkVideo),
+
+            typeof(SlideCoreFocuses),
+
+            typeof(SlideOpenSource),
+            typeof(SlideOpenSourceContributors),
+
+            typeof(SlideHighPerformance),
+
+            typeof(SlideCodeQuality),
+
+            typeof(SlideBackwardsCompatibility),
+
+            typeof(SlideExtensibility),
+
+            typeof(SlideCrossPlatform),
 
             typeof(SlideManyLazerGame),
+
             typeof(SlideTestBrowser),
+
+            typeof(SlideTournamentVideo),
+            typeof(SlideTournament),
+
+            typeof(SlideWhereWeAre),
         };
 
         private int current = -1;
@@ -62,7 +76,7 @@ namespace osu.Presentation
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(GameHost host)
         {
             Resources.AddStore(new NamespacedResourceStore<byte[]>(new DllResourceStore(@"osu.Presentation.dll"), @"Resources"));
 
@@ -99,6 +113,10 @@ namespace osu.Presentation
 
                 case Key.Right:
                     next();
+                    return true;
+
+                case Key.Number0:
+                    Host.Window.CursorState = CursorState.Default;
                     return true;
             }
 

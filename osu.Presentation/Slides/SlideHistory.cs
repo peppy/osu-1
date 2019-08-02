@@ -1,12 +1,9 @@
 namespace osu.Presentation.Slides
 {
-    public class SlideHistory : BulletSlide
+    public class SlideTransitional : SlideWithImages
     {
-        public SlideHistory()
-            : base("a bit of history...", new[]
-            {
-                "lazer-transitional",
-            })
+        public SlideTransitional()
+            : base("lazer-transitional", "transitional")
         {
         }
     }
