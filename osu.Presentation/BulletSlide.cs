@@ -15,6 +15,7 @@ namespace osu.Presentation
             {
                 AutoSizeAxes = Axes.Y,
                 RelativeSizeAxes = Axes.X,
+                LineSpacing = 0.8f,
             });
 
             foreach (var b in bullets)

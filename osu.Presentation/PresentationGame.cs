@@ -2,9 +2,12 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
+using osu.Framework.IO.Stores;
 using osu.Framework.Screens;
 using osu.Presentation.Slides;
 using osuTK.Input;
@@ -21,13 +24,18 @@ namespace osu.Presentation
 
             typeof(SlideCoreFocuses),
             typeof(SlideOpenSource),
+            typeof(SlideOpenSourceContributors),
+            typeof(SlideOpenSourceContributors2),
             typeof(SlideHighPerformance),
             typeof(SlideCodeQuality),
             typeof(SlideBackwardsCompatibility),
             typeof(SlideExtensibility),
             typeof(SlideCrossPlatform),
 
+            typeof(SlideFramework),
+
             typeof(SlideManyLazerGame),
+            typeof(SlideTestBrowser),
         };
 
         private int current = -1;
@@ -46,6 +54,21 @@ namespace osu.Presentation
             };
 
             next();
+        }
+
+        private DependencyContainer dependencies;
+
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
+            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            Resources.AddStore(new NamespacedResourceStore<byte[]>(new DllResourceStore(@"osu.Presentation.dll"), @"Resources"));
+
+            var largeStore = new LargeTextureStore(Host.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(Resources, @"Textures")));
+            largeStore.AddStore(Host.CreateTextureLoaderStore(new OnlineStore()));
+            dependencies.Cache(largeStore);
         }
 
         private void next()

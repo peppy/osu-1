@@ -8,7 +8,7 @@ namespace osu.Presentation.Slides
                 "Beatmaps (2B, aspire, centipede)",
                 "Skins (oversized, innovative)",
                 "Replays (online, local)",
-                "Online systems (chat, leaderboards, bad)",
+                "Online systems (chat, leaderboards, web)",
             })
         {
         }

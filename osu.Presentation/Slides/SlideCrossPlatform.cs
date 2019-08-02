@@ -8,7 +8,7 @@ namespace osu.Presentation.Slides
                 "linux",
                 "macOS",
                 "iOS / android",
-                "vulcan",
+                "vulkan",
                 "shared (full) online experience",
             })
         {
