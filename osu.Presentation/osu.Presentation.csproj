@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\osu.Game.props" />
   <PropertyGroup>
-    <StartupObject>osu.Presentation.PresentationRunner</StartupObject>
+    <StartupObject>osu.Presentation.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup Label="Package References">
     <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />
@@ -16,6 +16,7 @@
     <FileVersion>0.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup Label="Project References">
+    <ProjectReference Include="..\osu.Game.Tests\osu.Game.Tests.csproj" />
     <ProjectReference Include="..\osu.Game.Tournament\osu.Game.Tournament.csproj" />
     <ProjectReference Include="..\osu.Game\osu.Game.csproj" />
     <ProjectReference Include="..\osu.Game.Rulesets.Osu\osu.Game.Rulesets.Osu.csproj" />
