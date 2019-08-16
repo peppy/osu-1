@@ -10,6 +10,7 @@ namespace osu.Game.Skinning
         string HitCircleFont { get; }
         int HitCircleOverlap { get; }
         float? SliderBorderSize { get; }
+        float? SliderPathRadius { get; }
         bool? CursorExpand { get; }
         SkinInfo SkinInfo { get; }
     }

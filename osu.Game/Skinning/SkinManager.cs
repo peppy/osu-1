@@ -52,7 +52,7 @@ namespace osu.Game.Skinning
                     CurrentSkinInfo.Value = SkinInfo.Default;
             };
 
-            CurrentSkinInfo.ValueChanged += skin => CurrentSkin.Value = getSkin(skin.NewValue);
+            CurrentSkinInfo.ValueChanged += skin => CurrentSkin.Value = GetSkin(skin.NewValue);
             CurrentSkin.ValueChanged += skin =>
             {
                 if (skin.NewValue.SkinInfo != CurrentSkinInfo.Value)
@@ -61,7 +61,7 @@ namespace osu.Game.Skinning
                 SourceChanged?.Invoke();
             };
 
-            UserSkin = getSkin(Query(s => s.Name == "user") ?? Import(new SkinInfo { Name = "User Overrides", Creator = "user" }).Result);
+            UserSkin = GetSkin(Query(s => s.Name == "user") ?? Import(new SkinInfo { Name = "User Overrides", Creator = "user" }).Result);
         }
 
         protected override bool ShouldDeleteArchive(string path) => Path.GetExtension(path)?.ToLowerInvariant() == ".osk";
@@ -89,7 +89,7 @@ namespace osu.Game.Skinning
         {
             await base.Populate(model, archive, cancellationToken);
 
-            Skin reference = new LegacySkin(model, Files.Store, audio, "skin.ini");
+            Skin reference = GetSkin(model);
 
             if (!string.IsNullOrEmpty(reference.Configuration.SkinInfo.Name))
             {
@@ -108,7 +108,7 @@ namespace osu.Game.Skinning
         /// </summary>
         /// <param name="skinInfo">The skin to lookup.</param>
         /// <returns>A <see cref="Skin"/> instance correlating to the provided <see cref="SkinInfo"/>.</returns>
-        private Skin getSkin(SkinInfo skinInfo)
+        public Skin GetSkin(SkinInfo skinInfo)
         {
             if (skinInfo == null)
                 return null;

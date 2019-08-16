@@ -36,6 +36,7 @@ namespace osu.Game.Skinning
         public string HitCircleFont { get; set; }
         public int HitCircleOverlap { get; set; }
         public float? SliderBorderSize { get; set; }
+        public float? SliderPathRadius { get; set; }
 
         public bool? CursorExpand => Get<bool?>(SkinSetting.CursorExpand);
 
