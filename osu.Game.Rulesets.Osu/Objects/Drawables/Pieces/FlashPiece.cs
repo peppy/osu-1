@@ -21,7 +21,7 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables.Pieces
             Blending = BlendingParameters.Additive;
             Alpha = 0;
 
-            Child = new SkinnableDrawable("Play/osu/hitcircle-flash", name => new CircularContainer
+            Child = new SkinnableDrawable(new OsuSkinComponent(OsuSkinComponents.hitcircle-flash), name => new CircularContainer
             {
                 Masking = true,
                 RelativeSizeAxes = Axes.Both,

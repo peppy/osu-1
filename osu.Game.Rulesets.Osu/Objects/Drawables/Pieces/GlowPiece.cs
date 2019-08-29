@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables.Pieces
         [BackgroundDependencyLoader]
         private void load(TextureStore textures)
         {
-            Child = new SkinnableDrawable("Play/osu/ring-glow", component => new Sprite
+            Child = new SkinnableDrawable(new OsuSkinComponent(OsuSkinComponents.ring-glow), component => new Sprite
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,

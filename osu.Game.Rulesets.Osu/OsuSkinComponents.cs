@@ -5,7 +5,6 @@ namespace osu.Game.Rulesets.Osu
     public enum OsuSkinComponents
     {
         HitCircle,
-        HitCircleOverlay,
         FollowPoint,
         Cursor
     }

@@ -20,7 +20,7 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables.Pieces
             Blending = BlendingParameters.Additive;
             Alpha = 0;
 
-            Child = new SkinnableDrawable("Play/osu/hitcircle-explode", _ => new TrianglesPiece
+            Child = new SkinnableDrawable(new OsuSkinComponent(OsuSkinComponents.hitcircle-explode), _ => new TrianglesPiece
             {
                 Blending = BlendingParameters.Additive,
                 RelativeSizeAxes = Axes.Both,
