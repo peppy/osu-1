@@ -24,24 +24,9 @@ using osu.Game.Rulesets.Osu.Beatmaps;
 using osu.Game.Rulesets.Osu.Configuration;
 using osu.Game.Rulesets.Osu.Difficulty;
 using osu.Game.Scoring;
-using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Osu
 {
-    public class OsuSkinComponent : SkinComponent
-    {
-        public OsuSkinComponent(OsuSkinComponents component)
-            : base(getGroup(component), getName(component), OsuRuleset.SHORT_NAME)
-        {
-        }
-    }
-
-    public enum OsuSkinComponents
-    {
-        HitCircle,
-        HitCircleOverlay
-    }
-
     public class OsuRuleset : Ruleset
     {
         public override DrawableRuleset CreateDrawableRulesetWith(WorkingBeatmap beatmap, IReadOnlyList<Mod> mods) => new DrawableOsuRuleset(this, beatmap, mods);

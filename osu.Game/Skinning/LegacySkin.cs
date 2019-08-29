@@ -114,7 +114,7 @@ namespace osu.Game.Skinning
                         };
             }
 
-            return getAnimation(component, animatable, looping);
+            return getAnimation(component.LookupName, animatable, looping);
         }
 
         public override Texture GetTexture(string componentName)
@@ -155,17 +155,17 @@ namespace osu.Game.Skinning
 
         private bool hasFont(string fontName) => GetTexture($"{fontName}-0") != null;
 
-        private string getFallbackName(ISkinComponent component)
+        private string getFallbackName(string component)
         {
             string lastPiece = component.Split('/').Last();
             return component.StartsWith("Gameplay/taiko/") ? "taiko-" + lastPiece : lastPiece;
         }
 
-        private Drawable getAnimation(ISkinComponent component, bool animatable, bool looping, string animationSeparator = "-")
+        private Drawable getAnimation(string name, bool animatable, bool looping, string animationSeparator = "-")
         {
             Texture texture;
 
-            Texture getFrameTexture(int frame) => GetTexture($"{component}{animationSeparator}{frame}");
+            Texture getFrameTexture(int frame) => GetTexture($"{name}{animationSeparator}{frame}");
 
             TextureAnimation animation = null;
 
@@ -190,7 +190,7 @@ namespace osu.Game.Skinning
             if (animation != null)
                 return animation;
 
-            if ((texture = GetTexture(component)) != null)
+            if ((texture = GetTexture(name)) != null)
                 return new Sprite { Texture = texture };
 
             return null;
