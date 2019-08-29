@@ -43,7 +43,7 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables.Pieces
                     Anchor = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                     Alpha = 0,
-                    Child = new SkinnableDrawable(new OsuSkinComponent(OsuSkinComponents.sliderfollowcircle), _ => new DefaultFollowCircle()),
+                    Child = new SkinnableDrawable(new OsuSkinComponent(OsuSkinComponents.SliderFollowCircle), _ => new DefaultFollowCircle()),
                 },
                 new CircularContainer
                 {
@@ -55,7 +55,7 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables.Pieces
                     Child = new Container
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Child = new SkinnableDrawable(new OsuSkinComponent(OsuSkinComponents.sliderball), _ => new DefaultSliderBall()),
+                        Child = new SkinnableDrawable(new OsuSkinComponent(OsuSkinComponents.SliderBall), _ => new DefaultSliderBall()),
                     }
                 }
             };

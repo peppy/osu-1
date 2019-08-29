@@ -24,6 +24,7 @@ using osu.Game.Rulesets.Osu.Beatmaps;
 using osu.Game.Rulesets.Osu.Configuration;
 using osu.Game.Rulesets.Osu.Difficulty;
 using osu.Game.Scoring;
+using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.Osu
 {

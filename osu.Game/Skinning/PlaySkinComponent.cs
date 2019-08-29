@@ -7,7 +7,7 @@ namespace osu.Game.Skinning
 {
     public abstract class PlaySkinComponent<T> : ISkinComponent where T : struct
     {
-        protected readonly T Component;
+        public readonly T Component;
 
         protected PlaySkinComponent(T component)
         {
@@ -15,12 +15,9 @@ namespace osu.Game.Skinning
         }
 
         protected virtual string RulesetPrefix => string.Empty;
-        protected virtual string ComponentGroup => string.Empty;
         protected virtual string ComponentName => Component.ToString();
 
-        string ISkinComponent.ComponentGroup =>
-            string.Join("/", new[] { "Play", RulesetPrefix, ComponentGroup }.Where(s => !string.IsNullOrEmpty(s)));
-
-        public string LookupName => $"{ComponentGroup}/{ComponentName}";
+        public string LookupName =>
+            string.Join("/", new[] { "Play", RulesetPrefix, ComponentName }.Where(s => !string.IsNullOrEmpty(s)));
     }
 }

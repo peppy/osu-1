@@ -67,7 +67,7 @@ namespace osu.Game.Skinning
             bool animatable = false;
             bool looping = true;
 
-            switch (component)
+            switch (component.LookupName)
             {
                 case "Play/osu/cursor":
                     if (GetTexture("cursor") != null)
@@ -80,25 +80,25 @@ namespace osu.Game.Skinning
                     break;
 
                 case "Play/Miss":
-                    component = "hit0";
+                    component = new LegacySkinComponent("hit0");
                     animatable = true;
                     looping = false;
                     break;
 
                 case "Play/Meh":
-                    component = "hit50";
+                    component = new LegacySkinComponent("hit50");
                     animatable = true;
                     looping = false;
                     break;
 
                 case "Play/Good":
-                    component = "hit100";
+                    component = new LegacySkinComponent("hit100");
                     animatable = true;
                     looping = false;
                     break;
 
                 case "Play/Great":
-                    component = "hit300";
+                    component = new LegacySkinComponent("hit300");
                     animatable = true;
                     looping = false;
                     break;

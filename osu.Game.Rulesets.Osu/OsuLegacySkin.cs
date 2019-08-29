@@ -66,11 +66,14 @@ namespace osu.Game.Rulesets.Osu
 
         private const double default_frame_time = 1000 / 60d;
 
-        public Drawable GetDrawableComponent(string componentName)
+        public Drawable GetDrawableComponent(ISkinComponent component)
         {
-            switch (componentName)
+            if (!(component is OsuSkinComponent osuComponent))
+                return null;
+
+            switch (osuComponent.Component)
             {
-                case "Play/osu/sliderball":
+                case OsuSkinComponents.SliderBall:
                     var sliderBallContent = getAnimation("sliderb", true, true, "");
 
                     if (sliderBallContent != null)
@@ -88,7 +91,7 @@ namespace osu.Game.Rulesets.Osu
 
                     return null;
 
-                case "Play/osu/hitcircle":
+                case OsuSkinComponents.HitCircle:
                     if (hasHitCircle.Value)
                         return new LegacyMainCirclePiece();
 
@@ -196,7 +199,7 @@ namespace osu.Game.Rulesets.Osu
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                     },
-                    new SkinnableSpriteText("Play/osu/number-text", _ => new OsuSpriteText
+                    new SkinnableSpriteText(new OsuSkinComponent(OsuSkinComponents.HitCircleText), _ => new OsuSpriteText
                     {
                         Font = OsuFont.Numeric.With(size: 40),
                         UseFullGlyphHeight = false,
