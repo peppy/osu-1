@@ -35,9 +35,9 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables.Pieces
             {
             }
 
-            protected override Drawable CreateDefault(string name)
+            protected override Drawable CreateDefault(ISkinComponent component)
             {
-                var drawable = base.CreateDefault(name);
+                var drawable = base.CreateDefault(component);
 
                 // account for the sprite being used for the default approach circle being taken from stable,
                 // when hitcircles have 5px padding on each size. this should be removed if we update the sprite.

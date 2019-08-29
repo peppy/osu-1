@@ -22,11 +22,11 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables.Pieces
         [BackgroundDependencyLoader]
         private void load(TextureStore textures)
         {
-            Child = new SkinnableDrawable("Play/osu/ring-glow", name => new Sprite
+            Child = new SkinnableDrawable("Play/osu/ring-glow", component => new Sprite
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                Texture = textures.Get(name),
+                Texture = textures.Get(component.LookupName),
                 Blending = BlendingParameters.Additive,
                 Alpha = 0.5f
             }, s => s.GetTexture("Play/osu/hitcircle") == null);

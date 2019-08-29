@@ -137,8 +137,8 @@ namespace osu.Game.Tests.Visual.Gameplay
         {
             public new Drawable Drawable => base.Drawable;
 
-            public ExposedSkinnableDrawable(string name, Func<string, Drawable> defaultImplementation, Func<ISkinSource, bool> allowFallback = null, ConfineMode confineMode = ConfineMode.ScaleDownToFit)
-                : base(name, defaultImplementation, allowFallback, confineMode)
+            public ExposedSkinnableDrawable(string component, Func<string, Drawable> defaultImplementation, Func<ISkinSource, bool> allowFallback = null, ConfineMode confineMode = ConfineMode.ScaleDownToFit)
+                : base(component, defaultImplementation, allowFallback, confineMode)
             {
             }
         }

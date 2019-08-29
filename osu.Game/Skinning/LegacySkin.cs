@@ -62,12 +62,12 @@ namespace osu.Game.Skinning
 
         private const double default_frame_time = 1000 / 60d;
 
-        public override Drawable GetDrawableComponent(string componentName)
+        public override Drawable GetDrawableComponent(ISkinComponent component)
         {
             bool animatable = false;
             bool looping = true;
 
-            switch (componentName)
+            switch (component)
             {
                 case "Play/osu/cursor":
                     if (GetTexture("cursor") != null)
@@ -80,25 +80,25 @@ namespace osu.Game.Skinning
                     break;
 
                 case "Play/Miss":
-                    componentName = "hit0";
+                    component = "hit0";
                     animatable = true;
                     looping = false;
                     break;
 
                 case "Play/Meh":
-                    componentName = "hit50";
+                    component = "hit50";
                     animatable = true;
                     looping = false;
                     break;
 
                 case "Play/Good":
-                    componentName = "hit100";
+                    component = "hit100";
                     animatable = true;
                     looping = false;
                     break;
 
                 case "Play/Great":
-                    componentName = "hit300";
+                    component = "hit300";
                     animatable = true;
                     looping = false;
                     break;
@@ -114,7 +114,7 @@ namespace osu.Game.Skinning
                         };
             }
 
-            return getAnimation(componentName, animatable, looping);
+            return getAnimation(component, animatable, looping);
         }
 
         public override Texture GetTexture(string componentName)
@@ -155,17 +155,17 @@ namespace osu.Game.Skinning
 
         private bool hasFont(string fontName) => GetTexture($"{fontName}-0") != null;
 
-        private string getFallbackName(string componentName)
+        private string getFallbackName(ISkinComponent component)
         {
-            string lastPiece = componentName.Split('/').Last();
-            return componentName.StartsWith("Gameplay/taiko/") ? "taiko-" + lastPiece : lastPiece;
+            string lastPiece = component.Split('/').Last();
+            return component.StartsWith("Gameplay/taiko/") ? "taiko-" + lastPiece : lastPiece;
         }
 
-        private Drawable getAnimation(string componentName, bool animatable, bool looping, string animationSeparator = "-")
+        private Drawable getAnimation(ISkinComponent component, bool animatable, bool looping, string animationSeparator = "-")
         {
             Texture texture;
 
-            Texture getFrameTexture(int frame) => GetTexture($"{componentName}{animationSeparator}{frame}");
+            Texture getFrameTexture(int frame) => GetTexture($"{component}{animationSeparator}{frame}");
 
             TextureAnimation animation = null;
 
@@ -190,7 +190,7 @@ namespace osu.Game.Skinning
             if (animation != null)
                 return animation;
 
-            if ((texture = GetTexture(componentName)) != null)
+            if ((texture = GetTexture(component)) != null)
                 return new Sprite { Texture = texture };
 
             return null;
