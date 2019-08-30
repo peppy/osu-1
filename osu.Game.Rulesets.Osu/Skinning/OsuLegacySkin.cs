@@ -2,24 +2,17 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Animations;
-using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Game.Audio;
-using osu.Game.Graphics;
-using osu.Game.Graphics.Sprites;
-using osu.Game.Rulesets.Objects.Drawables;
-using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
 
-namespace osu.Game.Rulesets.Osu
+namespace osu.Game.Rulesets.Osu.Skinning
 {
     public class OsuLegacySkin : ISkin
     {
@@ -142,98 +135,5 @@ namespace osu.Game.Rulesets.Osu
 
         public TValue GetValue<TConfiguration, TValue>(Func<TConfiguration, TValue> query) where TConfiguration : SkinConfiguration
             => configuration.Value is TConfiguration conf ? query.Invoke(conf) : default;
-
-        public class LegacySliderBall : CompositeDrawable
-        {
-            private readonly Drawable animationContent;
-
-            public LegacySliderBall(Drawable animationContent)
-            {
-                this.animationContent = animationContent;
-            }
-
-            [BackgroundDependencyLoader]
-            private void load(ISkinSource skin, DrawableHitObject drawableObject)
-            {
-                animationContent.Colour = skin.GetValue<SkinConfiguration, Color4?>(s => s.CustomColours.ContainsKey("SliderBall") ? s.CustomColours["SliderBall"] : (Color4?)null) ?? Color4.White;
-
-                InternalChildren = new[]
-                {
-                    new Sprite
-                    {
-                        Texture = skin.GetTexture("sliderb-nd"),
-                        Colour = new Color4(5, 5, 5, 255),
-                    },
-                    animationContent,
-                    new Sprite
-                    {
-                        Texture = skin.GetTexture("sliderb-spec"),
-                        Blending = BlendingParameters.Additive,
-                    },
-                };
-            }
-        }
-
-        public class LegacyMainCirclePiece : CompositeDrawable
-        {
-            public LegacyMainCirclePiece()
-            {
-                Size = new Vector2(128);
-            }
-
-            private readonly IBindable<ArmedState> state = new Bindable<ArmedState>();
-
-            private readonly Bindable<Color4> accentColour = new Bindable<Color4>();
-
-            [BackgroundDependencyLoader]
-            private void load(DrawableHitObject drawableObject, ISkinSource skin)
-            {
-                Sprite hitCircleSprite;
-
-                InternalChildren = new Drawable[]
-                {
-                    hitCircleSprite = new Sprite
-                    {
-                        Texture = skin.GetTexture("hitcircle"),
-                        Colour = drawableObject.AccentColour.Value,
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                    },
-                    new SkinnableSpriteText(new OsuSkinComponent(OsuSkinComponents.HitCircleText), _ => new OsuSpriteText
-                    {
-                        Font = OsuFont.Numeric.With(size: 40),
-                        UseFullGlyphHeight = false,
-                    }, confineMode: ConfineMode.NoScaling)
-                    {
-                        Text = (((IHasComboInformation)drawableObject.HitObject).IndexInCurrentCombo + 1).ToString()
-                    },
-                    new Sprite
-                    {
-                        Texture = skin.GetTexture("hitcircleoverlay"),
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                    }
-                };
-
-                state.BindTo(drawableObject.State);
-                state.BindValueChanged(updateState, true);
-
-                accentColour.BindTo(drawableObject.AccentColour);
-                accentColour.BindValueChanged(colour => hitCircleSprite.Colour = colour.NewValue, true);
-            }
-
-            private void updateState(ValueChangedEvent<ArmedState> state)
-            {
-                const double legacy_fade_duration = 240;
-
-                switch (state.NewValue)
-                {
-                    case ArmedState.Hit:
-                        this.FadeOut(legacy_fade_duration, Easing.Out);
-                        this.ScaleTo(1.4f, legacy_fade_duration, Easing.Out);
-                        break;
-                }
-            }
-        }
     }
 }
