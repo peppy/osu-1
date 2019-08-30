@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace osu.Game.Skinning
 {
-    public abstract class PlaySkinComponent<T> : ISkinComponent where T : struct
+    public class PlaySkinComponent<T> : ISkinComponent where T : struct
     {
         public readonly T Component;
 
-        protected PlaySkinComponent(T component)
+        public PlaySkinComponent(T component)
         {
             this.Component = component;
         }

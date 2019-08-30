@@ -65,7 +65,6 @@ namespace osu.Game.Skinning
         public override Drawable GetDrawableComponent(ISkinComponent component)
         {
             bool animatable = false;
-            bool looping = true;
 
             switch (component.LookupName)
             {
@@ -80,28 +79,16 @@ namespace osu.Game.Skinning
                     break;
 
                 case "Play/Miss":
-                    component = new LegacySkinComponent("hit0");
-                    animatable = true;
-                    looping = false;
-                    break;
+                    return getAnimation("hit0", true, false);
 
                 case "Play/Meh":
-                    component = new LegacySkinComponent("hit50");
-                    animatable = true;
-                    looping = false;
-                    break;
+                    return getAnimation("hit50", true, false);
 
                 case "Play/Good":
-                    component = new LegacySkinComponent("hit100");
-                    animatable = true;
-                    looping = false;
-                    break;
+                    return getAnimation("hit100", true, false);
 
                 case "Play/Great":
-                    component = new LegacySkinComponent("hit300");
-                    animatable = true;
-                    looping = false;
-                    break;
+                    return getAnimation("hit300", true, false);
 
                 case "Play/osu/number-text":
                     return !hasFont(Configuration.HitCircleFont)
@@ -114,7 +101,7 @@ namespace osu.Game.Skinning
                         };
             }
 
-            return getAnimation(component.LookupName, animatable, looping);
+            return getAnimation(component.LookupName, animatable, true);
         }
 
         public override Texture GetTexture(string componentName)
