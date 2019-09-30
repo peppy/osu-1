@@ -14,13 +14,18 @@ namespace osu.Presentation
         [BackgroundDependencyLoader]
         private void load(Framework.Game game)
         {
-            Content.Add(new VideoSprite(game.Resources.GetStream($"{videoFilename}.mp4"))
+            var video = game.Resources.GetStream($"{videoFilename}.mp4");
+
+            if (video != null)
             {
-                RelativeSizeAxes = Axes.Both,
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                FillMode = FillMode.Fit,
-            });
+                Content.Add(new VideoSprite(game.Resources.GetStream($"{videoFilename}.mp4"))
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    FillMode = FillMode.Fit,
+                });
+            }
         }
 
         protected SlideWithVideo(string title, string videoFilename)
