@@ -29,44 +29,25 @@ namespace osu.Game.Screens.Select
 
         private readonly TabControl<GroupMode> groupTabs;
 
-        private SortMode sort = SortMode.Title;
+        private Bindable<SortMode> sortMode;
 
-        public SortMode Sort
+        private Bindable<GroupMode> groupMode;
+
+        public FilterCriteria CreateCriteria()
         {
-            get => sort;
-            set
+            var query = searchTextBox.Text;
+
+            var criteria = new FilterCriteria
             {
-                if (sort != value)
-                {
-                    sort = value;
-                    FilterChanged?.Invoke(CreateCriteria());
-                }
-            }
+                Group = groupMode.Value,
+                Sort = sortMode.Value,
+                AllowConvertedBeatmaps = showConverted.Value,
+                Ruleset = ruleset.Value
+            };
+
+            FilterQueryParser.ApplyQueries(criteria, query);
+            return criteria;
         }
-
-        private GroupMode group = GroupMode.All;
-
-        public GroupMode Group
-        {
-            get => group;
-            set
-            {
-                if (group != value)
-                {
-                    group = value;
-                    FilterChanged?.Invoke(CreateCriteria());
-                }
-            }
-        }
-
-        public FilterCriteria CreateCriteria() => new FilterCriteria
-        {
-            Group = group,
-            Sort = sort,
-            SearchText = searchTextBox.Text,
-            AllowConvertedBeatmaps = showConverted.Value,
-            Ruleset = ruleset.Value
-        };
 
         public Action Exit;
 
@@ -122,7 +103,6 @@ namespace osu.Game.Screens.Select
                                     Height = 24,
                                     Width = 0.5f,
                                     AutoSort = true,
-                                    Current = { Value = GroupMode.Title }
                                 },
                                 //spriteText = new OsuSpriteText
                                 //{
@@ -141,7 +121,6 @@ namespace osu.Game.Screens.Select
                                     Width = 0.5f,
                                     Height = 24,
                                     AutoSort = true,
-                                    Current = { Value = SortMode.Title }
                                 }
                             }
                         },
@@ -153,8 +132,6 @@ namespace osu.Game.Screens.Select
 
             groupTabs.PinItem(GroupMode.All);
             groupTabs.PinItem(GroupMode.RecentlyPlayed);
-            groupTabs.Current.ValueChanged += group => Group = group.NewValue;
-            sortTabs.Current.ValueChanged += sort => Sort = sort.NewValue;
         }
 
         public void Deactivate()
@@ -184,7 +161,18 @@ namespace osu.Game.Screens.Select
             showConverted.ValueChanged += _ => updateCriteria();
 
             ruleset.BindTo(parentRuleset);
-            ruleset.BindValueChanged(_ => updateCriteria(), true);
+            ruleset.BindValueChanged(_ => updateCriteria());
+
+            sortMode = config.GetBindable<SortMode>(OsuSetting.SongSelectSortingMode);
+            groupMode = config.GetBindable<GroupMode>(OsuSetting.SongSelectGroupingMode);
+
+            sortTabs.Current.BindTo(sortMode);
+            groupTabs.Current.BindTo(groupMode);
+
+            groupMode.BindValueChanged(_ => updateCriteria());
+            sortMode.BindValueChanged(_ => updateCriteria());
+
+            updateCriteria();
         }
 
         private void updateCriteria() => FilterChanged?.Invoke(CreateCriteria());
