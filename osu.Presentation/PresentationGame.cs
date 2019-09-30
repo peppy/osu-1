@@ -21,7 +21,6 @@ namespace osu.Presentation
         {
             typeof(SlideTitle),
 
-            typeof(SlideTransitional),
             typeof(SlideTransitionalVideo),
 
             typeof(SlideFramework),
