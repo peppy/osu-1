@@ -35,6 +35,8 @@ namespace osu.Presentation
 
             typeof(SlideCodeQuality),
 
+            typeof(SlideTestBrowser),
+
             typeof(SlideBackwardsCompatibility),
 
             typeof(SlideExtensibility),
@@ -42,8 +44,6 @@ namespace osu.Presentation
             typeof(SlideCrossPlatform),
 
             typeof(SlideManyLazerGame),
-
-            typeof(SlideTestBrowser),
 
             typeof(SlideTournamentVideo),
             typeof(SlideTournament),

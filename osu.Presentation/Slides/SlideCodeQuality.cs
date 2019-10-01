@@ -8,6 +8,7 @@ namespace osu.Presentation.Slides
                 "review, approve, merge",
                 "documentation on all public classes/methods",
                 "rewrite, refactor until happy",
+                "heavily unit tested",
             })
         {
         }
