@@ -23,6 +23,8 @@ namespace osu.Presentation
 
             typeof(SlideTransitionalVideo),
 
+            typeof(SlideLazerProject),
+
             typeof(SlideFramework),
             typeof(SlideFrameworkVideo),
 
