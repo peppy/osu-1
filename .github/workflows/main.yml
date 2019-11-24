@@ -1,0 +1,40 @@
+name: CI
+
+on: 
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_native_linux:
+    name: Build native on linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          ./build.sh
+
+  build_native_linux:
+    name: Build native on macOS
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          ./build.sh
+
+  build_native_linux:
+    name: Build native on macOS
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          .\build.ps1
