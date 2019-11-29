@@ -4,12 +4,13 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
+using Unosquare.Labs.LiteLib;
 
 namespace osu.Game.Rulesets
 {
-    public class RulesetInfo : IEquatable<RulesetInfo>
+    public class RulesetInfo : IEquatable<RulesetInfo>, ILiteModel
     {
-        public int? ID { get; set; }
+        public long ID { get; set; }
 
         public string Name { get; set; }
 
@@ -36,7 +37,7 @@ namespace osu.Game.Rulesets
         {
             unchecked
             {
-                var hashCode = ID.HasValue ? ID.GetHashCode() : 0;
+                var hashCode = (int)ID;
                 hashCode = (hashCode * 397) ^ (InstantiationInfo != null ? InstantiationInfo.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Available.GetHashCode();

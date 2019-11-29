@@ -63,7 +63,7 @@ namespace osu.Game.Online.API.Requests.Responses
         [JsonProperty(@"user_id")]
         private long creatorId
         {
-            set => Author.Id = value;
+            set => AuthorObject.Id = value;
         }
 
         [JsonProperty(@"availability")]

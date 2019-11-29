@@ -77,7 +77,7 @@ namespace osu.Game.Overlays.Settings.Sections
                 configBindable.Value = 0;
 
             configBindable.BindValueChanged(id => dropdownBindable.Value = skinDropdown.Items.Single(s => s.ID == id.NewValue), true);
-            dropdownBindable.BindValueChanged(skin => configBindable.Value = skin.NewValue.ID);
+            dropdownBindable.BindValueChanged(skin => configBindable.Value = (int)skin.NewValue.ID);
         }
 
         private void itemRemoved(SkinInfo s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Where(i => i.ID != s.ID).ToArray());

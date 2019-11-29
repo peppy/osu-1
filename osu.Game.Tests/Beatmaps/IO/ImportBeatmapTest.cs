@@ -315,7 +315,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                     var metadata = new BeatmapMetadata
                     {
                         Artist = "SomeArtist",
-                        AuthorString = "SomeAuthor"
+                        Author = "SomeAuthor"
                     };
 
                     var difficulty = new BeatmapDifficulty();
@@ -597,7 +597,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
         private void checkSingleReferencedFileCount(OsuGameBase osu, int expected)
         {
-            Assert.AreEqual(expected, osu.Dependencies.Get<FileStore>().QueryFiles(f => f.ReferenceCount == 1).Count());
+            Assert.AreEqual(expected, osu.Dependencies.Get<FileStore>().QueryFiles("ReferenceCount = 1").Count());
         }
 
         private OsuGameBase loadOsu(GameHost host)

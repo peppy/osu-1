@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework;
 using osu.Framework.Extensions;
 using osu.Framework.Extensions.IEnumerableExtensions;
@@ -23,6 +22,7 @@ using osu.Game.IPC;
 using osu.Game.Overlays.Notifications;
 using osu.Game.Utils;
 using SharpCompress.Common;
+using Unosquare.Labs.LiteLib;
 using FileInfo = osu.Game.IO.FileInfo;
 
 namespace osu.Game.Database
@@ -34,8 +34,8 @@ namespace osu.Game.Database
     /// <typeparam name="TModel">The model type.</typeparam>
     /// <typeparam name="TFileModel">The associated file join type.</typeparam>
     public abstract class ArchiveModelManager<TModel, TFileModel> : ICanAcceptFiles, IModelManager<TModel>
-        where TModel : class, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete
-        where TFileModel : INamedFileInfo, new()
+        where TModel : class, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete, ILiteModel
+        where TFileModel : class, INamedFileInfo, new()
     {
         private const int import_queue_request_concurrency = 1;
 
@@ -374,12 +374,13 @@ namespace osu.Game.Database
             using (ContextFactory.GetForWrite())
             {
                 // re-fetch the model on the import context.
-                var foundModel = queryModel().Include(s => s.Files).ThenInclude(f => f.FileInfo).FirstOrDefault(s => s.ID == item.ID);
-
-                if (foundModel == null || foundModel.DeletePending) return false;
-
-                if (ModelStore.Delete(foundModel))
-                    Files.Dereference(foundModel.Files.Select(f => f.FileInfo).ToArray());
+                //todo: reimplement
+                // var foundModel = ContextFactory.Get().Set<TModel>().Include(s => s.Files).ThenInclude(f => f.FileInfo).FirstOrDefault(s => s.ID == item.ID);
+                //
+                // if (foundModel == null || foundModel.DeletePending) return false;
+                //
+                // if (ModelStore.Delete(foundModel))
+                //     Files.Dereference(foundModel.Files.Select(f => f.FileInfo).ToArray());
                 return true;
             }
         }
@@ -463,15 +464,11 @@ namespace osu.Game.Database
         /// <param name="item">The item to restore</param>
         public void Undelete(TModel item)
         {
-            using (var usage = ContextFactory.GetForWrite())
+            using (ContextFactory.GetForWrite())
             {
-                usage.Context.ChangeTracker.AutoDetectChangesEnabled = false;
-
                 if (!ModelStore.Undelete(item)) return;
 
                 Files.Reference(item.Files.Select(f => f.FileInfo).ToArray());
-
-                usage.Context.ChangeTracker.AutoDetectChangesEnabled = true;
             }
         }
 
@@ -596,8 +593,6 @@ namespace osu.Game.Database
         /// <param name="import">The newly imported model.</param>
         /// <returns>Whether the existing model should be restored and used. Returning false will delete the existing and force a re-import.</returns>
         protected virtual bool CanUndelete(TModel existing, TModel import) => true;
-
-        private DbSet<TModel> queryModel() => ContextFactory.Get().Set<TModel>();
 
         protected virtual string HumanisedModelName => $"{typeof(TModel).Name.Replace("Info", "").ToLower()}";
 

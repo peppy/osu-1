@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using osu.Game.Database;
 
@@ -11,7 +10,7 @@ namespace osu.Game.Beatmaps
 {
     public class BeatmapSetInfo : IHasPrimaryKey, IHasFiles<BeatmapSetFileInfo>, ISoftDelete, IEquatable<BeatmapSetInfo>
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         private int? onlineBeatmapSetID;
 
@@ -27,12 +26,14 @@ namespace osu.Game.Beatmaps
 
         public BeatmapMetadata Metadata { get; set; }
 
+        public int MetadataID { get; set; }
+
         public List<BeatmapInfo> Beatmaps { get; set; }
 
-        [NotMapped]
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public BeatmapSetOnlineInfo OnlineInfo { get; set; }
 
-        [NotMapped]
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public BeatmapSetMetrics Metrics { get; set; }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace osu.Game.Beatmaps
         /// </summary>
         public double MaxBPM => Beatmaps?.Max(b => b.BPM) ?? 0;
 
-        [NotMapped]
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public bool DeletePending { get; set; }
 
         public string Hash { get; set; }

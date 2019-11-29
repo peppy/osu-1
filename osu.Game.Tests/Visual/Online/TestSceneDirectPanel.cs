@@ -31,7 +31,7 @@ namespace osu.Game.Tests.Visual.Online
                 Title = "undownloadable beatmap",
                 Artist = "test",
                 Source = "more tests",
-                Author = new User
+                AuthorObject = new User
                 {
                     Username = "BanchoBot",
                     Id = 3,
@@ -86,7 +86,7 @@ namespace osu.Game.Tests.Visual.Online
                 {
                     Title = "many difficulties beatmap",
                     Artist = "test",
-                    Author = new User
+                    AuthorObject = new User
                     {
                         Username = "BanchoBot",
                         Id = 3,

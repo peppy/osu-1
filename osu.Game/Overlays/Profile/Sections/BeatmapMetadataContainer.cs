@@ -31,7 +31,7 @@ namespace osu.Game.Overlays.Profile.Sections
                 if (beatmap.OnlineBeatmapID != null)
                     beatmapSetOverlay?.FetchAndShowBeatmap(beatmap.OnlineBeatmapID.Value);
                 else if (beatmap.BeatmapSet?.OnlineBeatmapSetID != null)
-                    beatmapSetOverlay?.FetchAndShowBeatmapSet(beatmap.BeatmapSet.OnlineBeatmapSetID.Value);
+                    beatmapSetOverlay?.FetchAndShowBeatmapSet((int)beatmap.BeatmapSet.OnlineBeatmapSetID.Value);
             };
 
             Child = new FillFlowContainer

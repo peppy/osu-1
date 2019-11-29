@@ -50,7 +50,7 @@ namespace osu.Game.Rulesets.Catch.Tests
                     {
                         Artist = @"Unknown",
                         Title = @"You're breathtaking",
-                        AuthorString = @"Everyone",
+                        Author = @"Everyone",
                     },
                     Ruleset = new CatchRuleset().RulesetInfo
                 },

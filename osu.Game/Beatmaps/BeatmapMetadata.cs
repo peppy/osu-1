@@ -14,7 +14,7 @@ namespace osu.Game.Beatmaps
     [Serializable]
     public class BeatmapMetadata : IEquatable<BeatmapMetadata>, IHasPrimaryKey
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public string Title { get; set; }
         public string TitleUnicode { get; set; }
@@ -32,17 +32,18 @@ namespace osu.Game.Beatmaps
         /// </summary>
         [JsonProperty(@"creator")]
         [Column("Author")]
-        public string AuthorString
+        public string Author
         {
-            get => Author?.Username;
-            set => Author = new User { Username = value };
+            get => AuthorObject?.Username;
+            set => AuthorObject = new User { Username = value };
         }
 
         /// <summary>
         /// The author of the beatmaps in this set.
         /// </summary>
         [JsonIgnore]
-        public User Author;
+        [NotMapped]
+        public User AuthorObject;
 
         public string Source { get; set; }
 
@@ -54,12 +55,12 @@ namespace osu.Game.Beatmaps
         public string BackgroundFile { get; set; }
         public string VideoFile { get; set; }
 
-        public override string ToString() => $"{Artist} - {Title} ({Author})";
+        public override string ToString() => $"{Artist} - {Title} ({AuthorObject})";
 
         [JsonIgnore]
         public string[] SearchableTerms => new[]
         {
-            Author?.Username,
+            AuthorObject?.Username,
             Artist,
             ArtistUnicode,
             Title,
@@ -77,7 +78,7 @@ namespace osu.Game.Beatmaps
                    && TitleUnicode == other.TitleUnicode
                    && Artist == other.Artist
                    && ArtistUnicode == other.ArtistUnicode
-                   && AuthorString == other.AuthorString
+                   && Author == other.Author
                    && Source == other.Source
                    && Tags == other.Tags
                    && PreviewTime == other.PreviewTime

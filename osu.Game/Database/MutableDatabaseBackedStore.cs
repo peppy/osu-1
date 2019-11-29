@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using osu.Framework.Platform;
+using Unosquare.Labs.LiteLib;
 
 namespace osu.Game.Database
 {
@@ -14,7 +15,7 @@ namespace osu.Game.Database
     /// </summary>
     /// <typeparam name="T">The databased model.</typeparam>
     public abstract class MutableDatabaseBackedStore<T> : DatabaseBackedStore
-        where T : class, IHasPrimaryKey, ISoftDelete
+        where T : class, IHasPrimaryKey, ISoftDelete, ILiteModel
     {
         public event Action<T> ItemAdded;
         public event Action<T> ItemRemoved;
@@ -27,7 +28,7 @@ namespace osu.Game.Database
         /// <summary>
         /// Access items pre-populated with includes for consumption.
         /// </summary>
-        public IQueryable<T> ConsumableItems => AddIncludesForConsumption(ContextFactory.Get().Set<T>());
+        public IEnumerable<T> ConsumableItems => AddIncludesForConsumption(ContextFactory.Get().Set<T>().SelectAll());
 
         /// <summary>
         /// Add a <typeparamref name="T"/> to the database.
@@ -38,7 +39,7 @@ namespace osu.Game.Database
             using (var usage = ContextFactory.GetForWrite())
             {
                 var context = usage.Context;
-                context.Attach(item);
+                context.Insert(item);
             }
 
             ItemAdded?.Invoke(item);
@@ -100,7 +101,7 @@ namespace osu.Game.Database
         /// </summary>
         /// <param name="query">The input query.</param>
         /// <returns>A potentially modified output query.</returns>
-        protected virtual IQueryable<T> AddIncludesForConsumption(IQueryable<T> query) => query;
+        protected virtual IEnumerable<T> AddIncludesForConsumption(IEnumerable<T> query) => query;
 
         /// <summary>
         /// Allow implementations to add database-side includes or constraints when deleting items.
@@ -108,14 +109,14 @@ namespace osu.Game.Database
         /// </summary>
         /// <param name="query">The input query.</param>
         /// <returns>A potentially modified output query.</returns>
-        protected virtual IQueryable<T> AddIncludesForDeletion(IQueryable<T> query) => query;
+        protected virtual IEnumerable<T> AddIncludesForDeletion(IEnumerable<T> query) => query;
 
         /// <summary>
         /// Called when removing an item completely from the database.
         /// </summary>
         /// <param name="items">The items to be purged.</param>
         /// <param name="context">The write context which can be used to perform subsequent deletions.</param>
-        protected virtual void Purge(List<T> items, OsuDbContext context) => context.RemoveRange(items);
+        protected virtual void Purge(List<T> items, OsuDbContext context) => items.ForEach(item => context.Delete(item));
 
         public override void Cleanup()
         {
@@ -133,11 +134,11 @@ namespace osu.Game.Database
             {
                 var context = usage.Context;
 
-                var lookup = context.Set<T>().Where(s => s.DeletePending);
+                var lookup = context.Select<T>(context.Set<T>(), $"{nameof(ISoftDelete.DeletePending)} = 1");
 
-                if (query != null) lookup = lookup.Where(query);
-
-                lookup = AddIncludesForDeletion(lookup);
+                // todo: reimplement
+                // if (query != null) lookup = lookup.Where(query);
+                // lookup = AddIncludesForDeletion(lookup);
 
                 var purgeable = lookup.ToList();
 

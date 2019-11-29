@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework.Extensions;
 using osu.Framework.IO.Stores;
 using osu.Framework.Logging;
@@ -35,7 +33,7 @@ namespace osu.Game.IO
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>Results from the provided query.</returns>
-        public IEnumerable<FileInfo> QueryFiles(Expression<Func<FileInfo, bool>> query) => ContextFactory.Get().Set<FileInfo>().AsNoTracking().Where(f => f.ReferenceCount > 0).Where(query);
+        public IEnumerable<FileInfo> QueryFiles(string query) => ContextFactory.Get().FileInfo.Select($"nameof(ReferenceCount) > 0 AND {query}");
 
         public FileInfo Add(Stream data, bool reference = true)
         {
@@ -43,7 +41,7 @@ namespace osu.Game.IO
             {
                 string hash = data.ComputeSHA2Hash();
 
-                var existing = usage.Context.FileInfo.FirstOrDefault(f => f.Hash == hash);
+                var existing = usage.Context.FileInfo.FirstOrDefault(f => f.Hash, hash);
 
                 var info = existing ?? new FileInfo { Hash = hash };
 
@@ -86,7 +84,7 @@ namespace osu.Game.IO
 
                 foreach (var f in files.GroupBy(f => f.ID))
                 {
-                    var refetch = context.Find<FileInfo>(f.First().ID) ?? f.First();
+                    var refetch = context.FileInfo.Single(f.First().ID) ?? f.First();
                     refetch.ReferenceCount += f.Count();
                     context.FileInfo.Update(refetch);
                 }
@@ -103,7 +101,7 @@ namespace osu.Game.IO
 
                 foreach (var f in files.GroupBy(f => f.ID))
                 {
-                    var refetch = context.FileInfo.Find(f.Key);
+                    var refetch = context.FileInfo.Single(f.Key);
                     refetch.ReferenceCount -= f.Count();
                     context.FileInfo.Update(refetch);
                 }
@@ -116,12 +114,12 @@ namespace osu.Game.IO
             {
                 var context = usage.Context;
 
-                foreach (var f in context.FileInfo.Where(f => f.ReferenceCount < 1))
+                foreach (var f in context.FileInfo.Select("ReferenceCount < 1"))
                 {
                     try
                     {
                         Storage.Delete(f.StoragePath);
-                        context.FileInfo.Remove(f);
+                        context.FileInfo.Delete(f);
                     }
                     catch (Exception e)
                     {

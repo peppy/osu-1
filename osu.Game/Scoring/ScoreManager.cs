@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Game.Beatmaps;
@@ -63,12 +61,12 @@ namespace osu.Game.Scoring
 
         public List<ScoreInfo> GetAllUsableScores() => ModelStore.ConsumableItems.Where(s => !s.DeletePending).ToList();
 
-        public IEnumerable<ScoreInfo> QueryScores(Expression<Func<ScoreInfo, bool>> query) => ModelStore.ConsumableItems.AsNoTracking().Where(query);
+        public IEnumerable<ScoreInfo> QueryScores(Func<ScoreInfo, bool> query) => ModelStore.ConsumableItems.Where(query);
 
-        public ScoreInfo Query(Expression<Func<ScoreInfo, bool>> query) => ModelStore.ConsumableItems.AsNoTracking().FirstOrDefault(query);
+        public ScoreInfo Query(Func<ScoreInfo, bool> query) => ModelStore.ConsumableItems.FirstOrDefault(query);
 
         protected override ArchiveDownloadRequest<ScoreInfo> CreateDownloadRequest(ScoreInfo score, bool minimiseDownload) => new DownloadReplayRequest(score);
 
-        protected override bool CheckLocalAvailability(ScoreInfo model, IQueryable<ScoreInfo> items) => items.Any(s => s.Equals(model) && s.Files.Any());
+        protected override bool CheckLocalAvailability(ScoreInfo model, IEnumerable<ScoreInfo> items) => items.Any(s => s.Equals(model) && s.Files.Any());
     }
 }

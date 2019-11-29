@@ -173,11 +173,11 @@ namespace osu.Game
             // bind config int to database RulesetInfo
             configRuleset = LocalConfig.GetBindable<int>(OsuSetting.Ruleset);
             Ruleset.Value = RulesetStore.GetRuleset(configRuleset.Value) ?? RulesetStore.AvailableRulesets.First();
-            Ruleset.ValueChanged += r => configRuleset.Value = r.NewValue.ID ?? 0;
+            Ruleset.ValueChanged += r => configRuleset.Value = (int?)r.NewValue.ID ?? 0;
 
             // bind config int to database SkinInfo
             configSkin = LocalConfig.GetBindable<int>(OsuSetting.Skin);
-            SkinManager.CurrentSkinInfo.ValueChanged += skin => configSkin.Value = skin.NewValue.ID;
+            SkinManager.CurrentSkinInfo.ValueChanged += skin => configSkin.Value = (int)skin.NewValue.ID;
             configSkin.ValueChanged += skinId =>
             {
                 var skinInfo = SkinManager.Query(s => s.ID == skinId.NewValue);

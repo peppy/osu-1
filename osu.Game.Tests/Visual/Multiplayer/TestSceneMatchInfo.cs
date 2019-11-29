@@ -45,7 +45,7 @@ namespace osu.Game.Tests.Visual.Multiplayer
                         {
                             Title = @"My Song",
                             Artist = @"VisualTests",
-                            AuthorString = @"osu!lazer",
+                            Author = @"osu!lazer",
                         },
                     }
                 });
@@ -68,7 +68,7 @@ namespace osu.Game.Tests.Visual.Multiplayer
                         {
                             Title = @"Your Song",
                             Artist = @"Tester",
-                            AuthorString = @"Someone",
+                            Author = @"Someone",
                         },
                     }
                 });

@@ -78,7 +78,7 @@ namespace osu.Game.Rulesets.Taiko.Tests
                     {
                         Artist = @"Unknown",
                         Title = @"Sample Beatmap",
-                        AuthorString = @"peppy",
+                        Author = @"peppy",
                     },
                     Ruleset = new TaikoRuleset().RulesetInfo
                 },

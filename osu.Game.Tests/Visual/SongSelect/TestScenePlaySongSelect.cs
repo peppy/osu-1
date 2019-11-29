@@ -281,7 +281,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             createSongSelect();
             addRulesetImportStep(0);
             AddStep("Move to last difficulty", () => songSelect.Carousel.SelectBeatmap(songSelect.Carousel.BeatmapSets.First().Beatmaps.Last()));
-            AddStep("Store current ID", () => previousID = songSelect.Carousel.SelectedBeatmap.ID);
+            AddStep("Store current ID", () => previousID = (int?)songSelect.Carousel.SelectedBeatmap.ID);
             AddStep("Hide first beatmap", () => manager.Hide(songSelect.Carousel.SelectedBeatmapSet.Beatmaps.First()));
             AddAssert("Selected beatmap has not changed", () => songSelect.Carousel.SelectedBeatmap.ID == previousID);
         }
@@ -355,7 +355,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     // Create random metadata, then we can check if sorting works based on these
                     Artist = "Some Artist " + RNG.Next(0, 9),
                     Title = $"Some Song (set id {setId}, max bpm {beatmaps.Max(b => b.BPM):0.#})",
-                    AuthorString = "Some Guy " + RNG.Next(0, 9),
+                    Author = "Some Guy " + RNG.Next(0, 9),
                 },
                 Beatmaps = beatmaps,
                 DateAdded = DateTimeOffset.UtcNow,

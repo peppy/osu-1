@@ -123,7 +123,7 @@ namespace osu.Game.Overlays.Direct
         protected override bool OnClick(ClickEvent e)
         {
             Debug.Assert(SetInfo.OnlineBeatmapSetID != null);
-            beatmapSetOverlay?.FetchAndShowBeatmapSet(SetInfo.OnlineBeatmapSetID.Value);
+            beatmapSetOverlay?.FetchAndShowBeatmapSet((int)SetInfo.OnlineBeatmapSetID.Value);
             return true;
         }
 

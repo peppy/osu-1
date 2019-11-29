@@ -21,7 +21,7 @@ namespace osu.Game.Database
     /// <typeparam name="TFileModel">The associated file join type.</typeparam>
     public abstract class DownloadableArchiveModelManager<TModel, TFileModel> : ArchiveModelManager<TModel, TFileModel>, IModelDownloader<TModel>
         where TModel : class, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete, IEquatable<TModel>
-        where TFileModel : INamedFileInfo, new()
+        where TFileModel : class, INamedFileInfo, new()
     {
         public event Action<ArchiveDownloadRequest<TModel>> DownloadBegan;
 
@@ -134,7 +134,7 @@ namespace osu.Game.Database
         /// <param name="model">The <typeparamref name="TModel"/> whose existence needs to be checked.</param>
         /// <param name="items">The usable items present in the store.</param>
         /// <returns>Whether the <typeparamref name="TModel"/> exists.</returns>
-        protected abstract bool CheckLocalAvailability(TModel model, IQueryable<TModel> items);
+        protected abstract bool CheckLocalAvailability(TModel model, IEnumerable<TModel> items);
 
         public ArchiveDownloadRequest<TModel> GetExistingDownload(TModel model) => currentDownloads.Find(r => r.Model.Equals(model));
 

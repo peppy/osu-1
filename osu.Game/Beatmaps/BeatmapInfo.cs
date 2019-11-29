@@ -4,21 +4,19 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
 using osu.Game.Database;
 using osu.Game.IO.Serialization;
 using osu.Game.Rulesets;
 using osu.Game.Scoring;
+using Unosquare.Labs.LiteLib;
 
 namespace osu.Game.Beatmaps
 {
     [Serializable]
-    public class BeatmapInfo : IEquatable<BeatmapInfo>, IJsonSerializable, IHasPrimaryKey
+    public class BeatmapInfo : LiteModel, IEquatable<BeatmapInfo>, IJsonSerializable, IHasPrimaryKey
     {
-        public int ID { get; set; }
-
         public int BeatmapVersion;
 
         private int? onlineBeatmapID;
@@ -40,15 +38,17 @@ namespace osu.Game.Beatmaps
 
         public BeatmapMetadata Metadata { get; set; }
 
+        public int? MetadataID { get; set; }
+
         [JsonIgnore]
         public int BaseDifficultyID { get; set; }
 
         public BeatmapDifficulty BaseDifficulty { get; set; }
 
-        [NotMapped]
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public BeatmapMetrics Metrics { get; set; }
 
-        [NotMapped]
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public BeatmapOnlineInfo OnlineInfo { get; set; }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace osu.Game.Beatmaps
             }
         }
 
-        [NotMapped]
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public int[] Bookmarks { get; set; } = new int[0];
 
         public double DistanceSpacing { get; set; }

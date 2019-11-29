@@ -25,7 +25,7 @@ namespace osu.Game.Input
                 {
                     var ruleset = info.CreateInstance();
                     foreach (var variant in ruleset.AvailableVariants)
-                        insertDefaults(ruleset.GetDefaultKeyBindings(variant), info.ID, variant);
+                        insertDefaults(ruleset.GetDefaultKeyBindings(variant), (int)info.ID, variant);
                 }
             }
         }
@@ -39,7 +39,7 @@ namespace osu.Game.Input
                 // compare counts in database vs defaults
                 foreach (var group in defaults.GroupBy(k => k.Action))
                 {
-                    int count = Query(rulesetId, variant).Count(k => (int)k.Action == (int)group.Key);
+                    int count = Query(rulesetId, variant).Count(k => Convert.ToInt32(k.Action) == (int)group.Key);
                     int aimCount = group.Count();
 
                     if (aimCount <= count)
@@ -47,14 +47,16 @@ namespace osu.Game.Input
 
                     foreach (var insertable in group.Skip(count).Take(aimCount - count))
                     {
+                        //todo: fix
+
                         // insert any defaults which are missing.
-                        usage.Context.DatabasedKeyBinding.Add(new DatabasedKeyBinding
-                        {
-                            KeyCombination = insertable.KeyCombination,
-                            Action = insertable.Action,
-                            RulesetID = rulesetId,
-                            Variant = variant
-                        });
+                        // usage.Context.DatabasedKeyBinding.Insert(new DatabasedKeyBinding
+                        // {
+                        //     KeyCombination = insertable.KeyCombination,
+                        //     Action = insertable.Action,
+                        //     RulesetID = rulesetId,
+                        //     Variant = variant
+                        // });
                     }
                 }
             }
@@ -67,7 +69,7 @@ namespace osu.Game.Input
         /// <param name="variant">An optional variant.</param>
         /// <returns></returns>
         public List<DatabasedKeyBinding> Query(int? rulesetId = null, int? variant = null) =>
-            ContextFactory.Get().DatabasedKeyBinding.Where(b => b.RulesetID == rulesetId && b.Variant == variant).ToList();
+            ContextFactory.Get().DatabasedKeyBinding.Select("RulesetID = @rulesetId AND Variant = @variant", new { rulesetId, variant }).ToList();
 
         public void Update(KeyBinding keyBinding)
         {

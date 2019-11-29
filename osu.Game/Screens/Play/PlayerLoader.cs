@@ -479,7 +479,7 @@ namespace osu.Game.Screens.Play
                                 Origin = Anchor.TopCentre,
                                 Anchor = Anchor.TopCentre,
                             },
-                            new MetadataLine("Mapper", metadata.AuthorString)
+                            new MetadataLine("Mapper", metadata.Author)
                             {
                                 Origin = Anchor.TopCentre,
                                 Anchor = Anchor.TopCentre,

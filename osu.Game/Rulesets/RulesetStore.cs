@@ -61,23 +61,23 @@ namespace osu.Game.Rulesets
                 //add all legacy modes in correct order
                 foreach (var r in instances.Where(r => r.LegacyID != null).OrderBy(r => r.LegacyID))
                 {
-                    if (context.RulesetInfo.SingleOrDefault(rsi => rsi.ID == r.RulesetInfo.ID) == null)
-                        context.RulesetInfo.Add(r.RulesetInfo);
+                    if (context.RulesetInfo.Single(r.RulesetInfo.ID) == null)
+                        context.RulesetInfo.Insert(r.RulesetInfo);
                 }
 
-                context.SaveChanges();
+                //context.SaveChanges();
 
                 //add any other modes
                 foreach (var r in instances.Where(r => r.LegacyID == null))
                 {
-                    if (context.RulesetInfo.FirstOrDefault(ri => ri.InstantiationInfo == r.RulesetInfo.InstantiationInfo) == null)
-                        context.RulesetInfo.Add(r.RulesetInfo);
+                    if (context.RulesetInfo.FirstOrDefault("InstantiationInfo == @InstantiationInfo", r.RulesetInfo.InstantiationInfo) == null)
+                        context.RulesetInfo.Insert(r.RulesetInfo);
                 }
 
-                context.SaveChanges();
+                //context.SaveChanges();
 
                 //perform a consistency check
-                foreach (var r in context.RulesetInfo)
+                foreach (var r in context.RulesetInfo.SelectAll())
                 {
                     try
                     {
@@ -101,9 +101,9 @@ namespace osu.Game.Rulesets
                     }
                 }
 
-                context.SaveChanges();
+                //context.SaveChanges();
 
-                AvailableRulesets = context.RulesetInfo.Where(r => r.Available).ToList();
+                AvailableRulesets = context.RulesetInfo.Select("Available = 1").ToList();
             }
         }
 

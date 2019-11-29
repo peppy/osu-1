@@ -81,7 +81,7 @@ namespace osu.Game.Tests.Visual.Online
                         Artist = @"naru narusegawa",
                         Source = @"hinata sou",
                         Tags = @"test tag tag more tag",
-                        Author = new User
+                        AuthorObject = new User
                         {
                             Username = @"BanchoBot",
                             Id = 3,
@@ -152,7 +152,7 @@ namespace osu.Game.Tests.Visual.Online
                         Artist = @"no one",
                         Source = @"some source",
                         Tags = @"another test tag tag more test tags",
-                        Author = new User
+                        AuthorObject = new User
                         {
                             Username = @"BanchoBot",
                             Id = 3,
@@ -242,7 +242,7 @@ namespace osu.Game.Tests.Visual.Online
                     {
                         Title = @"multiple rulesets beatmap",
                         Artist = @"none",
-                        Author = new User
+                        AuthorObject = new User
                         {
                             Username = "BanchoBot",
                             Id = 3,
@@ -305,7 +305,7 @@ namespace osu.Game.Tests.Visual.Online
                 {
                     Title = @"many difficulties beatmap",
                     Artist = @"none",
-                    Author = new User
+                    AuthorObject = new User
                     {
                         Username = @"BanchoBot",
                         Id = 3,

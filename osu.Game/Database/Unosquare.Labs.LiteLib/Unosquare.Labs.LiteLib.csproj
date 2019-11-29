@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>A cool little wrapper for SQLite based on Dapper.</Description>
+    <AssemblyTitle>LiteLib</AssemblyTitle>
+    <TargetFrameworks>netstandard2.0;net461;net472</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Unosquare.Labs.LiteLib</AssemblyName>
+    <PackageId>LiteLib</PackageId>
+    <CodeAnalysisRuleSet>..\..\StyleCop.Analyzers.ruleset</CodeAnalysisRuleSet>
+    <Version>1.0.0</Version>
+    <Authors>Unosquare</Authors>
+    <Company>Unosquare</Company>
+    <Copyright>Copyright (c) 2016-2019 Unosquare</Copyright>
+    <Product>LiteLib</Product>
+    <PackageLicenseUrl>https://github.com/unosquare/litelib/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://unosquare.github.io/litelib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/unosquare/litelib</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/unosquare/litelib/master/litelib-logo.png</PackageIconUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>orm sqlite dapper database</PackageTags>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Dapper" Version="1.60.6" />
+    <PackageReference Include="Unosquare.Swan.Lite" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net472'">
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="2.2.6" />
+  </ItemGroup>
+</Project>

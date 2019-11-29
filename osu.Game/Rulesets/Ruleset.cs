@@ -141,7 +141,7 @@ namespace osu.Game.Rulesets
             Name = Description,
             ShortName = ShortName,
             InstantiationInfo = GetType().AssemblyQualifiedName,
-            ID = LegacyID,
+            ID = LegacyID ?? -1,
             Available = true
         };
     }

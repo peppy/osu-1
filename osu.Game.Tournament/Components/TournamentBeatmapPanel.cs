@@ -103,7 +103,7 @@ namespace osu.Game.Tournament.Components
                                 },
                                 new OsuSpriteText
                                 {
-                                    Text = Beatmap.Metadata.AuthorString,
+                                    Text = Beatmap.Metadata.Author,
                                     Padding = new MarginPadding { Right = 20 },
                                     Font = OsuFont.GetFont(italics: true, weight: FontWeight.Bold, size: 14)
                                 },

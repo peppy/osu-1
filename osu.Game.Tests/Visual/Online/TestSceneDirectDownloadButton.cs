@@ -129,7 +129,7 @@ namespace osu.Game.Tests.Visual.Online
             var beatmap = CreateWorkingBeatmap(new OsuRuleset().RulesetInfo).BeatmapSetInfo;
             beatmap.Metadata.Artist = "test";
             beatmap.Metadata.Title = "undownloadable";
-            beatmap.Metadata.AuthorString = "test";
+            beatmap.Metadata.Author = "test";
 
             beatmap.OnlineInfo.HasVideo = true;
             beatmap.OnlineInfo.HasStoryboard = true;

@@ -69,7 +69,7 @@ namespace osu.Game.Overlays.BeatmapSet.Buttons
 
                 request?.Cancel();
 
-                request = new PostBeatmapFavouriteRequest(BeatmapSet.Value.OnlineBeatmapSetID.Value, favourited.Value ? BeatmapFavouriteAction.UnFavourite : BeatmapFavouriteAction.Favourite);
+                request = new PostBeatmapFavouriteRequest((int)BeatmapSet.Value.OnlineBeatmapSetID.Value, favourited.Value ? BeatmapFavouriteAction.UnFavourite : BeatmapFavouriteAction.Favourite);
 
                 request.Success += () =>
                 {

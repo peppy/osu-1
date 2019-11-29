@@ -29,7 +29,7 @@ namespace osu.Game.Tests.Visual.Multiplayer
                     {
                         Title = "Title",
                         Artist = "Artist",
-                        AuthorString = "Author",
+                        Author = "Author",
                     },
                     Version = "Version",
                     Ruleset = new OsuRuleset().RulesetInfo

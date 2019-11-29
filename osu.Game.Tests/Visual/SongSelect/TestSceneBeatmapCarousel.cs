@@ -236,7 +236,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             loadBeatmaps();
 
             AddStep("Sort by author", () => carousel.Filter(new FilterCriteria { Sort = SortMode.Author }, false));
-            AddAssert("Check zzzzz is at bottom", () => carousel.BeatmapSets.Last().Metadata.AuthorString == "zzzzz");
+            AddAssert("Check zzzzz is at bottom", () => carousel.BeatmapSets.Last().Metadata.Author == "zzzzz");
             AddStep("Sort by artist", () => carousel.Filter(new FilterCriteria { Sort = SortMode.Artist }, false));
             AddAssert($"Check #{set_count} is at bottom", () => carousel.BeatmapSets.Last().Metadata.Title.EndsWith($"#{set_count}!"));
         }
@@ -410,7 +410,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             testSingle.Beatmaps.ForEach(b =>
             {
                 b.Ruleset = rulesets.AvailableRulesets.ElementAt(1);
-                b.RulesetID = b.Ruleset.ID ?? 1;
+                b.RulesetID = (int)b.Ruleset.ID;
             });
             AddStep("add single ruleset beatmapset", () => carousel.UpdateBeatmapSet(testSingle));
             AddStep("select filtered map skipping filtered", () => carousel.SelectBeatmap(testSingle.Beatmaps[0], false));
@@ -552,7 +552,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             {
                 carousel.Filter(new FilterCriteria { SearchText = "Dingo" }, false);
                 carousel.Filter(new FilterCriteria(), false);
-                eagerSelectedIDs.Add(carousel.SelectedBeatmapSet.ID);
+                eagerSelectedIDs.Add((int)carousel.SelectedBeatmapSet.ID);
             });
         }
 
@@ -568,7 +568,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     // Create random metadata, then we can check if sorting works based on these
                     Artist = $"peppy{id.ToString().PadLeft(6, '0')}",
                     Title = $"test set #{id}!",
-                    AuthorString = string.Concat(Enumerable.Repeat((char)('z' - Math.Min(25, id - 1)), 5))
+                    Author = string.Concat(Enumerable.Repeat((char)('z' - Math.Min(25, id - 1)), 5))
                 },
                 Beatmaps = new List<BeatmapInfo>(new[]
                 {
@@ -621,7 +621,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     // Create random metadata, then we can check if sorting works based on these
                     Artist = $"peppy{id.ToString().PadLeft(6, '0')}",
                     Title = $"test set #{id}!",
-                    AuthorString = string.Concat(Enumerable.Repeat((char)('z' - Math.Min(25, id - 1)), 5))
+                    Author = string.Concat(Enumerable.Repeat((char)('z' - Math.Min(25, id - 1)), 5))
                 },
                 Beatmaps = new List<BeatmapInfo>(),
             };

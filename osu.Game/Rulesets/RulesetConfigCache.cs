@@ -31,10 +31,10 @@ namespace osu.Game.Rulesets
         /// <exception cref="InvalidOperationException">If <paramref name="ruleset"/> doesn't have a valid <see cref="RulesetInfo.ID"/>.</exception>
         public IRulesetConfigManager GetConfigFor(Ruleset ruleset)
         {
-            if (ruleset.RulesetInfo.ID == null)
+            if (ruleset.RulesetInfo.ID <= 0)
                 return null;
 
-            return configCache.GetOrAdd(ruleset.RulesetInfo.ID.Value, _ => ruleset.CreateConfig(settingsStore));
+            return configCache.GetOrAdd((int)ruleset.RulesetInfo.ID, _ => ruleset.CreateConfig(settingsStore));
         }
 
         protected override void Dispose(bool isDisposing)

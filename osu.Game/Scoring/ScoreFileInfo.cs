@@ -9,7 +9,7 @@ namespace osu.Game.Scoring
 {
     public class ScoreFileInfo : INamedFileInfo, IHasPrimaryKey
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public int FileInfoID { get; set; }
 

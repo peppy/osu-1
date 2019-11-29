@@ -343,7 +343,7 @@ namespace osu.Game.Screens.Select
 
             private OsuSpriteText[] getMapper(BeatmapMetadata metadata)
             {
-                if (string.IsNullOrEmpty(metadata.Author?.Username))
+                if (string.IsNullOrEmpty(metadata.AuthorObject?.Username))
                     return Array.Empty<OsuSpriteText>();
 
                 return new[]
@@ -355,7 +355,7 @@ namespace osu.Game.Screens.Select
                     },
                     new OsuSpriteText
                     {
-                        Text = metadata.Author.Username,
+                        Text = metadata.AuthorObject.Username,
                         Font = OsuFont.GetFont(weight: FontWeight.Bold, size: 15),
                     }
                 };

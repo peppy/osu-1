@@ -35,7 +35,7 @@ namespace osu.Game.Configuration
 
         protected override void PerformLoad()
         {
-            databasedSettings = settings.Query(ruleset?.ID, variant);
+            databasedSettings = settings.Query((int?)ruleset?.ID, variant);
             legacySettingsExist = databasedSettings.Any(s => int.TryParse(s.Key, out _));
         }
 
@@ -80,7 +80,7 @@ namespace osu.Game.Configuration
                 {
                     Key = lookup.ToString(),
                     Value = bindable.Value,
-                    RulesetID = ruleset?.ID,
+                    RulesetID = (int?)ruleset?.ID,
                     Variant = variant,
                 });
 

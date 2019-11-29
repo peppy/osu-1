@@ -9,7 +9,7 @@ namespace osu.Game.Beatmaps
 {
     public class BeatmapSetFileInfo : INamedFileInfo, IHasPrimaryKey
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public int BeatmapSetInfoID { get; set; }
 

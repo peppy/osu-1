@@ -5,10 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Extensions;
@@ -158,7 +156,7 @@ namespace osu.Game.Beatmaps
             void resetIds() => beatmapSet.Beatmaps.ForEach(b => b.OnlineBeatmapID = null);
         }
 
-        protected override bool CheckLocalAvailability(BeatmapSetInfo model, IQueryable<BeatmapSetInfo> items) => items.Any(b => b.OnlineBeatmapSetID == model.OnlineBeatmapSetID);
+        protected override bool CheckLocalAvailability(BeatmapSetInfo model, IEnumerable<BeatmapSetInfo> items) => items.Any(b => b.OnlineBeatmapSetID == model.OnlineBeatmapSetID);
 
         /// <summary>
         /// Delete a beatmap difficulty.
@@ -211,7 +209,7 @@ namespace osu.Game.Beatmaps
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>The first result for the provided query, or null if no results were found.</returns>
-        public BeatmapSetInfo QueryBeatmapSet(Expression<Func<BeatmapSetInfo, bool>> query) => beatmaps.ConsumableItems.AsNoTracking().FirstOrDefault(query);
+        public BeatmapSetInfo QueryBeatmapSet(Func<BeatmapSetInfo, bool> query) => beatmaps.ConsumableItems.FirstOrDefault(query);
 
         protected override bool CanUndelete(BeatmapSetInfo existing, BeatmapSetInfo import)
         {
@@ -235,28 +233,28 @@ namespace osu.Game.Beatmaps
         /// Returns a list of all usable <see cref="BeatmapSetInfo"/>s.
         /// </summary>
         /// <returns>A list of available <see cref="BeatmapSetInfo"/>.</returns>
-        public IQueryable<BeatmapSetInfo> GetAllUsableBeatmapSetsEnumerable() => beatmaps.ConsumableItems.Where(s => !s.DeletePending && !s.Protected);
+        public IEnumerable<BeatmapSetInfo> GetAllUsableBeatmapSetsEnumerable() => beatmaps.ConsumableItems.Where(s => !s.DeletePending && !s.Protected);
 
         /// <summary>
         /// Perform a lookup query on available <see cref="BeatmapSetInfo"/>s.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>Results from the provided query.</returns>
-        public IEnumerable<BeatmapSetInfo> QueryBeatmapSets(Expression<Func<BeatmapSetInfo, bool>> query) => beatmaps.ConsumableItems.AsNoTracking().Where(query);
+        public IEnumerable<BeatmapSetInfo> QueryBeatmapSets(Func<BeatmapSetInfo, bool> query) => beatmaps.ConsumableItems.Where(query);
 
         /// <summary>
         /// Perform a lookup query on available <see cref="BeatmapInfo"/>s.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>The first result for the provided query, or null if no results were found.</returns>
-        public BeatmapInfo QueryBeatmap(Expression<Func<BeatmapInfo, bool>> query) => beatmaps.Beatmaps.AsNoTracking().FirstOrDefault(query);
+        public BeatmapInfo QueryBeatmap(Func<BeatmapInfo, bool> query) => beatmaps.Beatmaps.FirstOrDefault(query);
 
         /// <summary>
         /// Perform a lookup query on available <see cref="BeatmapInfo"/>s.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>Results from the provided query.</returns>
-        public IQueryable<BeatmapInfo> QueryBeatmaps(Expression<Func<BeatmapInfo, bool>> query) => beatmaps.Beatmaps.AsNoTracking().Where(query);
+        public IEnumerable<BeatmapInfo> QueryBeatmaps(Func<BeatmapInfo, bool> query) => beatmaps.Beatmaps.Where(query);
 
         protected override string HumanisedModelName => "beatmap";
 
