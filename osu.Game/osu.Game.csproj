@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="Project">
     <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
@@ -21,6 +21,7 @@
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="DiffPlex" Version="1.6.3" />
     <PackageReference Include="Humanizer" Version="2.8.26" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="2.2.6" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

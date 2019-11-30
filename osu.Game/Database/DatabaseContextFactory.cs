@@ -1,8 +1,10 @@
-// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
+﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Linq;
 using System.Threading;
+using AutoMapper;
 using osu.Framework.Platform;
 using osu.Framework.Statistics;
 using Realms;
@@ -164,6 +166,19 @@ namespace osu.Game.Database
                 context.Dispose();
 
             recycleThreadContexts();
+        }
+    }
+
+    public static class RealmExtensions
+    {
+        public static T Detach<T>(this T obj) where T : RealmObject
+        {
+            var detached = new MapperConfiguration(c => c.CreateMap<T, T>()).CreateMapper().Map<T>(obj);
+
+            if (detached is IHasPrimaryKey dKey)
+                dKey.ID = Guid.NewGuid().ToString();
+
+            return detached;
         }
     }
 }
