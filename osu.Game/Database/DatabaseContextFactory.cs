@@ -1,4 +1,4 @@
-﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
+// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Linq;
@@ -13,7 +13,7 @@ namespace osu.Game.Database
     {
         private readonly Storage storage;
 
-        private const string database_name = @"realm";
+        private const string database_name = @"client";
 
         private ThreadLocal<Realm> threadContexts;
 
@@ -139,7 +139,7 @@ namespace osu.Game.Database
             threadContexts = new ThreadLocal<Realm>(CreateContext, true);
         }
 
-        protected virtual Realm CreateContext() => Realm.GetInstance(new RealmConfiguration(storage.GetFullPath($"{database_name}db")));
+        protected virtual Realm CreateContext() => Realm.GetInstance(new RealmConfiguration(storage.GetFullPath($"{database_name}.realm")));
 
         public void ResetDatabase()
         {
