@@ -1,4 +1,4 @@
-﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
+// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
@@ -10,7 +10,6 @@ using osu.Framework;
 using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Game.Database;
-using Realms;
 
 namespace osu.Game.Rulesets
 {
@@ -57,7 +56,7 @@ namespace osu.Game.Rulesets
         /// <summary>
         /// All available rulesets.
         /// </summary>
-        public IEnumerable<RulesetInfo> AvailableRulesets => ContextFactory.Get().All<RulesetInfo>().Where(r => r.Available).ToList();
+        public IEnumerable<RulesetInfo> AvailableRulesets => ContextFactory.Get().All<RulesetInfo>().Where(r => r.Available);
 
         private Assembly resolveRulesetDependencyAssembly(object sender, ResolveEventArgs args)
         {

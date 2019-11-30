@@ -31,6 +31,7 @@ using osu.Framework.Input.Events;
 using osu.Framework.Platform;
 using osu.Framework.Threading;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.UserInterface;
@@ -185,7 +186,21 @@ namespace osu.Game
             // bind config int to database RulesetInfo
             configRuleset = LocalConfig.GetBindable<int>(OsuSetting.Ruleset);
             Ruleset.Value = RulesetStore.GetRuleset(configRuleset.Value) ?? RulesetStore.AvailableRulesets.First();
-            Ruleset.ValueChanged += r => configRuleset.Value = r.NewValue.ID ?? 0;
+            Ruleset.BindValueChanged(r =>
+            {
+                if (r.NewValue == null)
+                    return;
+
+                if (r.NewValue.IsManaged)
+                {
+                    var detached = r.NewValue.Detach();
+                    Ruleset.Value = null;
+                    Ruleset.Value = detached;
+                    return;
+                }
+
+                configRuleset.Value = r.NewValue.ID ?? 0;
+            }, true);
 
             // bind config int to database SkinInfo
             configSkin = LocalConfig.GetBindable<string>(OsuSetting.Skin);

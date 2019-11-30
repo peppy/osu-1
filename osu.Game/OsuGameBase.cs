@@ -202,8 +202,12 @@ namespace osu.Game
             // allow lookups to be done on the child (ScoreManager in this case) to perform the cascading delete.
             List<ScoreInfo> getBeatmapScores(BeatmapSetInfo set)
             {
-                var beatmapIds = BeatmapManager.QueryBeatmaps(b => b.BeatmapSet.ID == set.ID).Select(b => b.ID).ToList();
-                return ScoreManager.QueryScores(s => beatmapIds.Contains(s.Beatmap.ID)).ToList();
+                List<ScoreInfo> scores = new List<ScoreInfo>();
+
+                foreach (var beatmap in BeatmapManager.QueryBeatmaps(b => b.BeatmapSet == set))
+                    scores.AddRange(ScoreManager.QueryScores(s => s.Beatmap == beatmap));
+
+                return scores;
             }
 
             BeatmapManager.ItemRemoved.BindValueChanged(i =>

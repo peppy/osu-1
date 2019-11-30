@@ -68,8 +68,11 @@ namespace osu.Game.Screens.Menu
         /// </summary>
         protected bool UsingThemedIntro { get; private set; }
 
+        [Resolved]
+        private BeatmapManager beatmaps { get; set; }
+
         [BackgroundDependencyLoader]
-        private void load(OsuConfigManager config, SkinManager skinManager, BeatmapManager beatmaps, Framework.Game game)
+        private void load(OsuConfigManager config, SkinManager skinManager, Framework.Game game)
         {
             // prevent user from changing beatmap while the intro is still runnning.
             beatmap = Beatmap.BeginLease(false);

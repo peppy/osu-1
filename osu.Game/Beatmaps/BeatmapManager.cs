@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Bindables;
@@ -197,20 +196,21 @@ namespace osu.Game.Beatmaps
             }
 
             // find any existing beatmaps in the database that have matching online ids
-            var existingBeatmaps = QueryBeatmaps(b => beatmapIds.Contains(b.OnlineBeatmapID)).ToList();
-
-            if (existingBeatmaps.Count > 0)
-            {
-                // reset the import ids (to force a re-fetch) *unless* they match the candidate CheckForExisting set.
-                // we can ignore the case where the new ids are contained by the CheckForExisting set as it will either be used (import skipped) or deleted.
-                var existing = CheckForExisting(beatmapSet);
-
-                if (existing == null || existingBeatmaps.Any(b => !existing.Beatmaps.Contains(b)))
-                {
-                    LogForModel(beatmapSet, "Found existing import with IDs already, resetting...");
-                    resetIds();
-                }
-            }
+            // todo: fix
+            // var existingBeatmaps = QueryBeatmaps(b => beatmapIds.Any(i => i == b.OnlineBeatmapID)).ToList();
+            //
+            // if (existingBeatmaps.Count > 0)
+            // {
+            //     // reset the import ids (to force a re-fetch) *unless* they match the candidate CheckForExisting set.
+            //     // we can ignore the case where the new ids are contained by the CheckForExisting set as it will either be used (import skipped) or deleted.
+            //     var existing = CheckForExisting(beatmapSet);
+            //
+            //     if (existing == null || existingBeatmaps.Any(b => !existing.Beatmaps.Contains(b)))
+            //     {
+            //         LogForModel(beatmapSet, "Found existing import with IDs already, resetting...");
+            //         resetIds();
+            //     }
+            // }
 
             void resetIds() => beatmapSet.Beatmaps.ForEach(b => b.OnlineBeatmapID = null);
         }
@@ -302,7 +302,7 @@ namespace osu.Game.Beatmaps
                 if (working != null)
                     return working;
 
-                beatmapInfo.Metadata ??= beatmapInfo.BeatmapSet.Metadata;
+                // beatmapInfo.Metadata ??= beatmapInfo.BeatmapSet.Metadata;
 
                 workingCache.Add(working = new BeatmapManagerWorkingBeatmap(Files.Store, textureStore, trackStore, beatmapInfo, audioManager));
 
@@ -315,7 +315,7 @@ namespace osu.Game.Beatmaps
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>The first result for the provided query, or null if no results were found.</returns>
-        public BeatmapSetInfo QueryBeatmapSet(Expression<Func<BeatmapSetInfo, bool>> query) => beatmaps.ConsumableItems.AsNoTracking().FirstOrDefault(query);
+        public BeatmapSetInfo QueryBeatmapSet(Expression<Func<BeatmapSetInfo, bool>> query) => beatmaps.ConsumableItems.FirstOrDefault(query);
 
         protected override bool CanReuseExisting(BeatmapSetInfo existing, BeatmapSetInfo import)
         {
@@ -372,21 +372,21 @@ namespace osu.Game.Beatmaps
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>Results from the provided query.</returns>
-        public IEnumerable<BeatmapSetInfo> QueryBeatmapSets(Expression<Func<BeatmapSetInfo, bool>> query) => beatmaps.ConsumableItems.AsNoTracking().Where(query);
+        public IEnumerable<BeatmapSetInfo> QueryBeatmapSets(Expression<Func<BeatmapSetInfo, bool>> query) => beatmaps.ConsumableItems.Where(query);
 
         /// <summary>
         /// Perform a lookup query on available <see cref="BeatmapInfo"/>s.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>The first result for the provided query, or null if no results were found.</returns>
-        public BeatmapInfo QueryBeatmap(Expression<Func<BeatmapInfo, bool>> query) => beatmaps.Beatmaps.AsNoTracking().FirstOrDefault(query);
+        public BeatmapInfo QueryBeatmap(Expression<Func<BeatmapInfo, bool>> query) => beatmaps.Beatmaps.FirstOrDefault(query);
 
         /// <summary>
         /// Perform a lookup query on available <see cref="BeatmapInfo"/>s.
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>Results from the provided query.</returns>
-        public IQueryable<BeatmapInfo> QueryBeatmaps(Expression<Func<BeatmapInfo, bool>> query) => beatmaps.Beatmaps.AsNoTracking().Where(query);
+        public IQueryable<BeatmapInfo> QueryBeatmaps(Expression<Func<BeatmapInfo, bool>> query) => beatmaps.Beatmaps.Where(query);
 
         protected override string HumanisedModelName => "beatmap";
 
@@ -407,6 +407,7 @@ namespace osu.Game.Beatmaps
 
             return new BeatmapSetInfo
             {
+                ID = Guid.NewGuid().ToString(),
                 OnlineBeatmapSetID = beatmap.BeatmapInfo.BeatmapSet?.OnlineBeatmapSetID,
                 Metadata = beatmap.Metadata,
                 DateAdded = DateTimeOffset.UtcNow
