@@ -601,8 +601,8 @@ namespace osu.Game.Screens.Select
 
         private void onBeatmapSetAdded(BeatmapSetInfo s) => Carousel.UpdateBeatmapSet(s);
         private void onBeatmapSetRemoved(BeatmapSetInfo s) => Carousel.RemoveBeatmapSet(s);
-        private void onBeatmapRestored(BeatmapInfo b) => Carousel.UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSetInfoID));
-        private void onBeatmapHidden(BeatmapInfo b) => Carousel.UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSetInfoID));
+        private void onBeatmapRestored(BeatmapInfo b) => Carousel.UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSet.ID));
+        private void onBeatmapHidden(BeatmapInfo b) => Carousel.UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSet.ID));
 
         private void carouselBeatmapsLoaded()
         {
@@ -653,14 +653,14 @@ namespace osu.Game.Screens.Select
 
         private void delete(BeatmapSetInfo beatmap)
         {
-            if (beatmap == null || beatmap.ID <= 0) return;
+            if (beatmap?.ID == null) return;
 
             dialogOverlay?.Push(new BeatmapDeleteDialog(beatmap));
         }
 
         private void clearScores(BeatmapInfo beatmap)
         {
-            if (beatmap == null || beatmap.ID <= 0) return;
+            if (beatmap?.ID == null) return;
 
             dialogOverlay?.Push(new BeatmapClearScoresDialog(beatmap, () =>
                 // schedule done here rather than inside the dialog as the dialog may fade out and never callback.

@@ -11,7 +11,7 @@ namespace osu.Game.Beatmaps
 {
     public class BeatmapSetInfo : IHasPrimaryKey, IHasFiles<BeatmapSetFileInfo>, ISoftDelete, IEquatable<BeatmapSetInfo>
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         private int? onlineBeatmapSetID;
 
@@ -68,7 +68,7 @@ namespace osu.Game.Beatmaps
             if (other == null)
                 return false;
 
-            if (ID != 0 && other.ID != 0)
+            if (ID != null && other.ID != null)
                 return ID == other.ID;
 
             if (OnlineBeatmapSetID.HasValue && other.OnlineBeatmapSetID.HasValue)

@@ -76,7 +76,7 @@ namespace osu.Game.Tests.Visual.Online
         {
             return new BeatmapSetInfo
             {
-                ID = 1,
+                ID = Guid.NewGuid().ToString(),
                 OnlineBeatmapSetID = 241526,
                 OnlineInfo = new BeatmapSetOnlineInfo
                 {

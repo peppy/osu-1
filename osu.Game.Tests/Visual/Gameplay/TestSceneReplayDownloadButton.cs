@@ -49,7 +49,7 @@ namespace osu.Game.Tests.Visual.Gameplay
         {
             return new APILegacyScoreInfo
             {
-                ID = 1,
+                ID = Guid.NewGuid().ToString(),
                 OnlineScoreID = 2553163309,
                 Ruleset = new OsuRuleset().RulesetInfo,
                 Replay = replayAvailable,

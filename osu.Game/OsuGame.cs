@@ -96,7 +96,7 @@ namespace osu.Game
 
         private Bindable<int> configRuleset;
 
-        private Bindable<int> configSkin;
+        private Bindable<string> configSkin;
 
         private readonly string[] args;
 
@@ -176,7 +176,7 @@ namespace osu.Game
             Ruleset.ValueChanged += r => configRuleset.Value = r.NewValue.ID ?? 0;
 
             // bind config int to database SkinInfo
-            configSkin = LocalConfig.GetBindable<int>(OsuSetting.Skin);
+            configSkin = LocalConfig.GetBindable<string>(OsuSetting.Skin);
             SkinManager.CurrentSkinInfo.ValueChanged += skin => configSkin.Value = skin.NewValue.ID;
             configSkin.ValueChanged += skinId =>
             {
@@ -186,7 +186,7 @@ namespace osu.Game
                 {
                     switch (skinId.NewValue)
                     {
-                        case -1:
+                        case DefaultLegacySkin.LEGACY_SKIN_ID:
                             skinInfo = DefaultLegacySkin.Info;
                             break;
 

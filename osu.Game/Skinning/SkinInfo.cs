@@ -10,7 +10,7 @@ namespace osu.Game.Skinning
 {
     public class SkinInfo : IHasFiles<SkinFileInfo>, IEquatable<SkinInfo>, IHasPrimaryKey, ISoftDelete
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         public string Name { get; set; }
 
