@@ -4,10 +4,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
+using Realms;
 
 namespace osu.Game.Rulesets
 {
-    public class RulesetInfo : IEquatable<RulesetInfo>
+    public class RulesetInfo : RealmObject, IEquatable<RulesetInfo>
     {
         public int? ID { get; set; }
 

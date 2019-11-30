@@ -22,6 +22,7 @@ using osu.Game.IO.Archives;
 using osu.Game.IPC;
 using osu.Game.Overlays.Notifications;
 using osu.Game.Utils;
+using Realms;
 using SharpCompress.Common;
 using FileInfo = osu.Game.IO.FileInfo;
 
@@ -34,8 +35,8 @@ namespace osu.Game.Database
     /// <typeparam name="TModel">The model type.</typeparam>
     /// <typeparam name="TFileModel">The associated file join type.</typeparam>
     public abstract class ArchiveModelManager<TModel, TFileModel> : ICanAcceptFiles, IModelManager<TModel>
-        where TModel : class, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete
-        where TFileModel : INamedFileInfo, new()
+        where TModel : RealmObject, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete
+        where TFileModel : RealmObject, INamedFileInfo, new()
     {
         private const int import_queue_request_concurrency = 1;
 
@@ -361,7 +362,8 @@ namespace osu.Game.Database
         /// TODO: Support file changes.
         /// </summary>
         /// <param name="item">The item to update.</param>
-        public void Update(TModel item) => ModelStore.Update(item);
+        /// <param name="updateAction">The action to perform.</param>
+        public void Update(TModel item, Action<TModel> updateAction) => ModelStore.Update(item, updateAction);
 
         /// <summary>
         /// Delete an item from the manager.
@@ -463,15 +465,11 @@ namespace osu.Game.Database
         /// <param name="item">The item to restore</param>
         public void Undelete(TModel item)
         {
-            using (var usage = ContextFactory.GetForWrite())
+            using (ContextFactory.GetForWrite())
             {
-                usage.Context.ChangeTracker.AutoDetectChangesEnabled = false;
-
                 if (!ModelStore.Undelete(item)) return;
 
                 Files.Reference(item.Files.Select(f => f.FileInfo).ToArray());
-
-                usage.Context.ChangeTracker.AutoDetectChangesEnabled = true;
             }
         }
 
@@ -597,7 +595,7 @@ namespace osu.Game.Database
         /// <returns>Whether the existing model should be restored and used. Returning false will delete the existing and force a re-import.</returns>
         protected virtual bool CanUndelete(TModel existing, TModel import) => true;
 
-        private DbSet<TModel> queryModel() => ContextFactory.Get().Set<TModel>();
+        private IQueryable<TModel> queryModel() => ContextFactory.Get().All<TModel>();
 
         protected virtual string HumanisedModelName => $"{typeof(TModel).Name.Replace("Info", "").ToLower()}";
 

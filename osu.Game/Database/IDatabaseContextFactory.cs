@@ -1,6 +1,8 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using Realms;
+
 namespace osu.Game.Database
 {
     public interface IDatabaseContextFactory
@@ -8,7 +10,7 @@ namespace osu.Game.Database
         /// <summary>
         /// Get a context for read-only usage.
         /// </summary>
-        OsuDbContext Get();
+        Realm Get();
 
         /// <summary>
         /// Request a context for write usage. Can be consumed in a nested fashion (and will return the same underlying context).

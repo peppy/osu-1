@@ -87,8 +87,7 @@ namespace osu.Game.Screens.Menu
                     // we need to import the default menu background beatmap
                     setInfo = beatmaps.Import(new ZipArchiveReader(game.Resources.GetStream($"Tracks/{BeatmapFile}"), BeatmapFile)).Result;
 
-                    setInfo.Protected = true;
-                    beatmaps.Update(setInfo);
+                    beatmaps.Update(setInfo, s => s.Protected = true);
                 }
             }
 

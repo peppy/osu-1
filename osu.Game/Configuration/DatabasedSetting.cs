@@ -3,11 +3,12 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.Configuration
 {
     [Table("Settings")]
-    public class DatabasedSetting : IHasPrimaryKey
+    public class DatabasedSetting : RealmObject, IHasPrimaryKey
     {
         public string ID { get; set; }
 

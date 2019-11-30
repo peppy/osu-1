@@ -160,8 +160,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     Assert.AreEqual(0, itemAddRemoveFireCount -= 1);
 
-                    imported.Hash += "-changed";
-                    manager.Update(imported);
+                    manager.Update(imported, i => i.Hash += "-changed");
 
                     Assert.AreEqual(0, itemAddRemoveFireCount -= 2);
 
@@ -222,8 +221,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     var imported = await LoadOszIntoOsu(osu);
 
-                    imported.Hash += "-changed";
-                    manager.Update(imported);
+                    manager.Update(imported, i => i.Hash += "-changed");
 
                     var importedSecondTime = await LoadOszIntoOsu(osu);
 
@@ -282,12 +280,13 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     var imported = await LoadOszIntoOsu(osu);
 
-                    if (set)
-                        imported.OnlineBeatmapSetID = 1234;
-                    else
-                        imported.Beatmaps.First().OnlineBeatmapID = 1234;
-
-                    osu.Dependencies.Get<BeatmapManager>().Update(imported);
+                    osu.Dependencies.Get<BeatmapManager>().Update(imported, i =>
+                    {
+                        if (set)
+                            imported.OnlineBeatmapSetID = 1234;
+                        else
+                            imported.Beatmaps.First().OnlineBeatmapID = 1234;
+                    });
 
                     deleteBeatmapSet(imported, osu);
 

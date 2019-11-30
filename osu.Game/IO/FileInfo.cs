@@ -3,10 +3,11 @@
 
 using System.IO;
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.IO
 {
-    public class FileInfo : IHasPrimaryKey
+    public class FileInfo : RealmObject, IHasPrimaryKey
     {
         public string ID { get; set; }
 

@@ -10,9 +10,6 @@ namespace osu.Game.Database
     /// </summary>
     public interface INamedFileInfo
     {
-        // An explicit foreign key property isn't required but is recommended and may be helpful to have
-        int FileInfoID { get; set; }
-
         FileInfo FileInfo { get; set; }
 
         string Filename { get; set; }
