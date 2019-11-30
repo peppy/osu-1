@@ -58,7 +58,6 @@ namespace osu.Game.Beatmaps
         /// </summary>
         public double MaxBPM => Beatmaps?.Max(b => b.BPM) ?? 0;
 
-        [Ignored]
         public bool DeletePending { get; set; }
 
         public string Hash { get; set; }

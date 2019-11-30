@@ -10,6 +10,7 @@ using osu.Framework;
 using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.Rulesets
 {
@@ -56,7 +57,7 @@ namespace osu.Game.Rulesets
         /// <summary>
         /// All available rulesets.
         /// </summary>
-        public IEnumerable<RulesetInfo> AvailableRulesets { get; private set; }
+        public IEnumerable<RulesetInfo> AvailableRulesets => ContextFactory.Get().All<RulesetInfo>().Where(r => r.Available).ToList();
 
         private Assembly resolveRulesetDependencyAssembly(object sender, ResolveEventArgs args)
         {
@@ -120,8 +121,6 @@ namespace osu.Game.Rulesets
                         r.Available = false;
                     }
                 }
-
-                AvailableRulesets = context.All<RulesetInfo>().Where(r => r.Available).ToList();
             }
         }
 

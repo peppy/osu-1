@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using osu.Framework.Input.Bindings;
 using osu.Game.Database;
 using Realms;
@@ -18,20 +19,12 @@ namespace osu.Game.Input.Bindings
         public int? Variant { get; set; }
 
         [Ignored]
-        public KeyBinding KeyBinding { get; set; } = new KeyBinding();
-
-        [Column("Keys")]
-        public string KeysString
+        public KeyBinding KeyBinding
         {
-            get => KeyBinding.KeyCombination.ToString();
-            private set => KeyBinding.KeyCombination = value;
+            get => new KeyBinding(KeyBindingString.Split("=>").First(), KeyBindingString.Split("=>").Last());
+            set => KeyBindingString = value.ToString();
         }
 
-        [Column("Action")]
-        public int IntAction
-        {
-            get => (int)KeyBinding.Action;
-            set => KeyBinding.Action = value;
-        }
+        public string KeyBindingString { get; set; }
     }
 }
