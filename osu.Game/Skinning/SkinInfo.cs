@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using osu.Game.Configuration;
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.Skinning
 {
-    public class SkinInfo : IHasFiles<SkinFileInfo>, IEquatable<SkinInfo>, IHasPrimaryKey, ISoftDelete
+    public class SkinInfo : RealmObject, IHasFiles<SkinFileInfo>, IEquatable<SkinInfo>, IHasPrimaryKey, ISoftDelete
     {
         public string ID { get; set; }
 

@@ -41,7 +41,7 @@ namespace osu.Game.Overlays.KeyBinding
                 int intKey = (int)defaultGroup.Key;
 
                 // one row per valid action.
-                Add(new KeyBindingRow(defaultGroup.Key, bindings.Where(b => ((int)b.Action).Equals(intKey)))
+                Add(new KeyBindingRow(defaultGroup.Key, bindings.Where(b => ((int)b.KeyBinding.Action).Equals(intKey)).Select(dkb => dkb.KeyBinding))
                 {
                     AllowMainMouseButtons = Ruleset != null,
                     Defaults = defaultGroup.Select(d => d.KeyCombination)

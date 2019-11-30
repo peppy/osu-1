@@ -39,7 +39,7 @@ namespace osu.Game.Input
                 // compare counts in database vs defaults
                 foreach (var group in defaults.GroupBy(k => k.Action))
                 {
-                    int count = Query(rulesetId, variant).Count(k => (int)k.Action == (int)group.Key);
+                    int count = Query(rulesetId, variant).Count(k => (int)k.KeyBinding.Action == (int)group.Key);
                     int aimCount = group.Count();
 
                     if (aimCount <= count)
@@ -50,8 +50,11 @@ namespace osu.Game.Input
                         // insert any defaults which are missing.
                         usage.Context.DatabasedKeyBinding.Add(new DatabasedKeyBinding
                         {
-                            KeyCombination = insertable.KeyCombination,
-                            Action = insertable.Action,
+                            KeyBinding =
+                            {
+                                KeyCombination = insertable.KeyCombination,
+                                Action = insertable.Action,
+                            },
                             RulesetID = rulesetId,
                             Variant = variant
                         });
@@ -76,13 +79,14 @@ namespace osu.Game.Input
         {
             using (ContextFactory.GetForWrite())
             {
-                var dbKeyBinding = (DatabasedKeyBinding)keyBinding;
-                Refresh(ref dbKeyBinding);
-
-                if (dbKeyBinding.KeyCombination.Equals(keyBinding.KeyCombination))
-                    return;
-
-                dbKeyBinding.KeyCombination = keyBinding.KeyCombination;
+                //todo: fix
+                // var dbKeyBinding = (DatabasedKeyBinding)keyBinding;
+                // Refresh(ref dbKeyBinding);
+                //
+                // if (dbKeyBinding.KeyCombination.Equals(keyBinding.KeyCombination))
+                //     return;
+                //
+                // dbKeyBinding.KeyCombination = keyBinding.KeyCombination;
             }
 
             KeyBindingChanged?.Invoke();

@@ -69,7 +69,7 @@ namespace osu.Game.Input.Bindings
                 // fallback to defaults instead.
                 KeyBindings = DefaultKeyBindings;
             else
-                KeyBindings = store.Query(ruleset?.ID, variant).ToList();
+                KeyBindings = store.Query(ruleset?.ID, variant).Select(dkb => dkb.KeyBinding); // todo: probably not needed
         }
     }
 }

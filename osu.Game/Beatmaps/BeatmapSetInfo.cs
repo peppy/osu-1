@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using osu.Framework.Testing;
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.Beatmaps
 {
@@ -31,10 +31,10 @@ namespace osu.Game.Beatmaps
 
         public List<BeatmapInfo> Beatmaps { get; set; }
 
-        [NotMapped]
+        [Ignored]
         public BeatmapSetOnlineInfo OnlineInfo { get; set; }
 
-        [NotMapped]
+        [Ignored]
         public BeatmapSetMetrics Metrics { get; set; }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace osu.Game.Beatmaps
         /// </summary>
         public double MaxBPM => Beatmaps?.Max(b => b.BPM) ?? 0;
 
-        [NotMapped]
+        [Ignored]
         public bool DeletePending { get; set; }
 
         public string Hash { get; set; }

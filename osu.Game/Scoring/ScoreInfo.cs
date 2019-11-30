@@ -14,10 +14,11 @@ using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Users;
 using osu.Game.Utils;
+using Realms;
 
 namespace osu.Game.Scoring
 {
-    public class ScoreInfo : IHasFiles<ScoreFileInfo>, IHasPrimaryKey, ISoftDelete, IEquatable<ScoreInfo>
+    public class ScoreInfo : RealmObject, IHasFiles<ScoreFileInfo>, IHasPrimaryKey, ISoftDelete, IEquatable<ScoreInfo>
     {
         public string ID { get; set; }
 
@@ -48,7 +49,7 @@ namespace osu.Game.Scoring
         public int RulesetID { get; set; }
 
         [JsonProperty("passed")]
-        [NotMapped]
+        [Ignored]
         public bool Passed { get; set; } = true;
 
         [JsonIgnore]
@@ -57,7 +58,7 @@ namespace osu.Game.Scoring
         private Mod[] mods;
 
         [JsonProperty("mods")]
-        [NotMapped]
+        [Ignored]
         public Mod[] Mods
         {
             get
@@ -104,7 +105,7 @@ namespace osu.Game.Scoring
             }
         }
 
-        [NotMapped]
+        [Ignored]
         [JsonProperty("user")]
         public User User { get; set; }
 
