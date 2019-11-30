@@ -8,11 +8,12 @@ using System.Linq;
 using Newtonsoft.Json;
 using osu.Game.Database;
 using osu.Game.Users;
+using Realms;
 
 namespace osu.Game.Beatmaps
 {
     [Serializable]
-    public class BeatmapMetadata : IEquatable<BeatmapMetadata>, IHasPrimaryKey
+    public class BeatmapMetadata : RealmObject, IEquatable<BeatmapMetadata>, IHasPrimaryKey
     {
         public string ID { get; set; }
 

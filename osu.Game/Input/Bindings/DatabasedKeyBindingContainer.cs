@@ -61,6 +61,6 @@ namespace osu.Game.Input.Bindings
                 store.KeyBindingChanged -= ReloadMappings;
         }
 
-        protected override void ReloadMappings() => KeyBindings = store.Query(ruleset?.ID, variant).ToList();
+        protected override void ReloadMappings() => KeyBindings = store.Query(ruleset?.ID, variant).Select(dkb => dkb.KeyBinding); // todo: probably not needed
     }
 }

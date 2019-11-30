@@ -4,11 +4,12 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using osu.Framework.Input.Bindings;
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.Input.Bindings
 {
     [Table("KeyBinding")]
-    public class DatabasedKeyBinding : KeyBinding, IHasPrimaryKey
+    public class DatabasedKeyBinding : RealmObject, IHasPrimaryKey
     {
         public string ID { get; set; }
 
@@ -16,18 +17,21 @@ namespace osu.Game.Input.Bindings
 
         public int? Variant { get; set; }
 
+        [Ignored]
+        public KeyBinding KeyBinding { get; set; } = new KeyBinding();
+
         [Column("Keys")]
         public string KeysString
         {
-            get => KeyCombination.ToString();
-            private set => KeyCombination = value;
+            get => KeyBinding.KeyCombination.ToString();
+            private set => KeyBinding.KeyCombination = value;
         }
 
         [Column("Action")]
         public int IntAction
         {
-            get => (int)Action;
-            set => Action = value;
+            get => (int)KeyBinding.Action;
+            set => KeyBinding.Action = value;
         }
     }
 }
