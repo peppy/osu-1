@@ -447,6 +447,7 @@ namespace osu.Game.Beatmaps
                     beatmap.BeatmapInfo.StarDifficulty = ruleset?.CreateInstance().CreateDifficultyCalculator(new DummyConversionBeatmap(beatmap)).Calculate().StarRating ?? 0;
                     beatmap.BeatmapInfo.Length = calculateLength(beatmap);
                     beatmap.BeatmapInfo.BPM = beatmap.ControlPointInfo.BPMMode;
+                    beatmap.BeatmapInfo.ID = Guid.NewGuid().ToString();
 
                     beatmapInfos.Add(beatmap.BeatmapInfo);
                 }
