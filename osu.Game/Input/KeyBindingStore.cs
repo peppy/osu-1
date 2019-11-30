@@ -39,7 +39,7 @@ namespace osu.Game.Input
                 // compare counts in database vs defaults
                 foreach (var group in defaults.GroupBy(k => k.Action))
                 {
-                    int count = Query(rulesetId, variant).Count(k => (int)k.KeyBinding.Action == (int)group.Key);
+                    int count = Query(rulesetId, variant).Count(k => k.KeyBinding.Action == group.Key);
                     int aimCount = group.Count();
 
                     if (aimCount <= count)
@@ -50,7 +50,7 @@ namespace osu.Game.Input
                         // insert any defaults which are missing.
                         usage.Context.Add(new DatabasedKeyBinding
                         {
-                            KeyBinding =
+                            KeyBinding = new KeyBinding()
                             {
                                 KeyCombination = insertable.KeyCombination,
                                 Action = insertable.Action,
