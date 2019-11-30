@@ -114,10 +114,10 @@ namespace osu.Game.Database
                     if (currentWriteDidWrite || currentWriteDidError)
                     {
                         // explicitly dispose to ensure any outstanding flushes happen as soon as possible (and underlying resources are purged).
-                        usage.Context.Dispose();
+                        //usage.Context.Dispose();
 
                         // once all writes are complete, we want to refresh thread-specific contexts to make sure they don't have stale local caches.
-                        recycleThreadContexts();
+                        //recycleThreadContexts();
                     }
 
                     currentWriteTransaction = null;
