@@ -137,7 +137,7 @@ namespace osu.Game.Beatmaps
             {
                 // remove metadata from difficulties where it matches the set
                 if (beatmapSet.Metadata.Equals(b.Metadata))
-                    b.Metadata = null;
+                    b.Metadata = beatmapSet.Metadata;
 
                 b.BeatmapSet = beatmapSet;
             }
@@ -162,6 +162,9 @@ namespace osu.Game.Beatmaps
 
         protected override void PreImport(BeatmapSetInfo beatmapSet)
         {
+            foreach (var beatmap in beatmapSet.Beatmaps)
+                beatmap.Ruleset = rulesets.GetRuleset(beatmap.RulesetID);
+
             if (beatmapSet.Beatmaps.Any(b => b.BaseDifficulty == null))
                 throw new InvalidOperationException($"Cannot import {nameof(BeatmapInfo)} with null {nameof(BeatmapInfo.BaseDifficulty)}.");
 
@@ -439,7 +442,6 @@ namespace osu.Game.Beatmaps
                     beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
 
                     var ruleset = rulesets.GetRuleset(beatmap.BeatmapInfo.RulesetID);
-                    beatmap.BeatmapInfo.Ruleset = ruleset;
 
                     // TODO: this should be done in a better place once we actually need to dynamically update it.
                     beatmap.BeatmapInfo.StarDifficulty = ruleset?.CreateInstance().CreateDifficultyCalculator(new DummyConversionBeatmap(beatmap)).Calculate().StarRating ?? 0;
