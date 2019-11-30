@@ -1,7 +1,6 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using osu.Game.Beatmaps;
@@ -24,7 +23,6 @@ namespace osu.Game.Tests.Beatmaps
 
             BeatmapInfo.Ruleset = ruleset;
             BeatmapInfo.BeatmapSet.Metadata = BeatmapInfo.Metadata;
-            BeatmapInfo.BeatmapSet.Beatmaps = new List<BeatmapInfo> { BeatmapInfo };
             BeatmapInfo.BeatmapSet.OnlineInfo = new BeatmapSetOnlineInfo
             {
                 Status = BeatmapSetOnlineStatus.Ranked,

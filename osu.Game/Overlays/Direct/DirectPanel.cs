@@ -146,7 +146,7 @@ namespace osu.Game.Overlays.Direct
             if (SetInfo.Beatmaps.Count > maximum_difficulty_icons)
             {
                 foreach (var ruleset in SetInfo.Beatmaps.Select(b => b.Ruleset).Distinct())
-                    icons.Add(new GroupedDifficultyIcon(SetInfo.Beatmaps.FindAll(b => b.Ruleset.Equals(ruleset)), ruleset, this is DirectListPanel ? Color4.White : colours.Gray5));
+                    icons.Add(new GroupedDifficultyIcon(SetInfo.Beatmaps.Where(b => b.Ruleset.Equals(ruleset)).ToList(), ruleset, this is DirectListPanel ? Color4.White : colours.Gray5));
             }
             else
             {

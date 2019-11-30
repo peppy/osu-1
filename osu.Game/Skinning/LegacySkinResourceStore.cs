@@ -24,7 +24,7 @@ namespace osu.Game.Skinning
 
             bool hasExtension = filename.Contains('.');
 
-            var file = source.Files.Find(f =>
+            var file = source.Files.FirstOrDefault(f =>
                 string.Equals(hasExtension ? f.Filename : Path.ChangeExtension(f.Filename, null), filename, StringComparison.InvariantCultureIgnoreCase));
             return file?.FileInfo.StoragePath;
         }

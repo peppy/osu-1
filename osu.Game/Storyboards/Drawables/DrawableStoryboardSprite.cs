@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Linq;
 using osuTK;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -66,7 +67,7 @@ namespace osu.Game.Storyboards.Drawables
         [BackgroundDependencyLoader]
         private void load(IBindable<WorkingBeatmap> beatmap, TextureStore textureStore)
         {
-            var path = beatmap.Value.BeatmapSetInfo?.Files?.Find(f => f.Filename.Equals(Sprite.Path, StringComparison.InvariantCultureIgnoreCase))?.FileInfo.StoragePath;
+            var path = beatmap.Value.BeatmapSetInfo?.Files?.FirstOrDefault(f => f.Filename.Equals(Sprite.Path, StringComparison.InvariantCultureIgnoreCase))?.FileInfo.StoragePath;
             if (path == null)
                 return;
 

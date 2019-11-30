@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets;
 
@@ -80,7 +81,7 @@ namespace osu.Game.Online.API.Requests.Responses
 
         public BeatmapSetInfo ToBeatmapSet(RulesetStore rulesets)
         {
-            return new BeatmapSetInfo
+            var set = new BeatmapSetInfo
             {
                 OnlineBeatmapSetID = OnlineBeatmapSetID,
                 Metadata = this,
@@ -104,8 +105,11 @@ namespace osu.Game.Online.API.Requests.Responses
                     Genre = genre,
                     Language = language
                 },
-                Beatmaps = beatmaps?.Select(b => b.ToBeatmap(rulesets)).ToList(),
             };
+
+            beatmaps?.Select(b => b.ToBeatmap(rulesets)).ForEach(set.Beatmaps.Add);
+
+            return set;
         }
     }
 }

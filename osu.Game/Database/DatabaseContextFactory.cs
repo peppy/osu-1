@@ -13,7 +13,7 @@ namespace osu.Game.Database
     {
         private readonly Storage storage;
 
-        private const string database_name = @"client";
+        private const string database_name = @"realm";
 
         private ThreadLocal<Realm> threadContexts;
 

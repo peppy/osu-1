@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Extensions;
+using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Graphics.Video;
 using osu.Framework.Lists;
@@ -90,7 +91,7 @@ namespace osu.Game.Beatmaps
         protected override Task Populate(BeatmapSetInfo beatmapSet, ArchiveReader archive, CancellationToken cancellationToken = default)
         {
             if (archive != null)
-                beatmapSet.Beatmaps = createBeatmapDifficulties(beatmapSet.Files);
+                createBeatmapDifficulties(beatmapSet.Files).ForEach(beatmapSet.Beatmaps.Add);
 
             foreach (BeatmapInfo b in beatmapSet.Beatmaps)
             {
@@ -278,7 +279,6 @@ namespace osu.Game.Beatmaps
             return new BeatmapSetInfo
             {
                 OnlineBeatmapSetID = beatmap.BeatmapInfo.BeatmapSet?.OnlineBeatmapSetID,
-                Beatmaps = new List<BeatmapInfo>(),
                 Metadata = beatmap.Metadata,
                 DateAdded = DateTimeOffset.UtcNow
             };
@@ -287,7 +287,7 @@ namespace osu.Game.Beatmaps
         /// <summary>
         /// Create all required <see cref="BeatmapInfo"/>s for the provided archive.
         /// </summary>
-        private List<BeatmapInfo> createBeatmapDifficulties(List<BeatmapSetFileInfo> files)
+        private List<BeatmapInfo> createBeatmapDifficulties(IList<BeatmapSetFileInfo> files)
         {
             var beatmapInfos = new List<BeatmapInfo>();
 

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System.Collections.Generic;
 using NUnit.Framework;
 using osu.Game.Beatmaps;
 using osu.Game.Overlays;
@@ -53,7 +52,7 @@ namespace osu.Game.Tests.Visual.Online
                         PlayCount = 97,
                         FavouriteCount = 72,
                     },
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
@@ -85,7 +84,7 @@ namespace osu.Game.Tests.Visual.Online
                         PlayCount = 3082,
                         FavouriteCount = 14,
                     },
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
@@ -117,7 +116,7 @@ namespace osu.Game.Tests.Visual.Online
                         PlayCount = 2762,
                         FavouriteCount = 15,
                     },
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
@@ -164,7 +163,7 @@ namespace osu.Game.Tests.Visual.Online
                         PlayCount = 62317,
                         FavouriteCount = 161,
                     },
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
