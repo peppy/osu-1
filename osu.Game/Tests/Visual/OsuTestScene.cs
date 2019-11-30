@@ -109,8 +109,6 @@ namespace osu.Game.Tests.Visual
             {
                 var factory = new DatabaseContextFactory(LocalStorage);
                 factory.ResetDatabase();
-                using (var usage = factory.Get())
-                    usage.Migrate();
                 return factory;
             });
 

@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework.Platform;
 
 namespace osu.Game.Database
@@ -21,19 +20,7 @@ namespace osu.Game.Database
         /// <typeparam name="T">A valid EF-stored type.</typeparam>
         protected virtual void Refresh<T>(ref T obj, IQueryable<T> lookupSource = null) where T : class, IHasPrimaryKey
         {
-            using (var usage = ContextFactory.GetForWrite())
-            {
-                var context = usage.Context;
-
-                if (context.Entry(obj).State != EntityState.Detached) return;
-
-                var id = obj.ID;
-                var foundObject = lookupSource?.SingleOrDefault(t => t.ID == id) ?? context.Find<T>(id);
-                if (foundObject != null)
-                    obj = foundObject;
-                else
-                    context.Add(obj);
-            }
+            // todo: remove?
         }
 
         protected DatabaseBackedStore(IDatabaseContextFactory contextFactory, Storage storage = null)

@@ -6,11 +6,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Newtonsoft.Json;
 using osu.Framework.Testing;
+using Realms;
 
 namespace osu.Game.Rulesets
 {
     [ExcludeFromDynamicCompile]
-    public class RulesetInfo : IEquatable<RulesetInfo>
+    public class RulesetInfo : RealmObject, IEquatable<RulesetInfo>
     {
         public int? ID { get; set; }
 

@@ -4,11 +4,12 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using osu.Framework.Platform;
+using Realms;
 
 namespace osu.Game.Database
 {
     public abstract class MutableDatabaseBackedStoreWithFileIncludes<T, TFileInfo> : MutableDatabaseBackedStore<T>
-        where T : class, IHasPrimaryKey, ISoftDelete, IHasFiles<TFileInfo>
+        where T : RealmObject, IHasPrimaryKey, ISoftDelete, IHasFiles<TFileInfo>
         where TFileInfo : INamedFileInfo
     {
         protected MutableDatabaseBackedStoreWithFileIncludes(IDatabaseContextFactory contextFactory, Storage storage = null)

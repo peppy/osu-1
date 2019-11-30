@@ -24,7 +24,7 @@ namespace osu.Game.Configuration
         /// <param name="variant">An optional variant.</param>
         /// <returns></returns>
         public List<DatabasedSetting> Query(int? rulesetId = null, int? variant = null) =>
-            ContextFactory.Get().DatabasedSetting.Where(b => b.RulesetID == rulesetId && b.Variant == variant).ToList();
+            ContextFactory.Get().All<DatabasedSetting>().Where(b => b.RulesetID == rulesetId && b.Variant == variant).ToList();
 
         public void Update(DatabasedSetting setting)
         {

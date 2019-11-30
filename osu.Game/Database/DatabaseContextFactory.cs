@@ -3,9 +3,9 @@
 
 using System.Linq;
 using System.Threading;
-using Microsoft.EntityFrameworkCore.Storage;
 using osu.Framework.Platform;
 using osu.Framework.Statistics;
+using Realms;
 
 namespace osu.Game.Database
 {
@@ -15,7 +15,7 @@ namespace osu.Game.Database
 
         private const string database_name = @"client";
 
-        private ThreadLocal<OsuDbContext> threadContexts;
+        private ThreadLocal<Realm> threadContexts;
 
         private readonly object writeLock = new object();
 
@@ -24,7 +24,7 @@ namespace osu.Game.Database
 
         private int currentWriteUsages;
 
-        private IDbContextTransaction currentWriteTransaction;
+        private Transaction currentWriteTransaction;
 
         public DatabaseContextFactory(Storage storage)
         {
@@ -41,7 +41,7 @@ namespace osu.Game.Database
         /// Get a context for the current thread for read-only usage.
         /// If a <see cref="DatabaseWriteUsage"/> is in progress, the existing write-safe context will be returned.
         /// </summary>
-        public OsuDbContext Get()
+        public Realm Get()
         {
             reads.Value++;
             return threadContexts.Value;
@@ -57,7 +57,7 @@ namespace osu.Game.Database
         {
             writes.Value++;
             Monitor.Enter(writeLock);
-            OsuDbContext context;
+            Realm context;
 
             try
             {
@@ -69,7 +69,7 @@ namespace osu.Game.Database
                         recycleThreadContexts();
 
                     context = threadContexts.Value;
-                    currentWriteTransaction = context.Database.BeginTransaction();
+                    currentWriteTransaction = context.BeginWrite();
                 }
                 else
                 {
@@ -136,13 +136,10 @@ namespace osu.Game.Database
             // Contexts for other threads are not disposed as they may be in use elsewhere. Instead, fresh contexts are exposed
             // for other threads to use, and we rely on the finalizer inside OsuDbContext to handle their previous contexts
             threadContexts?.Value.Dispose();
-            threadContexts = new ThreadLocal<OsuDbContext>(CreateContext, true);
+            threadContexts = new ThreadLocal<Realm>(CreateContext, true);
         }
 
-        protected virtual OsuDbContext CreateContext() => new OsuDbContext(storage.GetDatabaseConnectionString(database_name))
-        {
-            Database = { AutoTransactionsEnabled = false }
-        };
+        protected virtual Realm CreateContext() => Realm.GetInstance(new RealmConfiguration(storage.GetFullPath($"{database_name}db")));
 
         public void ResetDatabase()
         {

@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.Beatmaps
 {
@@ -75,14 +77,14 @@ namespace osu.Game.Beatmaps
                 .Include(s => s.Beatmaps).ThenInclude(b => b.BaseDifficulty)
                 .Include(s => s.Beatmaps).ThenInclude(b => b.Metadata);
 
-        protected override void Purge(List<BeatmapSetInfo> items, OsuDbContext context)
+        protected override void Purge(List<BeatmapSetInfo> items, Realm context)
         {
             // metadata is M-N so we can't rely on cascades
-            context.BeatmapMetadata.RemoveRange(items.Select(s => s.Metadata));
-            context.BeatmapMetadata.RemoveRange(items.SelectMany(s => s.Beatmaps.Select(b => b.Metadata).Where(m => m != null)));
+            items.Select(s => s.Metadata).ForEach(context.Remove);
 
-            // todo: we can probably make cascades work here with a FK in BeatmapDifficulty. just make to make it work correctly.
-            context.BeatmapDifficulty.RemoveRange(items.SelectMany(s => s.Beatmaps.Select(b => b.BaseDifficulty)));
+            items.SelectMany(s => s.Beatmaps.Select(b => b.Metadata).Where(m => m != null)).ForEach(context.Remove);
+
+            items.SelectMany(s => s.Beatmaps.Select(b => b.BaseDifficulty)).ForEach(context.Remove);
 
             base.Purge(items, context);
         }
@@ -100,7 +102,7 @@ namespace osu.Game.Beatmaps
                                                                                    .AsNoTracking();
 
         public IQueryable<BeatmapInfo> Beatmaps =>
-            ContextFactory.Get().BeatmapInfo
+            ContextFactory.Get().All<BeatmapInfo>()
                           .Include(b => b.BeatmapSet).ThenInclude(s => s.Metadata)
                           .Include(b => b.BeatmapSet).ThenInclude(s => s.Files).ThenInclude(f => f.FileInfo)
                           .Include(b => b.Metadata)

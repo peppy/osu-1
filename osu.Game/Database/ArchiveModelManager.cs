@@ -23,6 +23,7 @@ using osu.Game.IPC;
 using osu.Game.Overlays.Notifications;
 using osu.Game.Utils;
 using SharpCompress.Archives.Zip;
+using Realms;
 using SharpCompress.Common;
 using FileInfo = osu.Game.IO.FileInfo;
 
@@ -35,8 +36,8 @@ namespace osu.Game.Database
     /// <typeparam name="TModel">The model type.</typeparam>
     /// <typeparam name="TFileModel">The associated file join type.</typeparam>
     public abstract class ArchiveModelManager<TModel, TFileModel> : ICanAcceptFiles, IModelManager<TModel>
-        where TModel : class, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete
-        where TFileModel : class, INamedFileInfo, new()
+        where TModel : RealmObject, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete
+        where TFileModel : RealmObject, INamedFileInfo, new()
     {
         private const int import_queue_request_concurrency = 1;
 
@@ -433,12 +434,14 @@ namespace osu.Game.Database
         /// TODO: Support file additions/removals.
         /// </summary>
         /// <param name="item">The item to update.</param>
-        public void Update(TModel item)
+        /// <param name="updateAction">The action to perform.</param>
+        public void Update(TModel item, Action<TModel> updateAction)
         {
             using (ContextFactory.GetForWrite())
             {
+                // todo: run inside the modelstore's update?
                 item.Hash = computeHash(item);
-                ModelStore.Update(item);
+                ModelStore.Update(item, updateAction);
             }
         }
 
@@ -542,15 +545,11 @@ namespace osu.Game.Database
         /// <param name="item">The item to restore</param>
         public void Undelete(TModel item)
         {
-            using (var usage = ContextFactory.GetForWrite())
+            using (ContextFactory.GetForWrite())
             {
-                usage.Context.ChangeTracker.AutoDetectChangesEnabled = false;
-
                 if (!ModelStore.Undelete(item)) return;
 
                 Files.Reference(item.Files.Select(f => f.FileInfo).ToArray());
-
-                usage.Context.ChangeTracker.AutoDetectChangesEnabled = true;
             }
         }
 
@@ -692,7 +691,7 @@ namespace osu.Game.Database
                 yield return f.Filename;
         }
 
-        private DbSet<TModel> queryModel() => ContextFactory.Get().Set<TModel>();
+        private IQueryable<TModel> queryModel() => ContextFactory.Get().All<TModel>();
 
         protected virtual string HumanisedModelName => $"{typeof(TModel).Name.Replace("Info", "").ToLower()}";
 

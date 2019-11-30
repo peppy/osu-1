@@ -3,15 +3,16 @@
 
 using System;
 using System.Collections.Generic;
+using Realms;
 
 namespace osu.Game.Database
 {
     public class DatabaseWriteUsage : IDisposable
     {
-        public readonly OsuDbContext Context;
+        public readonly Realm Context;
         private readonly Action<DatabaseWriteUsage> usageCompleted;
 
-        public DatabaseWriteUsage(OsuDbContext context, Action<DatabaseWriteUsage> onCompleted)
+        public DatabaseWriteUsage(Realm context, Action<DatabaseWriteUsage> onCompleted)
         {
             Context = context;
             usageCompleted = onCompleted;
@@ -36,7 +37,8 @@ namespace osu.Game.Database
 
             try
             {
-                PerformedWrite |= Context.SaveChanges() > 0;
+                //todo: necessary?
+                //PerformedWrite |= false; //Context.SaveChanges() > 0;
             }
             catch (Exception e)
             {

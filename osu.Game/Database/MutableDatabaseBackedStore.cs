@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using osu.Framework.Platform;
+using Realms;
 
 namespace osu.Game.Database
 {
@@ -14,7 +15,7 @@ namespace osu.Game.Database
     /// </summary>
     /// <typeparam name="T">The databased model.</typeparam>
     public abstract class MutableDatabaseBackedStore<T> : DatabaseBackedStore
-        where T : class, IHasPrimaryKey, ISoftDelete
+        where T : RealmObject, IHasPrimaryKey, ISoftDelete
     {
         /// <summary>
         /// Fired when an item was added or updated.
@@ -34,7 +35,7 @@ namespace osu.Game.Database
         /// <summary>
         /// Access items pre-populated with includes for consumption.
         /// </summary>
-        public IQueryable<T> ConsumableItems => AddIncludesForConsumption(ContextFactory.Get().Set<T>());
+        public IQueryable<T> ConsumableItems => ContextFactory.Get().All<T>();
 
         /// <summary>
         /// Add a <typeparamref name="T"/> to the database.
@@ -45,7 +46,7 @@ namespace osu.Game.Database
             using (var usage = ContextFactory.GetForWrite())
             {
                 var context = usage.Context;
-                context.Attach(item);
+                context.Add(item);
             }
 
             ItemUpdated?.Invoke(item);
@@ -55,10 +56,11 @@ namespace osu.Game.Database
         /// Update a <typeparamref name="T"/> in the database.
         /// </summary>
         /// <param name="item">The item to update.</param>
-        public void Update(T item)
+        /// <param name="updateAction">The action to perform.</param>
+        public void Update(T item, Action<T> updateAction)
         {
-            using (var usage = ContextFactory.GetForWrite())
-                usage.Context.Update(item);
+            using (ContextFactory.GetForWrite())
+                updateAction(item);
 
             ItemUpdated?.Invoke(item);
         }
@@ -121,7 +123,7 @@ namespace osu.Game.Database
         /// </summary>
         /// <param name="items">The items to be purged.</param>
         /// <param name="context">The write context which can be used to perform subsequent deletions.</param>
-        protected virtual void Purge(List<T> items, OsuDbContext context) => context.RemoveRange(items);
+        protected virtual void Purge(List<T> items, Realm context) => items.ForEach(context.Remove);
 
         public override void Cleanup()
         {
@@ -139,7 +141,7 @@ namespace osu.Game.Database
             {
                 var context = usage.Context;
 
-                var lookup = context.Set<T>().Where(s => s.DeletePending);
+                var lookup = context.All<T>().Where(s => s.DeletePending);
 
                 if (query != null) lookup = lookup.Where(query);
 

@@ -2,10 +2,11 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Game.Database;
+using Realms;
 
 namespace osu.Game.Beatmaps
 {
-    public class BeatmapDifficulty : IHasPrimaryKey
+    public class BeatmapDifficulty : RealmObject, IHasPrimaryKey
     {
         /// <summary>
         /// The default value used for all difficulty settings except <see cref="SliderMultiplier"/> and <see cref="SliderTickRate"/>.

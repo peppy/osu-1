@@ -89,25 +89,21 @@ namespace osu.Game.Rulesets
                 // add all legacy rulesets first to ensure they have exclusive choice of primary key.
                 foreach (var r in instances.Where(r => r is ILegacyRuleset))
                 {
-                    if (context.RulesetInfo.SingleOrDefault(dbRuleset => dbRuleset.ID == r.RulesetInfo.ID) == null)
-                        context.RulesetInfo.Add(r.RulesetInfo);
+                    if (context.All<RulesetInfo>().SingleOrDefault(dbRuleset => dbRuleset.ID == r.RulesetInfo.ID) == null)
+                        context.Add(r.RulesetInfo);
                 }
-
-                context.SaveChanges();
 
                 // add any other modes
                 foreach (var r in instances.Where(r => !(r is ILegacyRuleset)))
                 {
                     // todo: StartsWith can be changed to Equals on 2020-11-08
                     // This is to give users enough time to have their database use new abbreviated info).
-                    if (context.RulesetInfo.FirstOrDefault(ri => ri.InstantiationInfo.StartsWith(r.RulesetInfo.InstantiationInfo)) == null)
-                        context.RulesetInfo.Add(r.RulesetInfo);
+                    if (context.All<RulesetInfo>().FirstOrDefault(ri => ri.InstantiationInfo.StartsWith(r.RulesetInfo.InstantiationInfo)) == null)
+                        context.Add(r.RulesetInfo);
                 }
 
-                context.SaveChanges();
-
-                // perform a consistency check
-                foreach (var r in context.RulesetInfo)
+                //perform a consistency check
+                foreach (var r in context.All<RulesetInfo>())
                 {
                     try
                     {
@@ -125,9 +121,7 @@ namespace osu.Game.Rulesets
                     }
                 }
 
-                context.SaveChanges();
-
-                AvailableRulesets = context.RulesetInfo.Where(r => r.Available).ToList();
+                AvailableRulesets = context.All<RulesetInfo>().Where(r => r.Available).ToList();
             }
         }
 

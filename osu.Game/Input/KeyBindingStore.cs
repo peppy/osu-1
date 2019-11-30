@@ -48,7 +48,7 @@ namespace osu.Game.Input
                     foreach (var insertable in group.Skip(count).Take(aimCount - count))
                     {
                         // insert any defaults which are missing.
-                        usage.Context.DatabasedKeyBinding.Add(new DatabasedKeyBinding
+                        usage.Context.Add(new DatabasedKeyBinding
                         {
                             KeyBinding =
                             {
@@ -73,7 +73,7 @@ namespace osu.Game.Input
         /// <param name="variant">An optional variant.</param>
         /// <returns></returns>
         public List<DatabasedKeyBinding> Query(int? rulesetId = null, int? variant = null) =>
-            ContextFactory.Get().DatabasedKeyBinding.Where(b => b.RulesetID == rulesetId && b.Variant == variant).ToList();
+            ContextFactory.Get().All<DatabasedKeyBinding>().Where(b => b.RulesetID == rulesetId && b.Variant == variant).ToList();
 
         public void Update(KeyBinding keyBinding)
         {
