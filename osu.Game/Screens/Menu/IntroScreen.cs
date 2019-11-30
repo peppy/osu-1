@@ -58,8 +58,11 @@ namespace osu.Game.Screens.Menu
         [Resolved]
         private AudioManager audio { get; set; }
 
+        [Resolved]
+        private BeatmapManager beatmaps { get; set; }
+
         [BackgroundDependencyLoader]
-        private void load(OsuConfigManager config, SkinManager skinManager, BeatmapManager beatmaps, Framework.Game game)
+        private void load(OsuConfigManager config, SkinManager skinManager, Framework.Game game)
         {
             // prevent user from changing beatmap while the intro is still runnning.
             beatmap = Beatmap.BeginLease(false);
@@ -90,9 +93,14 @@ namespace osu.Game.Screens.Menu
                     beatmaps.Update(setInfo, s => s.Protected = true);
                 }
             }
+        }
 
-            introBeatmap = beatmaps.GetWorkingBeatmap(setInfo.Beatmaps[0]);
+        protected override void LoadComplete()
+        {
+            introBeatmap = beatmaps.GetWorkingBeatmap(beatmaps.QueryBeatmapSet(b => b.Hash == BeatmapHash).Beatmaps[0]);
             Track = introBeatmap.Track;
+
+            base.LoadComplete();
         }
 
         public override bool OnExiting(IScreen next) => !DidLoadMenu;
