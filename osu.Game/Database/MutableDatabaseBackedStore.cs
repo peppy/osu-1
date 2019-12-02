@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 using Realms;
 
@@ -23,6 +25,21 @@ namespace osu.Game.Database
         protected MutableDatabaseBackedStore(IDatabaseContextFactory contextFactory, Storage storage = null)
             : base(contextFactory, storage)
         {
+            contextFactory.Schedule(() => ContextFactory.Get().All<T>().SubscribeForNotifications(changed));
+        }
+
+        private void changed(IRealmCollection<T> sender, ChangeSet changes, Exception error)
+        {
+            if (changes == null)
+                return;
+
+            var localThreadItems = ContextFactory.Get().All<T>().AsRealmCollection();
+
+            foreach (var i in changes.InsertedIndices)
+                ItemAdded?.Invoke(localThreadItems[i]);
+
+            foreach (var i in changes.DeletedIndices)
+                ItemRemoved?.Invoke(localThreadItems[i]);
         }
 
         /// <summary>
@@ -41,8 +58,6 @@ namespace osu.Game.Database
                 var context = usage.Context;
                 context.Add(item);
             }
-
-            ItemAdded?.Invoke(item);
         }
 
         /// <summary>
@@ -55,8 +70,9 @@ namespace osu.Game.Database
             using (ContextFactory.GetForWrite())
                 updateAction(item);
 
-            ItemRemoved?.Invoke(item);
-            ItemAdded?.Invoke(item);
+            // todo: ?
+            //ItemRemoved?.Invoke(item);
+            //ItemAdded?.Invoke(item);
         }
 
         /// <summary>

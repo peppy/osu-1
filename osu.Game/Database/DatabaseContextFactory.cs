@@ -1,4 +1,4 @@
-﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
+// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
@@ -7,6 +7,7 @@ using System.Threading;
 using AutoMapper;
 using osu.Framework.Platform;
 using osu.Framework.Statistics;
+using osu.Framework.Threading;
 using Realms;
 
 namespace osu.Game.Database
@@ -14,6 +15,7 @@ namespace osu.Game.Database
     public class DatabaseContextFactory : IDatabaseContextFactory
     {
         private readonly Storage storage;
+        private readonly Scheduler scheduler;
 
         private const string database_name = @"client";
 
@@ -28,10 +30,11 @@ namespace osu.Game.Database
 
         private Transaction currentWriteTransaction;
 
-        public DatabaseContextFactory(Storage storage)
+        public DatabaseContextFactory(Storage storage, Scheduler scheduler)
         {
             this.storage = storage;
-            recycleThreadContexts();
+            this.scheduler = scheduler;
+            recreateThreadContexts();
         }
 
         private static readonly GlobalStatistic<int> reads = GlobalStatistics.Get<int>("Database", "Get (Read)");
@@ -65,11 +68,6 @@ namespace osu.Game.Database
             {
                 if (currentWriteTransaction == null && withTransaction)
                 {
-                    // this mitigates the fact that changes on tracked entities will not be rolled back with the transaction by ensuring write operations are always executed in isolated contexts.
-                    // if this results in sub-optimal efficiency, we may need to look into removing Database-level transactions in favour of running SaveChanges where we currently commit the transaction.
-                    if (threadContexts.IsValueCreated)
-                        recycleThreadContexts();
-
                     context = threadContexts.Value;
                     currentWriteTransaction = context.BeginWrite();
                 }
@@ -90,6 +88,8 @@ namespace osu.Game.Database
 
             return new DatabaseWriteUsage(context, usageCompleted) { IsTransactionLeader = currentWriteTransaction != null && currentWriteUsages == 1 };
         }
+
+        public void Schedule(Action action) => scheduler.Add(action);
 
         private void usageCompleted(DatabaseWriteUsage usage)
         {
@@ -133,7 +133,7 @@ namespace osu.Game.Database
             }
         }
 
-        private void recycleThreadContexts()
+        private void recreateThreadContexts()
         {
             // Contexts for other threads are not disposed as they may be in use elsewhere. Instead, fresh contexts are exposed
             // for other threads to use, and we rely on the finalizer inside OsuDbContext to handle their previous contexts
@@ -147,7 +147,7 @@ namespace osu.Game.Database
         {
             lock (writeLock)
             {
-                recycleThreadContexts();
+                recreateThreadContexts();
                 storage.DeleteDatabase(database_name);
             }
         }

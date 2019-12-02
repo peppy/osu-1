@@ -648,8 +648,11 @@ namespace osu.Game.Database
 
             if (perform)
             {
-                foreach (var a in events)
-                    a.Invoke();
+                ContextFactory.Schedule(() =>
+                {
+                    foreach (var a in events)
+                        a.Invoke();
+                });
             }
 
             delayingEvents = false;
