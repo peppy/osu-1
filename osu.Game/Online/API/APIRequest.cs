@@ -131,7 +131,7 @@ namespace osu.Game.Online.API
 
             Logger.Log($@"Failing request {this} ({e})", LoggingTarget.Network);
             pendingFailure = () => Failure?.Invoke(e);
-            checkAndScheduleFailure();
+            checkAndScheduleFailure(scheduleFails);
         }
 
         /// <summary>
