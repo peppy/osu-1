@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -86,9 +85,9 @@ namespace osu.Game.Skinning
 
         protected override SkinInfo CreateModel(ArchiveReader archive) => new SkinInfo { Name = archive.Name };
 
-        protected override async Task Populate(SkinInfo model, ArchiveReader archive, CancellationToken cancellationToken = default)
+        protected override void Populate(SkinInfo model, ArchiveReader archive, CancellationToken cancellationToken = default)
         {
-            await base.Populate(model, archive, cancellationToken);
+            base.Populate(model, archive, cancellationToken);
 
             Skin reference = GetSkin(model);
 

@@ -99,6 +99,7 @@ namespace osu.Game.Beatmaps
 
         protected override bool ShouldDeleteArchive(string path) => Path.GetExtension(path)?.ToLowerInvariant() == ".osz";
 
+<<<<<<< HEAD
         public WorkingBeatmap CreateNew(RulesetInfo ruleset, User user)
         {
             var metadata = new BeatmapMetadata
@@ -127,7 +128,7 @@ namespace osu.Game.Beatmaps
             return GetWorkingBeatmap(working.Beatmaps.First());
         }
 
-        protected override async Task Populate(BeatmapSetInfo beatmapSet, ArchiveReader archive, CancellationToken cancellationToken = default)
+        protected override void Populate(BeatmapSetInfo beatmapSet, ArchiveReader archive, CancellationToken cancellationToken = default)
         {
             if (archive != null)
                 createBeatmapDifficulties(beatmapSet.Files).ForEach(beatmapSet.Beatmaps.Add);
@@ -146,7 +147,10 @@ namespace osu.Game.Beatmaps
             bool hadOnlineBeatmapIDs = beatmapSet.Beatmaps.Any(b => b.OnlineBeatmapID > 0);
 
             if (onlineLookupQueue != null)
-                await onlineLookupQueue.UpdateAsync(beatmapSet, cancellationToken);
+            {
+                // todo: fix
+                onlineLookupQueue.UpdateAsync(beatmapSet, cancellationToken).Wait();
+            }
 
             // ensure at least one beatmap was able to retrieve or keep an online ID, else drop the set ID.
             if (hadOnlineBeatmapIDs && !beatmapSet.Beatmaps.Any(b => b.OnlineBeatmapID > 0))
@@ -161,9 +165,6 @@ namespace osu.Game.Beatmaps
 
         protected override void PreImport(BeatmapSetInfo beatmapSet)
         {
-            foreach (var beatmap in beatmapSet.Beatmaps)
-                beatmap.Ruleset = rulesets.GetRuleset(beatmap.RulesetID);
-
             if (beatmapSet.Beatmaps.Any(b => b.BaseDifficulty == null))
                 throw new InvalidOperationException($"Cannot import {nameof(BeatmapInfo)} with null {nameof(BeatmapInfo.BaseDifficulty)}.");
 
@@ -442,10 +443,10 @@ namespace osu.Game.Beatmaps
                     beatmap.BeatmapInfo.Hash = hash;
                     beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
 
-                    var ruleset = rulesets.GetRuleset(beatmap.BeatmapInfo.RulesetID);
+                    beatmap.BeatmapInfo.Ruleset = rulesets.GetRuleset(beatmap.BeatmapInfo.RulesetID);
 
                     // TODO: this should be done in a better place once we actually need to dynamically update it.
-                    beatmap.BeatmapInfo.StarDifficulty = ruleset?.CreateInstance().CreateDifficultyCalculator(new DummyConversionBeatmap(beatmap)).Calculate().StarRating ?? 0;
+                    beatmap.BeatmapInfo.StarDifficulty = beatmap.BeatmapInfo.Ruleset?.CreateInstance().CreateDifficultyCalculator(new DummyConversionBeatmap(beatmap)).Calculate().StarRating ?? 0;
                     beatmap.BeatmapInfo.Length = calculateLength(beatmap);
                     beatmap.BeatmapInfo.BPM = beatmap.ControlPointInfo.BPMMode;
                     beatmap.BeatmapInfo.ID = Guid.NewGuid().ToString();
