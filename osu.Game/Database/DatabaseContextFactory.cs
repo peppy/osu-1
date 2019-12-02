@@ -44,6 +44,7 @@ namespace osu.Game.Database
         private static readonly GlobalStatistic<int> writes = GlobalStatistics.Get<int>("Database", "Get (Write)");
         private static readonly GlobalStatistic<int> commits = GlobalStatistics.Get<int>("Database", "Commits");
         private static readonly GlobalStatistic<int> rollbacks = GlobalStatistics.Get<int>("Database", "Rollbacks");
+        private static readonly GlobalStatistic<int> contexts = GlobalStatistics.Get<int>("Database", "Contexts");
 
         /// <summary>
         /// Get a context for the current thread for read-only usage.
@@ -146,7 +147,11 @@ namespace osu.Game.Database
             threadContexts = new ThreadLocal<Realm>(CreateContext, true);
         }
 
-        protected virtual Realm CreateContext() => Realm.GetInstance(new RealmConfiguration(storage.GetFullPath($"{database_name}.realm")));
+        protected virtual Realm CreateContext()
+        {
+            contexts.Value++;
+            return Realm.GetInstance(new RealmConfiguration(storage.GetFullPath($"{database_name}.realm")));
+        }
 
         public void ResetDatabase()
         {
