@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
@@ -23,12 +22,6 @@ namespace osu.Game.Beatmaps
         public string TitleUnicode { get; set; }
         public string Artist { get; set; }
         public string ArtistUnicode { get; set; }
-
-        [JsonIgnore]
-        public IList<BeatmapInfo> Beatmaps { get; }
-
-        [JsonIgnore]
-        public IList<BeatmapSetInfo> BeatmapSets { get; }
 
         /// <summary>
         /// Helper property to deserialize a username to <see cref="User"/>.
