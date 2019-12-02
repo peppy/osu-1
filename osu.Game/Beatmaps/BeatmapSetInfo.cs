@@ -13,13 +13,7 @@ namespace osu.Game.Beatmaps
     {
         public string ID { get; set; }
 
-        private int? onlineBeatmapSetID;
-
-        public int? OnlineBeatmapSetID
-        {
-            get => onlineBeatmapSetID;
-            set => onlineBeatmapSetID = value > 0 ? value : null;
-        }
+        public int? OnlineBeatmapSetID { get; set; }
 
         public DateTimeOffset DateAdded { get; set; }
 

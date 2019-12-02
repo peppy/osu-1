@@ -246,12 +246,18 @@ namespace osu.Game.Beatmaps.Formats
                     break;
 
                 case @"BeatmapID":
-                    beatmap.BeatmapInfo.OnlineBeatmapID = Parsing.ParseInt(pair.Value);
+                {
+                    int id = Parsing.ParseInt(pair.Value);
+                    beatmap.BeatmapInfo.OnlineBeatmapID = id;
                     break;
+                }
 
                 case @"BeatmapSetID":
-                    beatmap.BeatmapInfo.BeatmapSet = new BeatmapSetInfo { OnlineBeatmapSetID = Parsing.ParseInt(pair.Value) };
+                {
+                    int id = Parsing.ParseInt(pair.Value);
+                    beatmap.BeatmapInfo.BeatmapSet = new BeatmapSetInfo { OnlineBeatmapSetID = id > 0 ? id : (int?)null };
                     break;
+                }
             }
         }
 
