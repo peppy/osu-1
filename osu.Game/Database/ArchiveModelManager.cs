@@ -299,16 +299,16 @@ namespace osu.Game.Database
 
             try
             {
-                LogForModel(item, "Beginning import...");
-
-                if (archive != null)
-                    foreach (var file in createFileInfos(archive, Files))
-                        item.Files.Add(file);
-
-                Populate(item, archive, cancellationToken);
-
                 using (var write = ContextFactory.GetForWrite()) // used to share a context for full import. keep in mind this will block all writes.
                 {
+                    LogForModel(item, "Beginning import...");
+
+                    if (archive != null)
+                        foreach (var file in createFileInfos(archive, Files))
+                            item.Files.Add(file);
+
+                    Populate(item, archive, cancellationToken);
+
                     try
                     {
                         if (!write.IsTransactionLeader) throw new InvalidOperationException($"Ensure there is no parent transaction so errors can correctly be handled by {this}");
