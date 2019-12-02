@@ -25,22 +25,23 @@ namespace osu.Game.Beatmaps
 {
     public abstract class WorkingBeatmap : IWorkingBeatmap, IDisposable
     {
-        public readonly BeatmapInfo BeatmapInfo;
+        private readonly Func<BeatmapInfo> getBeatmapInfo;
 
-        public readonly BeatmapSetInfo BeatmapSetInfo;
+        public BeatmapInfo BeatmapInfo => getBeatmapInfo();
 
-        public readonly BeatmapMetadata Metadata;
+        public BeatmapSetInfo BeatmapSetInfo => BeatmapInfo.BeatmapSet;
+
+        public BeatmapMetadata Metadata => BeatmapInfo.Metadata ?? BeatmapSetInfo.Metadata ?? new BeatmapMetadata();
 
         protected AudioManager AudioManager { get; }
 
         private static readonly GlobalStatistic<int> total_count = GlobalStatistics.Get<int>(nameof(Beatmaps), $"Total {nameof(WorkingBeatmap)}s");
 
-        protected WorkingBeatmap(BeatmapInfo beatmapInfo, AudioManager audioManager)
+        protected WorkingBeatmap(Func<BeatmapInfo> getBeatmapInfo, AudioManager audioManager)
         {
+            this.getBeatmapInfo = getBeatmapInfo;
+
             AudioManager = audioManager;
-            BeatmapInfo = beatmapInfo;
-            BeatmapSetInfo = beatmapInfo.BeatmapSet;
-            Metadata = beatmapInfo.Metadata ?? BeatmapSetInfo?.Metadata ?? new BeatmapMetadata();
 
             track = new RecyclableLazy<Track>(() => GetTrack() ?? GetVirtualTrack());
             background = new RecyclableLazy<Texture>(GetBackground, BackgroundStillValid);

@@ -16,6 +16,7 @@ namespace osu.Game.Beatmaps
     [Serializable]
     public class BeatmapInfo : RealmObject, IEquatable<BeatmapInfo>, IJsonSerializable, IHasPrimaryKey
     {
+        [PrimaryKey]
         public string ID { get; set; }
 
         public int BeatmapVersion;

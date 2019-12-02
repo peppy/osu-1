@@ -21,7 +21,7 @@ namespace osu.Game.Beatmaps
         private readonly TextureStore textures;
 
         public DummyWorkingBeatmap(AudioManager audio, TextureStore textures)
-            : base(new BeatmapInfo
+            : base(() => new BeatmapInfo
             {
                 Metadata = new BeatmapMetadata
                 {
