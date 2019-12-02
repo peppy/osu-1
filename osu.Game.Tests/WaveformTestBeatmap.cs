@@ -25,7 +25,7 @@ namespace osu.Game.Tests
         private readonly ITrackStore trackStore;
 
         public WaveformTestBeatmap(AudioManager audioManager)
-            : base(new BeatmapInfo(), audioManager)
+            : base(() => new BeatmapInfo(), audioManager)
         {
             stream = TestResources.GetTestBeatmapStream();
             reader = new ZipArchiveReader(stream);

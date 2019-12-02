@@ -20,7 +20,7 @@ namespace osu.Game.Tests.Beatmaps
         /// <param name="beatmap">The beatmap.</param>
         /// <param name="storyboard">An optional storyboard.</param>
         public TestWorkingBeatmap(IBeatmap beatmap, Storyboard storyboard = null)
-            : base(beatmap.BeatmapInfo, null)
+            : base(() => beatmap.BeatmapInfo, null)
         {
             this.beatmap = beatmap;
             this.storyboard = storyboard;

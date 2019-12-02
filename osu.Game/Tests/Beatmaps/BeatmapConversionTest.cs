@@ -198,7 +198,7 @@ namespace osu.Game.Tests.Beatmaps
             private readonly IBeatmap beatmap;
 
             public ConversionWorkingBeatmap(IBeatmap beatmap)
-                : base(beatmap.BeatmapInfo, null)
+                : base(() => beatmap.BeatmapInfo, null)
             {
                 this.beatmap = beatmap;
             }
