@@ -62,7 +62,7 @@ namespace osu.Game.Online.API
 
         private Action pendingFailure;
 
-        public void Perform(IAPIProvider api)
+        public void Perform(IAPIProvider api, bool scheduleFails = true)
         {
             if (!(api is APIAccess apiAccess))
             {
@@ -72,15 +72,15 @@ namespace osu.Game.Online.API
 
             API = apiAccess;
 
-            if (checkAndScheduleFailure())
+            if (checkAndScheduleFailure(scheduleFails))
                 return;
 
             WebRequest = CreateWebRequest();
-            WebRequest.Failed += Fail;
+            WebRequest.Failed += e => Fail(e, scheduleFails);
             WebRequest.AllowRetryOnTimeout = false;
             WebRequest.AddHeader("Authorization", $"Bearer {API.AccessToken}");
 
-            if (checkAndScheduleFailure())
+            if (checkAndScheduleFailure(scheduleFails))
                 return;
 
             if (!WebRequest.Aborted) //could have been aborted by a Cancel() call
@@ -89,7 +89,7 @@ namespace osu.Game.Online.API
                 WebRequest.Perform();
             }
 
-            if (checkAndScheduleFailure())
+            if (checkAndScheduleFailure(scheduleFails))
                 return;
 
             API.Schedule(delegate
@@ -102,7 +102,7 @@ namespace osu.Game.Online.API
 
         public void Cancel() => Fail(new OperationCanceledException(@"Request cancelled"));
 
-        public void Fail(Exception e)
+        public void Fail(Exception e, bool scheduleFails = true)
         {
             if (WebRequest?.Completed == true)
                 return;
@@ -131,18 +131,22 @@ namespace osu.Game.Online.API
 
             Logger.Log($@"Failing request {this} ({e})", LoggingTarget.Network);
             pendingFailure = () => Failure?.Invoke(e);
-            checkAndScheduleFailure();
+            checkAndScheduleFailure(scheduleFails);
         }
 
         /// <summary>
         /// Checked for cancellation or error. Also queues up the Failed event if we can.
         /// </summary>
         /// <returns>Whether we are in a failed or cancelled state.</returns>
-        private bool checkAndScheduleFailure()
+        private bool checkAndScheduleFailure(bool schedule = true)
         {
             if (API == null || pendingFailure == null) return cancelled;
 
-            API.Schedule(pendingFailure);
+            if (schedule)
+                API.Schedule(pendingFailure);
+            else
+                pendingFailure?.Invoke();
+
             pendingFailure = null;
             return true;
         }
