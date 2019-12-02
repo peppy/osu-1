@@ -48,6 +48,8 @@ namespace osu.Game.Database
         /// </summary>
         public Realm Get()
         {
+            threadContexts.Value.Refresh();
+
             reads.Value++;
             return threadContexts.Value;
         }
