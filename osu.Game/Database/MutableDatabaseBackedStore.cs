@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 using Realms;
 
@@ -44,8 +46,6 @@ namespace osu.Game.Database
         /// Access items pre-populated with includes for consumption.
         /// </summary>
         public IQueryable<T> ConsumableItems => ContextFactory.Get().All<T>();
-
-        public T Get(string key) => ContextFactory.Get().Find<T>(key);
 
         /// <summary>
         /// Add a <typeparamref name="T"/> to the database.

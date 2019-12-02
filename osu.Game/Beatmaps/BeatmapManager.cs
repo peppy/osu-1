@@ -196,10 +196,8 @@ namespace osu.Game.Beatmaps
 
                 if (working == null)
                 {
-                    string id = beatmapInfo.ID;
-
                     workingCache.Add(working = new BeatmapManagerWorkingBeatmap(Files.Store,
-                        new LargeTextureStore(host?.CreateTextureLoaderStore(Files.Store)), () => ContextFactory.Get().Find<BeatmapInfo>(id), audioManager));
+                        new LargeTextureStore(host?.CreateTextureLoaderStore(Files.Store)), beatmapInfo, audioManager));
                 }
 
                 previous?.TransferTo(working);
@@ -350,7 +348,7 @@ namespace osu.Game.Beatmaps
             private readonly IBeatmap beatmap;
 
             public DummyConversionBeatmap(IBeatmap beatmap)
-                : base(() => beatmap.BeatmapInfo, null)
+                : base(beatmap.BeatmapInfo, null)
             {
                 this.beatmap = beatmap;
             }
