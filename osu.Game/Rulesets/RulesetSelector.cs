@@ -3,6 +3,7 @@
 
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Allocation;
+using osu.Game.Database;
 
 namespace osu.Game.Rulesets
 {
@@ -17,7 +18,7 @@ namespace osu.Game.Rulesets
         private void load()
         {
             foreach (var r in Rulesets.AvailableRulesets)
-                AddItem(r);
+                AddItem(r.Detach());
         }
     }
 }
