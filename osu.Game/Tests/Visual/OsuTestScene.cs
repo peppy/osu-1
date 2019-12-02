@@ -107,7 +107,7 @@ namespace osu.Game.Tests.Visual
             RecycleLocalStorage();
             contextFactory = new Lazy<DatabaseContextFactory>(() =>
             {
-                var factory = new DatabaseContextFactory(LocalStorage);
+                var factory = new DatabaseContextFactory(LocalStorage, Scheduler);
                 factory.ResetDatabase();
                 return factory;
             });

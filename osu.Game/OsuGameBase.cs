@@ -151,7 +151,7 @@ namespace osu.Game
 
             Resources.AddStore(new DllResourceStore(OsuResources.ResourceAssembly));
 
-            dependencies.Cache(contextFactory = new DatabaseContextFactory(Storage));
+            dependencies.Cache(contextFactory = new DatabaseContextFactory(Storage, Scheduler));
 
             dependencies.CacheAs(Storage);
 
