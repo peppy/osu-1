@@ -36,7 +36,7 @@ namespace osu.Game.Tests.Beatmaps.Formats
                 var decoder = Decoder.GetDecoder<Beatmap>(stream);
                 var working = new TestWorkingBeatmap(decoder.Decode(stream));
 
-                Assert.AreEqual(6, working.BeatmapInfo.BeatmapVersion);
+                Assert.AreEqual(6, working.BeatmapInfo.Get().BeatmapVersion);
                 Assert.AreEqual(6, working.Beatmap.BeatmapInfo.BeatmapVersion);
                 Assert.AreEqual(6, working.GetPlayableBeatmap(new OsuRuleset().RulesetInfo, Array.Empty<Mod>()).BeatmapInfo.BeatmapVersion);
             }

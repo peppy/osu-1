@@ -158,6 +158,27 @@ namespace osu.Game.Database
         }
     }
 
+    public class RealmWrapper<T> where T : RealmObject, IHasPrimaryKey
+    {
+        public string PrimaryKey { get; private set; }
+
+        private readonly T original;
+
+        private readonly IDatabaseContextFactory dbFactory;
+
+        public RealmWrapper(T original, IDatabaseContextFactory dbFactory)
+        {
+            this.original = original;
+            this.dbFactory = dbFactory;
+            PrimaryKey = original.ID;
+        }
+
+        public T Get() => dbFactory?.Get().Find<T>(PrimaryKey) ?? original;
+
+        public static implicit operator T(RealmWrapper<T> wrapper)
+            => wrapper?.Get();
+    }
+
     public static class RealmExtensions
     {
         public static T Detach<T>(this T obj) where T : RealmObject

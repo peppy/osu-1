@@ -177,8 +177,11 @@ namespace osu.Game
             {
                 List<ScoreInfo> scores = new List<ScoreInfo>();
 
-                foreach (var beatmap in BeatmapManager.QueryBeatmaps(b => b.BeatmapSet == set))
-                    scores.AddRange(ScoreManager.QueryScores(s => s.Beatmap == beatmap));
+                if (set.IsManaged && set.IsValid)
+                {
+                    foreach (var beatmap in BeatmapManager.QueryBeatmaps(b => b.BeatmapSet == set))
+                        scores.AddRange(ScoreManager.QueryScores(s => s.Beatmap == beatmap));
+                }
 
                 return scores;
             }

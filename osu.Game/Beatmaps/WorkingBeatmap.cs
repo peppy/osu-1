@@ -20,27 +20,26 @@ using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Rulesets.UI;
 using osu.Game.Skinning;
 using osu.Framework.Graphics.Video;
+using osu.Game.Database;
 
 namespace osu.Game.Beatmaps
 {
     public abstract class WorkingBeatmap : IWorkingBeatmap, IDisposable
     {
-        public readonly BeatmapInfo BeatmapInfo;
+        public readonly RealmWrapper<BeatmapInfo> BeatmapInfo;
 
-        public readonly BeatmapSetInfo BeatmapSetInfo;
+        public BeatmapSetInfo BeatmapSetInfo => BeatmapInfo.Get().BeatmapSet;
 
-        public readonly BeatmapMetadata Metadata;
+        public BeatmapMetadata Metadata => BeatmapInfo.Get().Metadata ?? BeatmapSetInfo?.Metadata ?? new BeatmapMetadata();
 
         protected AudioManager AudioManager { get; }
 
         private static readonly GlobalStatistic<int> total_count = GlobalStatistics.Get<int>(nameof(Beatmaps), $"Total {nameof(WorkingBeatmap)}s");
 
-        protected WorkingBeatmap(BeatmapInfo beatmapInfo, AudioManager audioManager)
+        protected WorkingBeatmap(BeatmapInfo beatmapInfo, AudioManager audioManager, IDatabaseContextFactory contextFactory = null)
         {
             AudioManager = audioManager;
-            BeatmapInfo = beatmapInfo;
-            BeatmapSetInfo = beatmapInfo.BeatmapSet;
-            Metadata = beatmapInfo.Metadata ?? BeatmapSetInfo?.Metadata ?? new BeatmapMetadata();
+            BeatmapInfo = new RealmWrapper<BeatmapInfo>(beatmapInfo, contextFactory);
 
             track = new RecyclableLazy<Track>(() => GetTrack() ?? GetVirtualTrack());
             background = new RecyclableLazy<Texture>(GetBackground, BackgroundStillValid);
@@ -156,7 +155,7 @@ namespace osu.Game.Beatmaps
             var b = GetBeatmap() ?? new Beatmap();
 
             // The original beatmap version needs to be preserved as the database doesn't contain it
-            BeatmapInfo.BeatmapVersion = b.BeatmapInfo.BeatmapVersion;
+            BeatmapInfo.Get().BeatmapVersion = b.BeatmapInfo.BeatmapVersion;
 
             // Use the database-backed info for more up-to-date values (beatmap id, ranked status, etc)
             b.BeatmapInfo = BeatmapInfo;
@@ -220,7 +219,7 @@ namespace osu.Game.Beatmaps
         /// <param name="other">The new beatmap which is being switched to.</param>
         public virtual void TransferTo(WorkingBeatmap other)
         {
-            if (track.IsResultAvailable && Track != null && BeatmapInfo.AudioEquals(other.BeatmapInfo))
+            if (track.IsResultAvailable && Track != null && BeatmapInfo.Get().AudioEquals(other.BeatmapInfo))
                 other.track = track;
         }
 

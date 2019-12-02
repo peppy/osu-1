@@ -33,7 +33,7 @@ namespace osu.Game.Tests.Beatmaps
                 ((LegacyBeatmapDecoder)decoder).ApplyOffsets = false;
 
                 var working = new TestWorkingBeatmap(decoder.Decode(stream));
-                working.BeatmapInfo.Ruleset = CreateRuleset().RulesetInfo;
+                working.BeatmapInfo.Get().Ruleset = CreateRuleset().RulesetInfo;
 
                 return working;
             }

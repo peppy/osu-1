@@ -112,10 +112,12 @@ namespace osu.Game.Screens.Play
             // this is commonly used to display an intro before the audio track start.
             startTime = Math.Min(startTime, beatmap.Storyboard.FirstEventTime);
 
+            double leadIn = beatmap.BeatmapInfo.Get().AudioLeadIn;
+
             // some beatmaps specify a current lead-in time which should be used instead of the ruleset-provided value when available.
             // this is not available as an option in the live editor but can still be applied via .osu editing.
-            if (beatmap.BeatmapInfo.AudioLeadIn > 0)
-                startTime = Math.Min(startTime, firstHitObjectTime - beatmap.BeatmapInfo.AudioLeadIn);
+            if (leadIn > 0)
+                startTime = Math.Min(startTime, firstHitObjectTime - leadIn);
 
             Seek(startTime);
 

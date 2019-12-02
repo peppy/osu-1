@@ -103,7 +103,7 @@ namespace osu.Game.Tests.Visual.Gameplay
                     {
                         Text = $"GameplayStartTime: {DrawableRuleset.GameplayStartTime} "
                                + $"FirstHitObjectTime: {FirstHitObjectTime} "
-                               + $"LeadInTime: {Beatmap.Value.BeatmapInfo.AudioLeadIn} "
+                               + $"LeadInTime: {Beatmap.Value.BeatmapInfo.Get().AudioLeadIn} "
                                + $"FirstFrameClockTime: {FirstFrameClockTime}"
                     });
                 }

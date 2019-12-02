@@ -332,10 +332,12 @@ namespace osu.Game.Screens.Select
 
             if (this.IsCurrentScreen() && !Carousel.SelectBeatmap(e.NewValue?.BeatmapInfo, false))
             {
+                var ruleset = e.NewValue?.BeatmapInfo?.Get().Ruleset;
+
                 // If selecting new beatmap without bypassing filters failed, there's possibly a ruleset mismatch
-                if (e.NewValue?.BeatmapInfo?.Ruleset != null && !e.NewValue.BeatmapInfo.Ruleset.Equals(decoupledRuleset.Value))
+                if (ruleset != null && !ruleset.Equals(decoupledRuleset.Value))
                 {
-                    Ruleset.Value = e.NewValue.BeatmapInfo.Ruleset;
+                    Ruleset.Value = ruleset;
                     Carousel.SelectBeatmap(e.NewValue.BeatmapInfo);
                 }
             }

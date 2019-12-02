@@ -666,7 +666,7 @@ namespace osu.Game.Database
                     queuedEvents.Add(a);
             }
             else
-                a.Invoke();
+                ContextFactory.Schedule(() => a.Invoke());
         }
 
         #endregion

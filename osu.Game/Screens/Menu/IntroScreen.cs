@@ -91,10 +91,7 @@ namespace osu.Game.Screens.Menu
                     beatmaps.Import(new ZipArchiveReader(game.Resources.GetStream($"Tracks/{BeatmapFile}"), BeatmapFile)).Wait();
                 }
             }
-        }
 
-        protected override void LoadComplete()
-        {
             var set = beatmaps.QueryBeatmapSet(b => b.Hash == BeatmapHash);
             beatmaps.Update(set, s => s.Protected = true);
 

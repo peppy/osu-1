@@ -409,7 +409,7 @@ namespace osu.Game.Screens.Play
             [BackgroundDependencyLoader]
             private void load()
             {
-                var metadata = beatmap.BeatmapInfo?.Metadata ?? new BeatmapMetadata();
+                var metadata = beatmap.BeatmapInfo?.Get().Metadata ?? new BeatmapMetadata();
 
                 AutoSizeAxes = Axes.Both;
                 Children = new Drawable[]
@@ -465,7 +465,7 @@ namespace osu.Game.Screens.Play
                             },
                             new OsuSpriteText
                             {
-                                Text = beatmap?.BeatmapInfo?.Version,
+                                Text = beatmap?.BeatmapInfo?.Get().Version,
                                 Font = OsuFont.GetFont(size: 26, italics: true),
                                 Origin = Anchor.TopCentre,
                                 Anchor = Anchor.TopCentre,

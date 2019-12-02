@@ -30,7 +30,7 @@ namespace osu.Game.Tests.Visual
         [BackgroundDependencyLoader]
         private void load()
         {
-            Beatmap.Value.BeatmapInfo.BaseDifficulty.CircleSize = 2;
+            Beatmap.Value.BeatmapInfo.Get().BaseDifficulty.CircleSize = 2;
         }
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)

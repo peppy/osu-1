@@ -144,13 +144,13 @@ namespace osu.Game.Screens.Select
                 : base(pixelSnapping: true)
             {
                 this.beatmap = beatmap;
-                ruleset = userRuleset ?? beatmap.BeatmapInfo.Ruleset;
+                ruleset = userRuleset ?? beatmap.BeatmapInfo.Get().Ruleset;
             }
 
             [BackgroundDependencyLoader]
             private void load(LocalisationManager localisation)
             {
-                var beatmapInfo = beatmap.BeatmapInfo;
+                var beatmapInfo = beatmap.BeatmapInfo.Get();
                 var metadata = beatmapInfo.Metadata ?? beatmap.BeatmapSetInfo?.Metadata ?? new BeatmapMetadata();
 
                 CacheDrawnFrameBuffer = true;
@@ -321,7 +321,7 @@ namespace osu.Game.Screens.Select
                     catch (BeatmapInvalidForRulesetException)
                     {
                         // Can't be converted to the user's ruleset, so use the beatmap's own ruleset
-                        playableBeatmap = beatmap.GetPlayableBeatmap(beatmap.BeatmapInfo.Ruleset, Array.Empty<Mod>());
+                        playableBeatmap = beatmap.GetPlayableBeatmap(beatmap.BeatmapInfo.Get().Ruleset, Array.Empty<Mod>());
                     }
 
                     labels.AddRange(playableBeatmap.GetStatistics().Select(s => new InfoLabel(s)));

@@ -26,7 +26,7 @@ namespace osu.Game.Rulesets.Mania.Difficulty
         public ManiaDifficultyCalculator(Ruleset ruleset, WorkingBeatmap beatmap)
             : base(ruleset, beatmap)
         {
-            isForCurrentRuleset = beatmap.BeatmapInfo.Ruleset.Equals(ruleset.RulesetInfo);
+            isForCurrentRuleset = beatmap.BeatmapInfo.Get().Ruleset.Equals(ruleset.RulesetInfo);
         }
 
         protected override DifficultyAttributes CreateDifficultyAttributes(IBeatmap beatmap, Mod[] mods, Skill[] skills, double clockRate)

@@ -50,8 +50,8 @@ namespace osu.Game.Overlays
         {
             beatmapSets.AddRange(beatmaps.GetAllUsableBeatmapSets().OrderBy(_ => RNG.Next()));
 
-            beatmaps.ItemAdded += handleBeatmapAdded;
-            beatmaps.ItemRemoved += handleBeatmapRemoved;
+            //beatmaps.ItemAdded += handleBeatmapAdded;
+            //beatmaps.ItemRemoved += handleBeatmapRemoved;
 
             beatmap.BindValueChanged(beatmapChanged, true);
             mods.BindValueChanged(_ => ResetTrackAdjustments(), true);
@@ -203,7 +203,7 @@ namespace osu.Game.Overlays
 
             if (current != null)
             {
-                bool audioEquals = beatmap.NewValue?.BeatmapInfo?.AudioEquals(current.BeatmapInfo) ?? false;
+                bool audioEquals = beatmap.NewValue?.BeatmapInfo?.Get().AudioEquals(current.BeatmapInfo) ?? false;
 
                 if (audioEquals)
                     direction = TrackChangeDirection.None;

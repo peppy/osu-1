@@ -11,7 +11,7 @@ namespace osu.Game.Screens.Edit.Compose
     {
         protected override Drawable CreateMainContent()
         {
-            var ruleset = Beatmap.Value.BeatmapInfo.Ruleset?.CreateInstance();
+            var ruleset = Beatmap.Value.BeatmapInfo.Get().Ruleset?.CreateInstance();
 
             var composer = ruleset?.CreateHitObjectComposer();
 

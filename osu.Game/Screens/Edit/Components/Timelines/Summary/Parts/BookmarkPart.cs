@@ -16,7 +16,7 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary.Parts
         protected override void LoadBeatmap(WorkingBeatmap beatmap)
         {
             base.LoadBeatmap(beatmap);
-            foreach (int bookmark in beatmap.BeatmapInfo.Bookmarks)
+            foreach (int bookmark in beatmap.BeatmapInfo.Get().Bookmarks)
                 Add(new BookmarkVisualisation(bookmark));
         }
 

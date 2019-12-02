@@ -70,7 +70,7 @@ namespace osu.Game.Rulesets.Osu.UI.Cursor
             if (autoCursorScale.Value && beatmap.Value != null)
             {
                 // if we have a beatmap available, let's get its circle size to figure out an automatic cursor scale modifier.
-                scale *= 1f - 0.7f * (1f + beatmap.Value.BeatmapInfo.BaseDifficulty.CircleSize - BeatmapDifficulty.DEFAULT_DIFFICULTY) / BeatmapDifficulty.DEFAULT_DIFFICULTY;
+                scale *= 1f - 0.7f * (1f + beatmap.Value.BeatmapInfo.Get().BaseDifficulty.CircleSize - BeatmapDifficulty.DEFAULT_DIFFICULTY) / BeatmapDifficulty.DEFAULT_DIFFICULTY;
             }
 
             CursorScale.Value = scale;

@@ -10,6 +10,7 @@ using osu.Framework.Graphics.Video;
 using osu.Framework.IO.Stores;
 using osu.Framework.Logging;
 using osu.Game.Beatmaps.Formats;
+using osu.Game.Database;
 using osu.Game.IO;
 using osu.Game.Skinning;
 using osu.Game.Storyboards;
@@ -22,8 +23,8 @@ namespace osu.Game.Beatmaps
         {
             private readonly IResourceStore<byte[]> store;
 
-            public BeatmapManagerWorkingBeatmap(IResourceStore<byte[]> store, TextureStore textureStore, BeatmapInfo beatmapInfo, AudioManager audioManager)
-                : base(beatmapInfo, audioManager)
+            public BeatmapManagerWorkingBeatmap(IResourceStore<byte[]> store, TextureStore textureStore, BeatmapInfo beatmapInfo, AudioManager audioManager, IDatabaseContextFactory contextFactory)
+                : base(beatmapInfo, audioManager, contextFactory)
             {
                 this.store = store;
                 this.textureStore = textureStore;
@@ -33,7 +34,7 @@ namespace osu.Game.Beatmaps
             {
                 try
                 {
-                    using (var stream = new LineBufferedReader(store.GetStream(getPathForFile(BeatmapInfo.Path))))
+                    using (var stream = new LineBufferedReader(store.GetStream(getPathForFile(BeatmapInfo.Get().Path))))
                         return Decoder.GetDecoder<Beatmap>(stream).Decode(stream);
                 }
                 catch
@@ -104,7 +105,7 @@ namespace osu.Game.Beatmaps
             {
                 base.TransferTo(other);
 
-                if (other is BeatmapManagerWorkingBeatmap owb && textureStore != null && BeatmapInfo.BackgroundEquals(other.BeatmapInfo))
+                if (other is BeatmapManagerWorkingBeatmap owb && textureStore != null && BeatmapInfo.Get().BackgroundEquals(other.BeatmapInfo))
                     owb.textureStore = textureStore;
             }
 
@@ -127,7 +128,7 @@ namespace osu.Game.Beatmaps
 
                 try
                 {
-                    using (var stream = new LineBufferedReader(store.GetStream(getPathForFile(BeatmapInfo.Path))))
+                    using (var stream = new LineBufferedReader(store.GetStream(getPathForFile(BeatmapInfo.Get().Path))))
                     {
                         var decoder = Decoder.GetDecoder<Storyboard>(stream);
 

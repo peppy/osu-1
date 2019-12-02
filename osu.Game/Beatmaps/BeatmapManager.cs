@@ -184,20 +184,20 @@ namespace osu.Game.Beatmaps
         /// <returns>A <see cref="WorkingBeatmap"/> instance correlating to the provided <see cref="BeatmapInfo"/>.</returns>
         public WorkingBeatmap GetWorkingBeatmap(BeatmapInfo beatmapInfo, WorkingBeatmap previous = null)
         {
-            if (beatmapInfo?.ID != null && previous != null && previous.BeatmapInfo?.ID == beatmapInfo.ID)
+            if (beatmapInfo?.ID != null && previous != null && previous.BeatmapInfo?.Get().ID == beatmapInfo.ID)
                 return previous;
 
-            if (beatmapInfo?.BeatmapSet == null || beatmapInfo == DefaultBeatmap?.BeatmapInfo)
+            if (beatmapInfo?.BeatmapSet == null || beatmapInfo == DefaultBeatmap?.BeatmapInfo?.Get())
                 return DefaultBeatmap;
 
             lock (workingCache)
             {
-                var working = workingCache.FirstOrDefault(w => w.BeatmapInfo?.ID == beatmapInfo.ID);
+                var working = workingCache.FirstOrDefault(w => w.BeatmapInfo?.Get().ID == beatmapInfo.ID);
 
                 if (working == null)
                 {
                     workingCache.Add(working = new BeatmapManagerWorkingBeatmap(Files.Store,
-                        new LargeTextureStore(host?.CreateTextureLoaderStore(Files.Store)), beatmapInfo, audioManager));
+                        new LargeTextureStore(host?.CreateTextureLoaderStore(Files.Store)), beatmapInfo, audioManager, ContextFactory));
                 }
 
                 previous?.TransferTo(working);
