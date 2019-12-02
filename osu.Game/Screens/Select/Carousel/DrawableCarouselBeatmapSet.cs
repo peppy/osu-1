@@ -16,6 +16,7 @@ using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Drawables;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
@@ -32,7 +33,7 @@ namespace osu.Game.Screens.Select.Carousel
         private Action<int> viewDetails;
 
         private DialogOverlay dialogOverlay;
-        private readonly BeatmapSetInfo beatmapSet;
+        private BeatmapSetInfo beatmapSet;
 
         public DrawableCarouselBeatmapSet(CarouselBeatmapSet set)
             : base(set)
@@ -43,6 +44,8 @@ namespace osu.Game.Screens.Select.Carousel
         [BackgroundDependencyLoader(true)]
         private void load(BeatmapManager manager, BeatmapSetOverlay beatmapOverlay, DialogOverlay overlay)
         {
+            beatmapSet = beatmapSet.Refetch();
+
             restoreHiddenRequested = s => s.Beatmaps.ForEach(manager.Restore);
             dialogOverlay = overlay;
             if (beatmapOverlay != null)
@@ -115,6 +118,10 @@ namespace osu.Game.Screens.Select.Carousel
         private IEnumerable<DifficultyIcon> getDifficultyIcons()
         {
             var beatmaps = ((CarouselBeatmapSet)Item).Beatmaps.ToList();
+
+            //todo: hack
+            foreach (var b in beatmaps)
+                b.Beatmap = b.Beatmap.Refetch();
 
             return beatmaps.Count > maximum_difficulty_icons
                 ? (IEnumerable<DifficultyIcon>)beatmaps.GroupBy(b => b.Beatmap.Ruleset).Select(group => new FilterableGroupedDifficultyIcon(group.ToList(), group.Key))

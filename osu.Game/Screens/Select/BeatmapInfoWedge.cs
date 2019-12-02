@@ -23,6 +23,7 @@ using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Localisation;
+using osu.Game.Database;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.UI;
@@ -150,7 +151,7 @@ namespace osu.Game.Screens.Select
             [BackgroundDependencyLoader]
             private void load(LocalisationManager localisation)
             {
-                var beatmapInfo = beatmap.BeatmapInfo;
+                var beatmapInfo = beatmap.BeatmapInfo.Refetch();
                 var metadata = beatmapInfo.Metadata ?? beatmap.BeatmapSetInfo?.Metadata ?? new BeatmapMetadata();
 
                 CacheDrawnFrameBuffer = true;
@@ -301,7 +302,7 @@ namespace osu.Game.Screens.Select
                     {
                         Name = "Length",
                         Icon = FontAwesome.Regular.Clock,
-                        Content = TimeSpan.FromMilliseconds(b.BeatmapInfo.Length).ToString(@"m\:ss"),
+                        Content = TimeSpan.FromMilliseconds(b.BeatmapInfo.Refetch().Length).ToString(@"m\:ss"),
                     }));
 
                     labels.Add(new InfoLabel(new BeatmapStatistic

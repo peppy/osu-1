@@ -11,6 +11,9 @@ namespace osu.Game.Scoring
     {
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public int FileInfoID { get; set; }
 
         public FileInfo FileInfo { get; set; }

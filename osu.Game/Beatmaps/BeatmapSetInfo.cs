@@ -11,7 +11,17 @@ namespace osu.Game.Beatmaps
 {
     public class BeatmapSetInfo : RealmObject, IHasPrimaryKey, IHasFiles<BeatmapSetFileInfo>, ISoftDelete, IEquatable<BeatmapSetInfo>
     {
+        [PrimaryKey]
         public string ID { get; set; }
+
+        [Ignored]
+        public string FetchedID { get; set; }
+
+        protected override void OnManaged()
+        {
+            FetchedID = ID;
+            base.OnManaged();
+        }
 
         public int? OnlineBeatmapSetID { get; set; }
 

@@ -11,6 +11,9 @@ namespace osu.Game.IO
     {
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public string Hash { get; set; }
 
         public string StoragePath => Path.Combine(Hash.Remove(1), Hash.Remove(2), Hash);

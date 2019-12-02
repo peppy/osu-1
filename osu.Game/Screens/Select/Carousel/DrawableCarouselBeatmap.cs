@@ -14,6 +14,7 @@ using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Events;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Drawables;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Backgrounds;
 using osu.Game.Graphics.Sprites;
@@ -26,7 +27,7 @@ namespace osu.Game.Screens.Select.Carousel
 {
     public class DrawableCarouselBeatmap : DrawableCarouselItem, IHasContextMenu
     {
-        private readonly BeatmapInfo beatmap;
+        private BeatmapInfo beatmap;
 
         private Sprite background;
 
@@ -50,6 +51,8 @@ namespace osu.Game.Screens.Select.Carousel
         private void load(SongSelect songSelect, BeatmapManager manager, BeatmapSetOverlay beatmapOverlay)
         {
             this.beatmapOverlay = beatmapOverlay;
+
+            beatmap = beatmap.Refetch();
 
             if (songSelect != null)
             {

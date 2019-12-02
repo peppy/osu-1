@@ -13,6 +13,9 @@ namespace osu.Game.Skinning
     {
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public string Name { get; set; }
 
         public string Hash { get; set; }

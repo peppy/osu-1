@@ -3,6 +3,7 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using Realms;
 
 namespace osu.Game.Database
 {
@@ -11,5 +12,8 @@ namespace osu.Game.Database
         [JsonIgnore]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         string ID { get; set; }
+
+        [Ignored]
+        string FetchedID { get; set; }
     }
 }

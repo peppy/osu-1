@@ -16,6 +16,9 @@ namespace osu.Game.Beatmaps
     {
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public string Title { get; set; }
         public string TitleUnicode { get; set; }
         public string Artist { get; set; }
@@ -26,17 +29,17 @@ namespace osu.Game.Beatmaps
         /// </summary>
         [JsonProperty(@"creator")]
         [Column("Author")]
-        public string AuthorString
-        {
-            get => Author?.Username;
-            set => Author = new User { Username = value };
-        }
+        public string AuthorString { get; set; }
 
         /// <summary>
         /// The author of the beatmaps in this set.
         /// </summary>
         [JsonIgnore]
-        public User Author;
+        public User Author
+        {
+            get => new User { Username = AuthorString };
+            set => AuthorString = value.Username;
+        }
 
         public string Source { get; set; }
 

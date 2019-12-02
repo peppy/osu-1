@@ -21,6 +21,9 @@ namespace osu.Game.Scoring
     {
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public int RankInt { get; set; }
 
         [JsonProperty("rank")]

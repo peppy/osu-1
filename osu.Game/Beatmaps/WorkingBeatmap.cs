@@ -20,6 +20,7 @@ using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Rulesets.UI;
 using osu.Game.Skinning;
 using osu.Framework.Graphics.Video;
+using osu.Game.Database;
 
 namespace osu.Game.Beatmaps
 {
@@ -114,6 +115,8 @@ namespace osu.Game.Beatmaps
 
             // Convert
             IBeatmap converted = converter.Convert();
+
+            converted.BeatmapInfo = converted.BeatmapInfo.Refetch();
 
             // Apply difficulty mods
             if (mods.Any(m => m is IApplicableToDifficulty))

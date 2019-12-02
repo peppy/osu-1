@@ -13,6 +13,9 @@ namespace osu.Game.Input.Bindings
     {
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public int? RulesetID { get; set; }
 
         public int? Variant { get; set; }

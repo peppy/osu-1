@@ -18,6 +18,7 @@ using osu.Framework.Threading;
 using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Input.Events;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.Cursor;
 using osu.Game.Screens.Select.Carousel;
@@ -211,6 +212,10 @@ namespace osu.Game.Screens.Select
             {
                 if (!bypassFilters && set.Filtered.Value)
                     continue;
+
+                //todo: hack
+                foreach (var b in set.Beatmaps)
+                    b.Beatmap = b.Beatmap.Refetch();
 
                 var item = set.Beatmaps.FirstOrDefault(p => p.Beatmap.Equals(beatmap));
 

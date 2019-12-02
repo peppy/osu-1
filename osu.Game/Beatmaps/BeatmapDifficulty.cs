@@ -15,6 +15,9 @@ namespace osu.Game.Beatmaps
 
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public float DrainRate { get; set; } = DEFAULT_DIFFICULTY;
         public float CircleSize { get; set; } = DEFAULT_DIFFICULTY;
         public float OverallDifficulty { get; set; } = DEFAULT_DIFFICULTY;

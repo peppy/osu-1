@@ -19,6 +19,15 @@ namespace osu.Game.Beatmaps
         [PrimaryKey]
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
+        protected override void OnManaged()
+        {
+            FetchedID = ID;
+            base.OnManaged();
+        }
+
         public int BeatmapVersion;
 
         private int? onlineBeatmapID;

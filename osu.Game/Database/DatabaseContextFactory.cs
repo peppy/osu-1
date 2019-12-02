@@ -169,5 +169,8 @@ namespace osu.Game.Database
 
             return detached;
         }
+
+        public static T Refetch<T>(this T obj) where T : RealmObject =>
+            obj.Realm == null ? obj : Realm.GetInstance(obj.Realm.Config).Find<T>(((IHasPrimaryKey)obj).FetchedID);
     }
 }

@@ -11,6 +11,9 @@ namespace osu.Game.Beatmaps
     {
         public string ID { get; set; }
 
+        [Ignored]
+        public string FetchedID { get; set; }
+
         public int BeatmapSetInfoID { get; set; }
 
         public int FileInfoID { get; set; }
