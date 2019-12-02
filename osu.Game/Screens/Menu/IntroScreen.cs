@@ -88,16 +88,17 @@ namespace osu.Game.Screens.Menu
                 if (setInfo == null)
                 {
                     // we need to import the default menu background beatmap
-                    setInfo = beatmaps.Import(new ZipArchiveReader(game.Resources.GetStream($"Tracks/{BeatmapFile}"), BeatmapFile)).Result;
-
-                    beatmaps.Update(setInfo, s => s.Protected = true);
+                    beatmaps.Import(new ZipArchiveReader(game.Resources.GetStream($"Tracks/{BeatmapFile}"), BeatmapFile)).Wait();
                 }
             }
         }
 
         protected override void LoadComplete()
         {
-            introBeatmap = beatmaps.GetWorkingBeatmap(beatmaps.QueryBeatmapSet(b => b.Hash == BeatmapHash).Beatmaps[0]);
+            var set = beatmaps.QueryBeatmapSet(b => b.Hash == BeatmapHash);
+            beatmaps.Update(set, s => s.Protected = true);
+
+            introBeatmap = beatmaps.GetWorkingBeatmap(set.Beatmaps[0]);
             Track = introBeatmap.Track;
 
             base.LoadComplete();
