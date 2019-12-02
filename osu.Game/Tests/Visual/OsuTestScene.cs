@@ -104,7 +104,7 @@ namespace osu.Game.Tests.Visual
             localStorage = new Lazy<Storage>(() => new NativeStorage($"{GetType().Name}-{Guid.NewGuid()}"));
             contextFactory = new Lazy<DatabaseContextFactory>(() =>
             {
-                var factory = new DatabaseContextFactory(LocalStorage);
+                var factory = new DatabaseContextFactory(LocalStorage, Scheduler);
                 factory.ResetDatabase();
                 return factory;
             });

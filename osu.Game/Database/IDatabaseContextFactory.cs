@@ -1,6 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using Realms;
 
 namespace osu.Game.Database
@@ -19,5 +20,8 @@ namespace osu.Game.Database
         /// <param name="withTransaction">Whether to start a transaction for this write.</param>
         /// <returns>A usage containing a usable context.</returns>
         DatabaseWriteUsage GetForWrite(bool withTransaction = true);
+
+        //todo: temporary?
+        void Schedule(Action action);
     }
 }
