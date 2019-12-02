@@ -131,13 +131,21 @@ namespace osu.Game.Screens.Select
         }
 
         [BackgroundDependencyLoader(permitNulls: true)]
-        private void load(OsuConfigManager config, BeatmapManager beatmaps)
+        private void load(OsuConfigManager config)
         {
             config.BindWith(OsuSetting.RandomSelectAlgorithm, RandomAlgorithm);
             config.BindWith(OsuSetting.SongSelectRightMouseScroll, RightClickScrollingEnabled);
 
             RightClickScrollingEnabled.ValueChanged += enabled => scroll.RightMouseScrollbar = enabled.NewValue;
             RightClickScrollingEnabled.TriggerChange();
+        }
+
+        [Resolved]
+        private BeatmapManager beatmaps { get; set; }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
 
             loadBeatmapSets(beatmaps.GetAllUsableBeatmapSetsEnumerable());
         }
