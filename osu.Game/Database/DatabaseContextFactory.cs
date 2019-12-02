@@ -32,6 +32,9 @@ namespace osu.Game.Database
 
         public DatabaseContextFactory(Storage storage, Scheduler scheduler)
         {
+            //todo: temp
+            storage.Delete($"{database_name}.realm");
+
             this.storage = storage;
             this.scheduler = scheduler;
             recreateThreadContexts();
