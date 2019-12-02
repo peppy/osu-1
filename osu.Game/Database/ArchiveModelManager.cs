@@ -281,7 +281,7 @@ namespace osu.Game.Database
         /// <param name="item">The model to be imported.</param>
         /// <param name="archive">An optional archive to use for model population.</param>
         /// <param name="cancellationToken">An optional cancellation token.</param>
-        public async Task<TModel> Import(TModel item, ArchiveReader archive = null, CancellationToken cancellationToken = default) => await Task.Factory.StartNew(async () =>
+        public async Task<TModel> Import(TModel item, ArchiveReader archive = null, CancellationToken cancellationToken = default) => await Task.Factory.StartNew(() =>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -305,7 +305,7 @@ namespace osu.Game.Database
                     foreach (var file in createFileInfos(archive, Files))
                         item.Files.Add(file);
 
-                await Populate(item, archive, cancellationToken);
+                Populate(item, archive, cancellationToken);
 
                 using (var write = ContextFactory.GetForWrite()) // used to share a context for full import. keep in mind this will block all writes.
                 {
@@ -357,7 +357,7 @@ namespace osu.Game.Database
 
             flushEvents(true);
             return item;
-        }, cancellationToken, TaskCreationOptions.HideScheduler, import_scheduler).Unwrap();
+        }, cancellationToken, TaskCreationOptions.HideScheduler, import_scheduler);
 
         /// <summary>
         /// Perform an update of the specified item.
@@ -571,7 +571,7 @@ namespace osu.Game.Database
         /// <param name="model">The model to populate.</param>
         /// <param name="archive">The archive to use as a reference for population. May be null.</param>
         /// <param name="cancellationToken">An optional cancellation token.</param>
-        protected virtual Task Populate(TModel model, [CanBeNull] ArchiveReader archive, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        protected virtual void Populate(TModel model, [CanBeNull] ArchiveReader archive, CancellationToken cancellationToken = default) { }
 
         /// <summary>
         /// Perform any final actions before the import to database executes.
