@@ -106,8 +106,11 @@ namespace osu.Game.Online.API.Requests.Responses
             set
             {
                 // extract the set ID to its correct place.
-                Beatmap.BeatmapSet = new BeatmapSetInfo { OnlineBeatmapSetID = int.Parse(value.ID) };
-                value.ID = string.Empty;
+                if (int.TryParse(value.ID, out var intID))
+                {
+                    Beatmap.BeatmapSet = new BeatmapSetInfo { OnlineBeatmapSetID = int.Parse(value.ID) };
+                    value.ID = string.Empty;
+                }
 
                 Beatmap.Metadata = value;
             }
