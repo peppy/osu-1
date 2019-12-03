@@ -52,6 +52,10 @@ namespace osu.Game.Database
             using (var usage = ContextFactory.GetForWrite())
             {
                 var context = usage.Context;
+
+                if (string.IsNullOrEmpty(item.ID))
+                    item.ID = Guid.NewGuid().ToString();
+
                 context.Add(item);
             }
         }

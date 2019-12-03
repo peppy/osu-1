@@ -11,6 +11,7 @@ namespace osu.Game.Skinning
 {
     public class SkinInfo : RealmObject, IHasFiles<SkinFileInfo>, IEquatable<SkinInfo>, IHasPrimaryKey, ISoftDelete
     {
+        [PrimaryKey]
         public string ID { get; set; }
 
         public string Name { get; set; }
