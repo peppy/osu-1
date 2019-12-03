@@ -166,19 +166,26 @@ namespace osu.Game.Database
     {
         public string ID { get; }
 
-        private readonly T original;
-
         private readonly ThreadLocal<T> threadValues;
 
         public readonly IDatabaseContextFactory ContextFactory;
 
         public RealmWrapper(T original, IDatabaseContextFactory contextFactory)
         {
-            this.original = original;
             ContextFactory = contextFactory;
             ID = original.ID;
 
-            threadValues = new ThreadLocal<T>(() => (T)ContextFactory?.Get().Find(typeof(T).Name, ID) ?? original);
+            var originalContext = original.Realm;
+
+            threadValues = new ThreadLocal<T>(() =>
+            {
+                var context = ContextFactory?.Get();
+
+                if (originalContext?.IsSameInstance(context) != false)
+                    return original;
+
+                return (T)context?.Find(typeof(T).Name, ID) ?? original;
+            });
         }
 
         public T Get() => threadValues.Value;
