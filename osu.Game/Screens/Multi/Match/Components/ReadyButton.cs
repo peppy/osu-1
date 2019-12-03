@@ -7,6 +7,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Online.Multiplayer;
 using osuTK;
 
@@ -54,18 +55,18 @@ namespace osu.Game.Screens.Multi.Match.Components
             hasBeatmap = beatmaps.QueryBeatmap(b => b.OnlineBeatmapID == beatmap.OnlineBeatmapID) != null;
         }
 
-        private void beatmapAdded(BeatmapSetInfo model)
+        private void beatmapAdded(RealmWrapper<BeatmapSetInfo> model)
         {
-            if (model.Beatmaps.Any(b => b.OnlineBeatmapID == Beatmap.Value.OnlineBeatmapID))
+            if (model.Get().Beatmaps.Any(b => b.OnlineBeatmapID == Beatmap.Value.OnlineBeatmapID))
                 Schedule(() => hasBeatmap = true);
         }
 
-        private void beatmapRemoved(BeatmapSetInfo model)
+        private void beatmapRemoved(RealmWrapper<BeatmapSetInfo> model)
         {
             if (Beatmap.Value == null)
                 return;
 
-            if (model.OnlineBeatmapSetID == Beatmap.Value.BeatmapSet.OnlineBeatmapSetID)
+            if (model.Get().OnlineBeatmapSetID == Beatmap.Value.BeatmapSet.OnlineBeatmapSetID)
                 Schedule(() => hasBeatmap = false);
         }
 

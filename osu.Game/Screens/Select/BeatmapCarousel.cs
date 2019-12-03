@@ -18,6 +18,7 @@ using osu.Framework.Threading;
 using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Input.Events;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.Cursor;
 using osu.Game.Screens.Select.Carousel;
@@ -67,11 +68,10 @@ namespace osu.Game.Screens.Select
 
         public IEnumerable<BeatmapSetInfo> BeatmapSets
         {
-            get => beatmapSets.Select(g => g.BeatmapSet);
-            set => loadBeatmapSets(value);
+            set => loadBeatmapSets(value.Select(b => b.WrapAsUnmanaged()));
         }
 
-        private void loadBeatmapSets(IEnumerable<BeatmapSetInfo> beatmapSets)
+        private void loadBeatmapSets(IEnumerable<RealmWrapper<BeatmapSetInfo>> beatmapSets)
         {
             CarouselRoot newRoot = new CarouselRoot(this);
 
@@ -147,10 +147,10 @@ namespace osu.Game.Screens.Select
         {
             base.LoadComplete();
 
-            loadBeatmapSets(beatmaps.GetAllUsableBeatmapSetsEnumerable());
+            loadBeatmapSets(beatmaps.GetAllUsableBeatmapSets());
         }
 
-        public void RemoveBeatmapSet(BeatmapSetInfo beatmapSet) => Schedule(() =>
+        public void RemoveBeatmapSet(RealmWrapper<BeatmapSetInfo> beatmapSet) => Schedule(() =>
         {
             var existingSet = beatmapSets.FirstOrDefault(b => b.BeatmapSet.ID == beatmapSet.ID);
 
@@ -161,7 +161,7 @@ namespace osu.Game.Screens.Select
             itemsCache.Invalidate();
         });
 
-        public void UpdateBeatmapSet(BeatmapSetInfo beatmapSet) => Schedule(() =>
+        public void UpdateBeatmapSet(RealmWrapper<BeatmapSetInfo> beatmapSet) => Schedule(() =>
         {
             string previouslySelectedID = null;
             CarouselBeatmapSet existingSet = beatmapSets.FirstOrDefault(b => b.BeatmapSet.ID == beatmapSet.ID);
@@ -212,7 +212,7 @@ namespace osu.Game.Screens.Select
                 if (!bypassFilters && set.Filtered.Value)
                     continue;
 
-                var item = set.Beatmaps.FirstOrDefault(p => p.Beatmap.Equals(beatmap));
+                var item = set.Beatmaps.FirstOrDefault(p => p.Beatmap.ID == beatmap.ID);
 
                 if (item == null)
                     // The beatmap that needs to be selected doesn't exist in this set
@@ -541,17 +541,10 @@ namespace osu.Game.Screens.Select
                 i.Dispose();
         }
 
-        private CarouselBeatmapSet createCarouselSet(BeatmapSetInfo beatmapSet)
+        private CarouselBeatmapSet createCarouselSet(RealmWrapper<BeatmapSetInfo> beatmapSet)
         {
-            if (beatmapSet.Beatmaps.All(b => b.Hidden))
+            if (beatmapSet.Get().Beatmaps.All(b => b.Hidden))
                 return null;
-
-            // todo: remove the need for this.
-            foreach (var b in beatmapSet.Beatmaps)
-            {
-                if (b.Metadata == null)
-                    b.Metadata = beatmapSet.Metadata;
-            }
 
             var set = new CarouselBeatmapSet(beatmapSet);
 

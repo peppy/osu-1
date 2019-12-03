@@ -14,6 +14,7 @@ using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Events;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Drawables;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Backgrounds;
 using osu.Game.Graphics.Sprites;
@@ -26,7 +27,7 @@ namespace osu.Game.Screens.Select.Carousel
 {
     public class DrawableCarouselBeatmap : DrawableCarouselItem, IHasContextMenu
     {
-        private readonly BeatmapInfo beatmap;
+        private readonly RealmWrapper<BeatmapInfo> beatmap;
 
         private Sprite background;
 
@@ -102,7 +103,7 @@ namespace osu.Game.Screens.Select.Carousel
                                     {
                                         new OsuSpriteText
                                         {
-                                            Text = beatmap.Version,
+                                            Text = beatmap.Get().Version,
                                             Font = OsuFont.GetFont(size: 20),
                                             Anchor = Anchor.BottomLeft,
                                             Origin = Anchor.BottomLeft
@@ -115,7 +116,7 @@ namespace osu.Game.Screens.Select.Carousel
                                         },
                                         new OsuSpriteText
                                         {
-                                            Text = $"{(beatmap.Metadata ?? beatmap.BeatmapSet.Metadata).Author.Username}",
+                                            Text = $"{(beatmap.Get().Metadata ?? beatmap.Get().BeatmapSet.Metadata).Author.Username}",
                                             Font = OsuFont.GetFont(italics: true),
                                             Anchor = Anchor.BottomLeft,
                                             Origin = Anchor.BottomLeft
@@ -124,7 +125,7 @@ namespace osu.Game.Screens.Select.Carousel
                                 },
                                 starCounter = new StarCounter
                                 {
-                                    CountStars = (float)beatmap.StarDifficulty,
+                                    CountStars = (float)beatmap.Get().StarDifficulty,
                                     Scale = new Vector2(0.8f),
                                 }
                             }
@@ -180,8 +181,8 @@ namespace osu.Game.Screens.Select.Carousel
                     new OsuMenuItem("Hide", MenuItemType.Destructive, () => hideRequested?.Invoke(beatmap)),
                 };
 
-                if (beatmap.OnlineBeatmapID.HasValue)
-                    items.Add(new OsuMenuItem("Details", MenuItemType.Standard, () => beatmapOverlay?.FetchAndShowBeatmap(beatmap.OnlineBeatmapID.Value)));
+                if (beatmap.Get().OnlineBeatmapID.HasValue)
+                    items.Add(new OsuMenuItem("Details", MenuItemType.Standard, () => beatmapOverlay?.FetchAndShowBeatmap(beatmap.Get().OnlineBeatmapID.Value)));
 
                 return items.ToArray();
             }

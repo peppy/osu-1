@@ -49,7 +49,7 @@ namespace osu.Game.Overlays.Settings.Sections.Maintenance
                     dialogOverlay?.Push(new DeleteAllBeatmapsDialog(() =>
                     {
                         deleteBeatmapsButton.Enabled.Value = false;
-                        Task.Run(() => beatmaps.Delete(beatmaps.GetAllUsableBeatmapSets())).ContinueWith(t => Schedule(() => deleteBeatmapsButton.Enabled.Value = true));
+                        Task.Run(() => beatmaps.Delete(beatmaps.GetAllUsableBeatmapSetsEnumerable().ToList())).ContinueWith(t => Schedule(() => deleteBeatmapsButton.Enabled.Value = true));
                     }));
                 }
             });

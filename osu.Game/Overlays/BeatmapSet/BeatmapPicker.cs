@@ -14,6 +14,7 @@ using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Drawables;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.Sprites;
@@ -147,7 +148,7 @@ namespace osu.Game.Overlays.BeatmapSet
 
             if (BeatmapSet != null)
             {
-                Difficulties.ChildrenEnumerable = BeatmapSet.Beatmaps.Where(b => b.Ruleset.Equals(ruleset.Value)).OrderBy(b => b.StarDifficulty).Select(b => new DifficultySelectorButton(b)
+                Difficulties.ChildrenEnumerable = BeatmapSet.Beatmaps.Where(b => b.Ruleset.Equals(ruleset.Value)).OrderBy(b => b.StarDifficulty).Select(b => new DifficultySelectorButton(b.WrapAsUnmanaged())
                 {
                     State = DifficultySelectorState.NotSelected,
                     OnHovered = beatmap =>
@@ -201,6 +202,7 @@ namespace osu.Game.Overlays.BeatmapSet
 
             public Action<BeatmapInfo> OnHovered;
             public Action<BeatmapInfo> OnClicked;
+
             public event Action<DifficultySelectorState> StateChanged;
 
             private DifficultySelectorState state;
@@ -222,7 +224,7 @@ namespace osu.Game.Overlays.BeatmapSet
                 }
             }
 
-            public DifficultySelectorButton(BeatmapInfo beatmap)
+            public DifficultySelectorButton(RealmWrapper<BeatmapInfo> beatmap)
             {
                 Beatmap = beatmap;
                 Size = new Vector2(size);

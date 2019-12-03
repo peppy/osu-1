@@ -58,13 +58,13 @@ namespace osu.Game.Database
         /// Fired when a new <typeparamref name="TModel"/> becomes available in the database.
         /// This is not guaranteed to run on the update thread.
         /// </summary>
-        public event Action<TModel> ItemAdded;
+        public event Action<RealmWrapper<TModel>> ItemAdded;
 
         /// <summary>
         /// Fired when a <typeparamref name="TModel"/> is removed from the database.
         /// This is not guaranteed to run on the update thread.
         /// </summary>
-        public event Action<TModel> ItemRemoved;
+        public event Action<RealmWrapper<TModel>> ItemRemoved;
 
         public virtual string[] HandledExtensions => new[] { ".zip" };
 

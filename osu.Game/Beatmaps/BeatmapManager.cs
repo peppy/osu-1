@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Extensions;
@@ -37,12 +38,12 @@ namespace osu.Game.Beatmaps
         /// <summary>
         /// Fired when a single difficulty has been hidden.
         /// </summary>
-        public event Action<BeatmapInfo> BeatmapHidden;
+        public event Action<RealmWrapper<BeatmapInfo>> BeatmapHidden;
 
         /// <summary>
         /// Fired when a single difficulty has been restored.
         /// </summary>
-        public event Action<BeatmapInfo> BeatmapRestored;
+        public event Action<RealmWrapper<BeatmapInfo>> BeatmapRestored;
 
         /// <summary>
         /// A default representation of a WorkingBeatmap to use when no beatmap is available.
@@ -228,7 +229,8 @@ namespace osu.Game.Beatmaps
         /// Returns a list of all usable <see cref="BeatmapSetInfo"/>s.
         /// </summary>
         /// <returns>A list of available <see cref="BeatmapSetInfo"/>.</returns>
-        public List<BeatmapSetInfo> GetAllUsableBeatmapSets() => GetAllUsableBeatmapSetsEnumerable().ToList();
+        [ItemCanBeNull]
+        public List<RealmWrapper<BeatmapSetInfo>> GetAllUsableBeatmapSets() => GetAllUsableBeatmapSetsEnumerable().ToList().Select(s => s.Wrap(ContextFactory)).ToList();
 
         /// <summary>
         /// Returns a list of all usable <see cref="BeatmapSetInfo"/>s.

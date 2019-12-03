@@ -7,6 +7,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Database;
 using osu.Game.Online.API;
+using Realms;
 
 namespace osu.Game.Online
 {
@@ -14,7 +15,7 @@ namespace osu.Game.Online
     /// A component which tracks a <typeparamref name="TModel"/> through potential download/import/deletion.
     /// </summary>
     public abstract class DownloadTrackingComposite<TModel, TModelManager> : CompositeDrawable
-        where TModel : class, IEquatable<TModel>
+        where TModel : RealmObject, IEquatable<TModel>, IHasPrimaryKey
         where TModelManager : class, IModelDownloader<TModel>
     {
         protected readonly Bindable<TModel> Model = new Bindable<TModel>();
@@ -108,9 +109,9 @@ namespace osu.Game.Online
 
         private void onRequestFailure(Exception e) => Schedule(() => attachDownload(null));
 
-        private void itemAdded(TModel s) => setDownloadStateFromManager(s, DownloadState.LocallyAvailable);
+        private void itemAdded(RealmWrapper<TModel> s) => setDownloadStateFromManager(s, DownloadState.LocallyAvailable);
 
-        private void itemRemoved(TModel s) => setDownloadStateFromManager(s, DownloadState.NotDownloaded);
+        private void itemRemoved(RealmWrapper<TModel> s) => setDownloadStateFromManager(s, DownloadState.NotDownloaded);
 
         private void setDownloadStateFromManager(TModel s, DownloadState state) => Schedule(() =>
         {

@@ -9,6 +9,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Screens;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Online.Multiplayer;
 using osu.Game.Online.Multiplayer.GameTypes;
 using osu.Game.Rulesets.Mods;
@@ -197,7 +198,7 @@ namespace osu.Game.Screens.Multi.Match
         /// <summary>
         /// Handle the case where a beatmap is imported (and can be used by this match).
         /// </summary>
-        private void beatmapAdded(BeatmapSetInfo model) => Schedule(() =>
+        private void beatmapAdded(RealmWrapper<BeatmapSetInfo> _) => Schedule(() =>
         {
             if (Beatmap.Value != beatmapManager.DefaultBeatmap)
                 return;

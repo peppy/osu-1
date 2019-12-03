@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using Realms;
 
 namespace osu.Game.Database
 {
@@ -9,11 +10,11 @@ namespace osu.Game.Database
     /// Represents a model manager that publishes events when <typeparamref name="TModel"/>s are added or removed.
     /// </summary>
     /// <typeparam name="TModel">The model type.</typeparam>
-    public interface IModelManager<out TModel>
-        where TModel : class
+    public interface IModelManager<TModel>
+        where TModel : RealmObject, IHasPrimaryKey
     {
-        event Action<TModel> ItemAdded;
+        event Action<RealmWrapper<TModel>> ItemAdded;
 
-        event Action<TModel> ItemRemoved;
+        event Action<RealmWrapper<TModel>> ItemRemoved;
     }
 }

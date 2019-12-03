@@ -17,8 +17,8 @@ namespace osu.Game.Database
     public abstract class MutableDatabaseBackedStore<T> : DatabaseBackedStore
         where T : RealmObject, IHasPrimaryKey, ISoftDelete
     {
-        public event Action<T> ItemAdded;
-        public event Action<T> ItemRemoved;
+        public event Action<RealmWrapper<T>> ItemAdded;
+        public event Action<RealmWrapper<T>> ItemRemoved;
 
         protected MutableDatabaseBackedStore(IDatabaseContextFactory contextFactory, Storage storage = null)
             : base(contextFactory, storage)
@@ -31,13 +31,11 @@ namespace osu.Game.Database
             if (changes == null)
                 return;
 
-            var localThreadItems = ContextFactory.Get().All<T>().AsRealmCollection();
-
             foreach (var i in changes.InsertedIndices)
-                ItemAdded?.Invoke(localThreadItems[i]);
+                ItemAdded?.Invoke(new RealmWrapper<T>(sender[i], ContextFactory));
 
             foreach (var i in changes.DeletedIndices)
-                ItemRemoved?.Invoke(localThreadItems[i]);
+                ItemRemoved?.Invoke(new RealmWrapper<T>(sender[i], ContextFactory));
         }
 
         /// <summary>
@@ -88,7 +86,7 @@ namespace osu.Game.Database
                 item.DeletePending = true;
             }
 
-            ItemRemoved?.Invoke(item);
+            ItemRemoved?.Invoke(new RealmWrapper<T>(item, ContextFactory));
             return true;
         }
 
@@ -107,7 +105,7 @@ namespace osu.Game.Database
                 item.DeletePending = false;
             }
 
-            ItemAdded?.Invoke(item);
+            ItemAdded?.Invoke(new RealmWrapper<T>(item, ContextFactory));
             return true;
         }
 

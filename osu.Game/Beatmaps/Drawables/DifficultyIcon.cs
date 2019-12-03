@@ -10,6 +10,7 @@ using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.Sprites;
@@ -21,7 +22,7 @@ namespace osu.Game.Beatmaps.Drawables
 {
     public class DifficultyIcon : CompositeDrawable, IHasCustomTooltip
     {
-        private readonly BeatmapInfo beatmap;
+        private readonly RealmWrapper<BeatmapInfo> beatmap;
         private readonly RulesetInfo ruleset;
 
         private readonly Container iconContainer;
@@ -35,11 +36,11 @@ namespace osu.Game.Beatmaps.Drawables
             set => iconContainer.Size = value;
         }
 
-        public DifficultyIcon(BeatmapInfo beatmap, RulesetInfo ruleset = null, bool shouldShowTooltip = true)
+        public DifficultyIcon(RealmWrapper<BeatmapInfo> beatmap, RulesetInfo ruleset = null, bool shouldShowTooltip = true)
         {
             this.beatmap = beatmap ?? throw new ArgumentNullException(nameof(beatmap));
 
-            this.ruleset = ruleset ?? beatmap.Ruleset;
+            this.ruleset = ruleset ?? beatmap.Get().Ruleset;
             if (shouldShowTooltip)
                 TooltipContent = beatmap;
 
@@ -75,7 +76,7 @@ namespace osu.Game.Beatmaps.Drawables
                     Child = new Box
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Colour = colours.ForDifficultyRating(beatmap.DifficultyRating),
+                        Colour = colours.ForDifficultyRating(beatmap.Get().DifficultyRating),
                     },
                 },
                 new ConstrainedIconContainer

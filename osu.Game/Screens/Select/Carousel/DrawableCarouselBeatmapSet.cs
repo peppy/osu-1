@@ -16,6 +16,7 @@ using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Drawables;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
@@ -32,7 +33,7 @@ namespace osu.Game.Screens.Select.Carousel
         private Action<int> viewDetails;
 
         private DialogOverlay dialogOverlay;
-        private readonly BeatmapSetInfo beatmapSet;
+        private readonly RealmWrapper<BeatmapSetInfo> beatmapSet;
 
         public DrawableCarouselBeatmapSet(CarouselBeatmapSet set)
             : base(set)
@@ -52,7 +53,7 @@ namespace osu.Game.Screens.Select.Carousel
             {
                 new DelayedLoadUnloadWrapper(() =>
                     {
-                        var background = new PanelBackground(manager.GetWorkingBeatmap(beatmapSet.Beatmaps.FirstOrDefault()))
+                        var background = new PanelBackground(manager.GetWorkingBeatmap(beatmapSet.Get().Beatmaps.FirstOrDefault()))
                         {
                             RelativeSizeAxes = Axes.Both,
                         };
@@ -71,13 +72,13 @@ namespace osu.Game.Screens.Select.Carousel
                     {
                         new OsuSpriteText
                         {
-                            Text = new LocalisedString((beatmapSet.Metadata.TitleUnicode, beatmapSet.Metadata.Title)),
+                            Text = new LocalisedString((beatmapSet.Get().Metadata.TitleUnicode, beatmapSet.Get().Metadata.Title)),
                             Font = OsuFont.GetFont(weight: FontWeight.Bold, size: 22, italics: true),
                             Shadow = true,
                         },
                         new OsuSpriteText
                         {
-                            Text = new LocalisedString((beatmapSet.Metadata.ArtistUnicode, beatmapSet.Metadata.Artist)),
+                            Text = new LocalisedString((beatmapSet.Get().Metadata.ArtistUnicode, beatmapSet.Get().Metadata.Artist)),
                             Font = OsuFont.GetFont(weight: FontWeight.SemiBold, size: 17, italics: true),
                             Shadow = true,
                         },
@@ -95,7 +96,7 @@ namespace osu.Game.Screens.Select.Carousel
                                     Margin = new MarginPadding { Right = 5 },
                                     TextSize = 11,
                                     TextPadding = new MarginPadding { Horizontal = 8, Vertical = 2 },
-                                    Status = beatmapSet.Status
+                                    Status = beatmapSet.Get().Status
                                 },
                                 new FillFlowContainer<DifficultyIcon>
                                 {
@@ -117,7 +118,7 @@ namespace osu.Game.Screens.Select.Carousel
             var beatmaps = ((CarouselBeatmapSet)Item).Beatmaps.ToList();
 
             return beatmaps.Count > maximum_difficulty_icons
-                ? (IEnumerable<DifficultyIcon>)beatmaps.GroupBy(b => b.Beatmap.Ruleset).Select(group => new FilterableGroupedDifficultyIcon(group.ToList(), group.Key))
+                ? (IEnumerable<DifficultyIcon>)beatmaps.GroupBy(b => b.Beatmap.Get().Ruleset).Select(group => new FilterableGroupedDifficultyIcon(group.ToList(), group.Key))
                 : beatmaps.Select(b => new FilterableDifficultyIcon(b));
         }
 
@@ -130,10 +131,10 @@ namespace osu.Game.Screens.Select.Carousel
                 if (Item.State.Value == CarouselItemState.NotSelected)
                     items.Add(new OsuMenuItem("Expand", MenuItemType.Highlighted, () => Item.State.Value = CarouselItemState.Selected));
 
-                if (beatmapSet.OnlineBeatmapSetID != null)
-                    items.Add(new OsuMenuItem("Details...", MenuItemType.Standard, () => viewDetails?.Invoke(beatmapSet.OnlineBeatmapSetID.Value)));
+                if (beatmapSet.Get().OnlineBeatmapSetID != null)
+                    items.Add(new OsuMenuItem("Details...", MenuItemType.Standard, () => viewDetails?.Invoke(beatmapSet.Get().OnlineBeatmapSetID.Value)));
 
-                if (beatmapSet.Beatmaps.Any(b => b.Hidden))
+                if (beatmapSet.Get().Beatmaps.Any(b => b.Hidden))
                     items.Add(new OsuMenuItem("Restore all hidden", MenuItemType.Standard, () => restoreHiddenRequested?.Invoke(beatmapSet)));
 
                 items.Add(new OsuMenuItem("Delete", MenuItemType.Destructive, () => dialogOverlay?.Push(new BeatmapDeleteDialog(beatmapSet))));

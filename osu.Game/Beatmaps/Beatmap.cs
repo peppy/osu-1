@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using osu.Game.Beatmaps.ControlPoints;
 using Newtonsoft.Json;
+using osu.Game.Database;
 using osu.Game.IO.Serialization.Converters;
 
 namespace osu.Game.Beatmaps
@@ -27,7 +28,7 @@ namespace osu.Game.Beatmaps
             },
             Version = @"Normal",
             BaseDifficulty = new BeatmapDifficulty()
-        };
+        }.WrapAsUnmanaged();
 
         [JsonIgnore]
         public BeatmapMetadata Metadata => BeatmapInfo?.Metadata ?? BeatmapInfo?.BeatmapSet?.Metadata;

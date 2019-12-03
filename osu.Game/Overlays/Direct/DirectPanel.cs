@@ -16,6 +16,7 @@ using osu.Framework.Input.Events;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Drawables;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osuTK;
@@ -146,12 +147,12 @@ namespace osu.Game.Overlays.Direct
             if (SetInfo.Beatmaps.Count > maximum_difficulty_icons)
             {
                 foreach (var ruleset in SetInfo.Beatmaps.Select(b => b.Ruleset).Distinct())
-                    icons.Add(new GroupedDifficultyIcon(SetInfo.Beatmaps.Where(b => b.Ruleset.Equals(ruleset)).ToList(), ruleset, this is DirectListPanel ? Color4.White : colours.Gray5));
+                    icons.Add(new GroupedDifficultyIcon(SetInfo.Beatmaps.Where(b => b.Ruleset.Equals(ruleset)).Select(s => s.WrapAsUnmanaged()).ToList(), ruleset, this is DirectListPanel ? Color4.White : colours.Gray5));
             }
             else
             {
                 foreach (var b in SetInfo.Beatmaps.OrderBy(beatmap => beatmap.StarDifficulty))
-                    icons.Add(new DifficultyIcon(b));
+                    icons.Add(new DifficultyIcon(b.WrapAsUnmanaged()));
             }
 
             return icons;

@@ -4,15 +4,16 @@
 using System;
 using System.Linq;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Screens.Select.Filter;
 
 namespace osu.Game.Screens.Select.Carousel
 {
     public class CarouselBeatmap : CarouselItem
     {
-        public readonly BeatmapInfo Beatmap;
+        public readonly RealmWrapper<BeatmapInfo> Beatmap;
 
-        public CarouselBeatmap(BeatmapInfo beatmap)
+        public CarouselBeatmap(RealmWrapper<BeatmapInfo> beatmap)
         {
             Beatmap = beatmap;
             State.Value = CarouselItemState.Collapsed;
@@ -24,32 +25,34 @@ namespace osu.Game.Screens.Select.Carousel
         {
             base.Filter(criteria);
 
+            var beatmap = Beatmap.Get();
+
             bool match =
                 criteria.Ruleset == null ||
-                Beatmap.RulesetID == criteria.Ruleset.ID ||
-                (Beatmap.RulesetID == 0 && criteria.Ruleset.ID > 0 && criteria.AllowConvertedBeatmaps);
+                beatmap.RulesetID == criteria.Ruleset.ID ||
+                (beatmap.RulesetID == 0 && criteria.Ruleset.ID > 0 && criteria.AllowConvertedBeatmaps);
 
-            match &= criteria.StarDifficulty.IsInRange(Beatmap.StarDifficulty);
-            match &= criteria.ApproachRate.IsInRange(Beatmap.BaseDifficulty.ApproachRate);
-            match &= criteria.DrainRate.IsInRange(Beatmap.BaseDifficulty.DrainRate);
-            match &= criteria.CircleSize.IsInRange(Beatmap.BaseDifficulty.CircleSize);
-            match &= criteria.Length.IsInRange(Beatmap.Length);
-            match &= criteria.BPM.IsInRange(Beatmap.BPM);
+            match &= criteria.StarDifficulty.IsInRange(beatmap.StarDifficulty);
+            match &= criteria.ApproachRate.IsInRange(beatmap.BaseDifficulty.ApproachRate);
+            match &= criteria.DrainRate.IsInRange(beatmap.BaseDifficulty.DrainRate);
+            match &= criteria.CircleSize.IsInRange(beatmap.BaseDifficulty.CircleSize);
+            match &= criteria.Length.IsInRange(beatmap.Length);
+            match &= criteria.BPM.IsInRange(beatmap.BPM);
 
-            match &= criteria.BeatDivisor.IsInRange(Beatmap.BeatDivisor);
-            match &= criteria.OnlineStatus.IsInRange(Beatmap.Status);
+            match &= criteria.BeatDivisor.IsInRange(beatmap.BeatDivisor);
+            match &= criteria.OnlineStatus.IsInRange(beatmap.Status);
 
-            match &= criteria.Creator.Matches(Beatmap.Metadata.AuthorString);
-            match &= criteria.Artist.Matches(Beatmap.Metadata.Artist) ||
-                     criteria.Artist.Matches(Beatmap.Metadata.ArtistUnicode);
+            match &= criteria.Creator.Matches(beatmap.Metadata.AuthorString);
+            match &= criteria.Artist.Matches(beatmap.Metadata.Artist) ||
+                     criteria.Artist.Matches(beatmap.Metadata.ArtistUnicode);
 
             if (match)
             {
                 foreach (var criteriaTerm in criteria.SearchTerms)
                 {
                     match &=
-                        Beatmap.Metadata.SearchableTerms.Any(term => term.IndexOf(criteriaTerm, StringComparison.InvariantCultureIgnoreCase) >= 0) ||
-                        Beatmap.Version.IndexOf(criteriaTerm, StringComparison.InvariantCultureIgnoreCase) >= 0;
+                        beatmap.Metadata.SearchableTerms.Any(term => term.IndexOf(criteriaTerm, StringComparison.InvariantCultureIgnoreCase) >= 0) ||
+                        beatmap.Version.IndexOf(criteriaTerm, StringComparison.InvariantCultureIgnoreCase) >= 0;
                 }
             }
 
@@ -65,10 +68,10 @@ namespace osu.Game.Screens.Select.Carousel
             {
                 default:
                 case SortMode.Difficulty:
-                    var ruleset = Beatmap.RulesetID.CompareTo(otherBeatmap.Beatmap.RulesetID);
+                    var ruleset = Beatmap.Get().RulesetID.CompareTo(otherBeatmap.Beatmap.Get().RulesetID);
                     if (ruleset != 0) return ruleset;
 
-                    return Beatmap.StarDifficulty.CompareTo(otherBeatmap.Beatmap.StarDifficulty);
+                    return Beatmap.Get().StarDifficulty.CompareTo(otherBeatmap.Beatmap.Get().StarDifficulty);
             }
         }
 

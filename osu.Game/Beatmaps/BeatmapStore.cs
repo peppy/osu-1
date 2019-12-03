@@ -16,8 +16,8 @@ namespace osu.Game.Beatmaps
     /// </summary>
     public class BeatmapStore : MutableDatabaseBackedStoreWithFileIncludes<BeatmapSetInfo, BeatmapSetFileInfo>
     {
-        public event Action<BeatmapInfo> BeatmapHidden;
-        public event Action<BeatmapInfo> BeatmapRestored;
+        public event Action<RealmWrapper<BeatmapInfo>> BeatmapHidden;
+        public event Action<RealmWrapper<BeatmapInfo>> BeatmapRestored;
 
         public BeatmapStore(IDatabaseContextFactory factory)
             : base(factory)
@@ -40,7 +40,7 @@ namespace osu.Game.Beatmaps
                 beatmap.Hidden = true;
             }
 
-            BeatmapHidden?.Invoke(beatmap);
+            BeatmapHidden?.Invoke(new RealmWrapper<BeatmapInfo>(beatmap, ContextFactory));
             return true;
         }
 
@@ -60,7 +60,7 @@ namespace osu.Game.Beatmaps
                 beatmap.Hidden = false;
             }
 
-            BeatmapRestored?.Invoke(beatmap);
+            BeatmapRestored?.Invoke(new RealmWrapper<BeatmapInfo>(beatmap, ContextFactory));
             return true;
         }
 

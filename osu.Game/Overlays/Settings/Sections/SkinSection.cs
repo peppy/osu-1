@@ -7,6 +7,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 using osu.Game.Configuration;
+using osu.Game.Database;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Skinning;
 using osuTK;
@@ -80,9 +81,9 @@ namespace osu.Game.Overlays.Settings.Sections
             dropdownBindable.BindValueChanged(skin => configBindable.Value = skin.NewValue.ID);
         }
 
-        private void itemRemoved(SkinInfo s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Where(i => i.ID != s.ID).ToArray());
+        private void itemRemoved(RealmWrapper<SkinInfo> s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Where(i => i.ID != s.ID).ToArray());
 
-        private void itemAdded(SkinInfo s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Append(s).ToArray());
+        private void itemAdded(RealmWrapper<SkinInfo> s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Append(s).ToArray());
 
         protected override void Dispose(bool isDisposing)
         {

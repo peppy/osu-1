@@ -3,6 +3,7 @@
 
 using osu.Game.Online.API;
 using System;
+using Realms;
 
 namespace osu.Game.Database
 {
@@ -11,7 +12,7 @@ namespace osu.Game.Database
     /// </summary>
     /// <typeparam name="TModel">The model type.</typeparam>
     public interface IModelDownloader<TModel> : IModelManager<TModel>
-        where TModel : class
+        where TModel : RealmObject, IHasPrimaryKey
     {
         /// <summary>
         /// Fired when a <typeparamref name="TModel"/> download begins.

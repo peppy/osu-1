@@ -11,6 +11,7 @@ using osu.Framework.Input.Bindings;
 using osu.Framework.MathUtils;
 using osu.Framework.Threading;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Input.Bindings;
 using osu.Game.Overlays.OSD;
 using osu.Game.Rulesets.Mods;
@@ -25,9 +26,9 @@ namespace osu.Game.Overlays
         [Resolved]
         private BeatmapManager beatmaps { get; set; }
 
-        public IBindableList<BeatmapSetInfo> BeatmapSets => beatmapSets;
+        public IBindableList<RealmWrapper<BeatmapSetInfo>> BeatmapSets => beatmapSets;
 
-        private readonly BindableList<BeatmapSetInfo> beatmapSets = new BindableList<BeatmapSetInfo>();
+        private readonly BindableList<RealmWrapper<BeatmapSetInfo>> beatmapSets = new BindableList<RealmWrapper<BeatmapSetInfo>>();
 
         public bool IsUserPaused { get; private set; }
 
@@ -65,8 +66,10 @@ namespace osu.Game.Overlays
         /// <param name="index">The new position.</param>
         public void ChangeBeatmapSetPosition(BeatmapSetInfo beatmapSetInfo, int index)
         {
-            beatmapSets.Remove(beatmapSetInfo);
-            beatmapSets.Insert(index, beatmapSetInfo);
+            var existing = beatmapSets.First(r => r.ID == beatmapSetInfo.ID);
+
+            beatmapSets.Remove(existing);
+            beatmapSets.Insert(index, existing);
         }
 
         /// <summary>
@@ -74,10 +77,10 @@ namespace osu.Game.Overlays
         /// </summary>
         public bool IsPlaying => current?.Track.IsRunning ?? false;
 
-        private void handleBeatmapAdded(BeatmapSetInfo set) =>
+        private void handleBeatmapAdded(RealmWrapper<BeatmapSetInfo> set) =>
             Schedule(() => beatmapSets.Add(set));
 
-        private void handleBeatmapRemoved(BeatmapSetInfo set) =>
+        private void handleBeatmapRemoved(RealmWrapper<BeatmapSetInfo> set) =>
             Schedule(() => beatmapSets.RemoveAll(s => s.ID == set.ID));
 
         private ScheduledDelegate seekDelegate;
@@ -160,7 +163,7 @@ namespace osu.Game.Overlays
             if (playable != null)
             {
                 if (beatmap is Bindable<WorkingBeatmap> working)
-                    working.Value = beatmaps.GetWorkingBeatmap(playable.Beatmaps.First(), beatmap.Value);
+                    working.Value = beatmaps.GetWorkingBeatmap(playable.Get().Beatmaps.First(), beatmap.Value);
                 beatmap.Value.Track.Restart();
 
                 return true;
@@ -185,7 +188,7 @@ namespace osu.Game.Overlays
             if (playable != null)
             {
                 if (beatmap is Bindable<WorkingBeatmap> working)
-                    working.Value = beatmaps.GetWorkingBeatmap(playable.Beatmaps.First(), beatmap.Value);
+                    working.Value = beatmaps.GetWorkingBeatmap(playable.Get().Beatmaps.First(), beatmap.Value);
                 beatmap.Value.Track.Restart();
                 return true;
             }

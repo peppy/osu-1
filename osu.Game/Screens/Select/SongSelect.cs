@@ -35,6 +35,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Bindings;
+using osu.Game.Database;
 using osu.Game.Scoring;
 
 namespace osu.Game.Screens.Select
@@ -601,10 +602,10 @@ namespace osu.Game.Screens.Select
             lastTrack.SetTarget(track);
         }
 
-        private void onBeatmapSetAdded(BeatmapSetInfo s) => Carousel.UpdateBeatmapSet(s);
-        private void onBeatmapSetRemoved(BeatmapSetInfo s) => Carousel.RemoveBeatmapSet(s);
-        private void onBeatmapRestored(BeatmapInfo b) => Carousel.UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSet.ID));
-        private void onBeatmapHidden(BeatmapInfo b) => Carousel.UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSet.ID));
+        private void onBeatmapSetAdded(RealmWrapper<BeatmapSetInfo> s) => Carousel.UpdateBeatmapSet(s);
+        private void onBeatmapSetRemoved(RealmWrapper<BeatmapSetInfo> s) => Carousel.RemoveBeatmapSet(s);
+        private void onBeatmapRestored(RealmWrapper<BeatmapInfo> b) => Carousel.UpdateBeatmapSet(b.WrapChild(l => l.BeatmapSet));
+        private void onBeatmapHidden(RealmWrapper<BeatmapInfo> b) => Carousel.UpdateBeatmapSet(b.WrapChild(l => l.BeatmapSet));
 
         private void carouselBeatmapsLoaded()
         {

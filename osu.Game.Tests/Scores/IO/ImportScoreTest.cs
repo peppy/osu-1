@@ -159,7 +159,7 @@ namespace osu.Game.Tests.Scores.IO
             var beatmapManager = osu.Dependencies.Get<BeatmapManager>();
 
             if (score.Beatmap == null)
-                score.Beatmap = beatmapManager.GetAllUsableBeatmapSets().First().Beatmaps.First();
+                score.Beatmap = beatmapManager.GetAllUsableBeatmapSetsEnumerable().First().Beatmaps.First();
 
             if (score.Ruleset == null)
                 score.Ruleset = new OsuRuleset().RulesetInfo;

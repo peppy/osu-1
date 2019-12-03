@@ -5,6 +5,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Beatmaps.Drawables;
+using osu.Game.Database;
 using osu.Game.Online.Multiplayer;
 using osuTK;
 
@@ -56,7 +57,7 @@ namespace osu.Game.Screens.Multi.Components
             if (item?.Beatmap != null)
             {
                 drawableRuleset.FadeIn(transition_duration);
-                drawableRuleset.Child = new DifficultyIcon(item.Beatmap, item.Ruleset) { Size = new Vector2(height) };
+                drawableRuleset.Child = new DifficultyIcon(item.Beatmap.WrapAsUnmanaged(), item.Ruleset) { Size = new Vector2(height) };
             }
             else
                 drawableRuleset.FadeOut(transition_duration);

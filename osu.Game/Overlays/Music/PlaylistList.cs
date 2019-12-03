@@ -11,6 +11,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Events;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Graphics.Containers;
 using osuTK;
 
@@ -50,7 +51,7 @@ namespace osu.Game.Overlays.Music
 
             private readonly IBindable<WorkingBeatmap> beatmapBacking = new Bindable<WorkingBeatmap>();
 
-            private IBindableList<BeatmapSetInfo> beatmaps;
+            private IBindableList<RealmWrapper<BeatmapSetInfo>> beatmaps;
 
             [Resolved]
             private MusicController musicController { get; set; }
@@ -87,20 +88,20 @@ namespace osu.Game.Overlays.Music
                 beatmapBacking.ValueChanged += _ => Scheduler.AddOnce(updateSelectedSet);
             }
 
-            private void addBeatmapSet(BeatmapSetInfo obj)
+            private void addBeatmapSet(RealmWrapper<BeatmapSetInfo> obj)
             {
                 if (obj == draggedItem?.BeatmapSetInfo) return;
 
                 Schedule(() => items.Insert(items.Count - 1, new PlaylistItem(obj) { OnSelect = set => Selected?.Invoke(set) }));
             }
 
-            private void removeBeatmapSet(BeatmapSetInfo obj)
+            private void removeBeatmapSet(RealmWrapper<BeatmapSetInfo> obj)
             {
                 if (obj == draggedItem?.BeatmapSetInfo) return;
 
                 Schedule(() =>
                 {
-                    var itemToRemove = items.FirstOrDefault(i => i.BeatmapSetInfo.ID == obj.ID);
+                    var itemToRemove = items.FirstOrDefault(i => i.BeatmapSetInfo == obj);
                     if (itemToRemove != null)
                         items.Remove(itemToRemove);
                 });
@@ -110,7 +111,7 @@ namespace osu.Game.Overlays.Music
             {
                 foreach (PlaylistItem s in items.Children)
                 {
-                    s.Selected = s.BeatmapSetInfo.ID == beatmapBacking.Value.BeatmapSetInfo?.ID;
+                    s.Selected = EqualityComparer<BeatmapSetInfo>.Default.Equals(s.BeatmapSetInfo.Get(), beatmapBacking.Value.BeatmapSetInfo);
                     if (s.Selected)
                         ScrollIntoView(s);
                 }

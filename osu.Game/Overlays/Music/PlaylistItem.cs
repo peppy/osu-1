@@ -12,6 +12,7 @@ using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
 using osuTK;
@@ -31,7 +32,7 @@ namespace osu.Game.Overlays.Music
         private ILocalisedBindableString titleBind;
         private ILocalisedBindableString artistBind;
 
-        public readonly BeatmapSetInfo BeatmapSetInfo;
+        public readonly RealmWrapper<BeatmapSetInfo> BeatmapSetInfo;
 
         public Action<BeatmapSetInfo> OnSelect;
 
@@ -66,7 +67,7 @@ namespace osu.Game.Overlays.Music
             }
         }
 
-        public PlaylistItem(BeatmapSetInfo setInfo)
+        public PlaylistItem(RealmWrapper<BeatmapSetInfo> setInfo)
         {
             BeatmapSetInfo = setInfo;
 
@@ -81,7 +82,7 @@ namespace osu.Game.Overlays.Music
             hoverColour = colours.Yellow;
             artistColour = colours.Gray9;
 
-            var metadata = BeatmapSetInfo.Metadata;
+            var metadata = BeatmapSetInfo.Get().Metadata;
             FilterTerms = metadata.SearchableTerms;
 
             Children = new Drawable[]

@@ -179,7 +179,7 @@ namespace osu.Game.Screens.Play
         {
             target.AddRange(new[]
             {
-                breakOverlay = new BreakOverlay(working.Beatmap.BeatmapInfo.LetterboxInBreaks, DrawableRuleset.GameplayStartTime, ScoreProcessor)
+                breakOverlay = new BreakOverlay(working.BeatmapInfo.Get().LetterboxInBreaks, DrawableRuleset.GameplayStartTime, ScoreProcessor)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,

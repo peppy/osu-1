@@ -5,6 +5,7 @@ using osu.Game.Beatmaps;
 using osu.Game.Storyboards.Drawables;
 using System.Collections.Generic;
 using System.Linq;
+using osu.Game.Database;
 
 namespace osu.Game.Storyboards
 {
@@ -13,7 +14,7 @@ namespace osu.Game.Storyboards
         private readonly Dictionary<string, StoryboardLayer> layers = new Dictionary<string, StoryboardLayer>();
         public IEnumerable<StoryboardLayer> Layers => layers.Values;
 
-        public BeatmapInfo BeatmapInfo = new BeatmapInfo();
+        public RealmWrapper<BeatmapInfo> BeatmapInfo;
 
         public bool HasDrawable => Layers.Any(l => l.Elements.Any(e => e.IsDrawable));
 
@@ -42,7 +43,7 @@ namespace osu.Game.Storyboards
         {
             get
             {
-                var backgroundPath = BeatmapInfo.BeatmapSet?.Metadata?.BackgroundFile?.ToLowerInvariant();
+                var backgroundPath = BeatmapInfo?.Get().BeatmapSet?.Metadata?.BackgroundFile?.ToLowerInvariant();
                 if (backgroundPath == null)
                     return false;
 
@@ -53,7 +54,7 @@ namespace osu.Game.Storyboards
         public DrawableStoryboard CreateDrawable(WorkingBeatmap working = null)
         {
             var drawable = new DrawableStoryboard(this);
-            drawable.Width = drawable.Height * (BeatmapInfo.WidescreenStoryboard ? 16 / 9f : 4 / 3f);
+            drawable.Width = drawable.Height * (BeatmapInfo?.Get().WidescreenStoryboard ?? false ? 16 / 9f : 4 / 3f);
             return drawable;
         }
     }
