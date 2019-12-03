@@ -12,9 +12,12 @@ namespace osu.Game.Screens.Multi.Match.Components
 {
     public class MatchLeaderboardScore : LeaderboardScore
     {
-        public MatchLeaderboardScore(APIRoomScoreInfo score, int rank)
-            : base(score, rank)
+        private readonly APIUserScoreAggregate aggregateScore;
+
+        public MatchLeaderboardScore(APIUserScoreAggregate score, int rank)
+            : base(score.CreateScoreInfo(), rank)
         {
+            this.aggregateScore = score;
         }
 
         [BackgroundDependencyLoader]
@@ -26,8 +29,8 @@ namespace osu.Game.Screens.Multi.Match.Components
         protected override IEnumerable<LeaderboardScoreStatistic> GetStatistics(ScoreInfo model) => new[]
         {
             new LeaderboardScoreStatistic(FontAwesome.Solid.Crosshairs, "Accuracy", string.Format(model.Accuracy % 1 == 0 ? @"{0:P0}" : @"{0:P2}", model.Accuracy)),
-            new LeaderboardScoreStatistic(FontAwesome.Solid.Sync, "Total Attempts", ((APIRoomScoreInfo)model).TotalAttempts.ToString()),
-            new LeaderboardScoreStatistic(FontAwesome.Solid.Check, "Completed Beatmaps", ((APIRoomScoreInfo)model).CompletedBeatmaps.ToString()),
+            new LeaderboardScoreStatistic(FontAwesome.Solid.Sync, "Total Attempts", aggregateScore.TotalAttempts.ToString()),
+            new LeaderboardScoreStatistic(FontAwesome.Solid.Check, "Completed Beatmaps", aggregateScore.CompletedBeatmaps.ToString()),
         };
     }
 }
