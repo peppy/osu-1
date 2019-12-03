@@ -34,14 +34,14 @@ namespace osu.Game.Rulesets
         /// </summary>
         /// <param name="id">The ruleset's internal ID.</param>
         /// <returns>A ruleset, if available, else null.</returns>
-        public RulesetInfo GetRuleset(int id) => AvailableRulesets.FirstOrDefault(r => r.ID == id);
+        public RulesetInfo GetRuleset(int id) => AvailableRulesets.FirstOrDefault(r => r.ID == id).Detach();
 
         /// <summary>
         /// Retrieve a ruleset using a known short name.
         /// </summary>
         /// <param name="shortName">The ruleset's short name.</param>
         /// <returns>A ruleset, if available, else null.</returns>
-        public RulesetInfo GetRuleset(string shortName) => AvailableRulesets.FirstOrDefault(r => r.ShortName == shortName);
+        public RulesetInfo GetRuleset(string shortName) => AvailableRulesets.FirstOrDefault(r => r.ShortName == shortName).Detach();
 
         /// <summary>
         /// All available rulesets.
