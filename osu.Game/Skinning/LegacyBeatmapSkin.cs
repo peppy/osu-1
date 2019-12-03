@@ -4,13 +4,14 @@
 using osu.Framework.Audio;
 using osu.Framework.IO.Stores;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 
 namespace osu.Game.Skinning
 {
     public class LegacyBeatmapSkin : LegacySkin
     {
-        public LegacyBeatmapSkin(BeatmapInfo beatmap, IResourceStore<byte[]> storage, AudioManager audioManager)
-            : base(createSkinInfo(beatmap), new LegacySkinResourceStore<BeatmapSetFileInfo>(beatmap.BeatmapSet, storage), audioManager, beatmap.Path)
+        public LegacyBeatmapSkin(RealmWrapper<BeatmapInfo> beatmap, IResourceStore<byte[]> storage, AudioManager audioManager)
+            : base(createSkinInfo(beatmap), new LegacySkinResourceStore<BeatmapSetFileInfo>(() => beatmap.Get().BeatmapSet, storage), audioManager, beatmap.Get().Path)
         {
         }
 

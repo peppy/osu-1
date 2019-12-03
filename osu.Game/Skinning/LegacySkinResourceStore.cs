@@ -14,22 +14,22 @@ namespace osu.Game.Skinning
     public class LegacySkinResourceStore<T> : IResourceStore<byte[]>
         where T : INamedFileInfo
     {
-        private readonly IHasFiles<T> source;
+        private readonly Func<IHasFiles<T>> source;
         private readonly IResourceStore<byte[]> underlyingStore;
 
         private string getPathForFile(string filename)
         {
-            if (source.Files == null)
+            if (source().Files == null)
                 return null;
 
             bool hasExtension = filename.Contains('.');
 
-            var file = source.Files.FirstOrDefault(f =>
+            var file = source().Files.FirstOrDefault(f =>
                 string.Equals(hasExtension ? f.Filename : Path.ChangeExtension(f.Filename, null), filename, StringComparison.InvariantCultureIgnoreCase));
             return file?.FileInfo.StoragePath;
         }
 
-        public LegacySkinResourceStore(IHasFiles<T> source, IResourceStore<byte[]> underlyingStore)
+        public LegacySkinResourceStore(Func<IHasFiles<T>> source, IResourceStore<byte[]> underlyingStore)
         {
             this.source = source;
             this.underlyingStore = underlyingStore;
@@ -41,7 +41,7 @@ namespace osu.Game.Skinning
             return path == null ? null : underlyingStore.GetStream(path);
         }
 
-        public IEnumerable<string> GetAvailableResources() => source.Files.Select(f => f.Filename);
+        public IEnumerable<string> GetAvailableResources() => source().Files.Select(f => f.Filename);
 
         byte[] IResourceStore<byte[]>.Get(string name) => GetAsync(name).Result;
 

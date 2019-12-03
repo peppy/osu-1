@@ -33,7 +33,7 @@ namespace osu.Game.Skinning
         }
 
         public LegacySkin(SkinInfo skin, IResourceStore<byte[]> storage, AudioManager audioManager)
-            : this(skin, new LegacySkinResourceStore<SkinFileInfo>(skin, storage), audioManager, "skin.ini")
+            : this(skin, new LegacySkinResourceStore<SkinFileInfo>(() => skin, storage), audioManager, "skin.ini")
         {
         }
 
