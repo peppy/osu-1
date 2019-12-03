@@ -26,17 +26,17 @@ namespace osu.Game.Beatmaps
         /// </summary>
         [JsonProperty(@"creator")]
         [Column("Author")]
-        public string AuthorString
-        {
-            get => Author?.Username;
-            set => Author = new User { Username = value };
-        }
+        public string AuthorString { get; set; }
 
         /// <summary>
         /// The author of the beatmaps in this set.
         /// </summary>
         [JsonIgnore]
-        public User Author;
+        public User Author
+        {
+            get => new User { Username = AuthorString };
+            set => AuthorString = value.Username;
+        }
 
         public string Source { get; set; }
 
@@ -51,6 +51,7 @@ namespace osu.Game.Beatmaps
         public override string ToString() => $"{Artist} - {Title} ({Author})";
 
         [JsonIgnore]
+        [Ignored]
         public string[] SearchableTerms => new[]
         {
             Author?.Username,
