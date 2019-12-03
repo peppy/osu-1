@@ -205,9 +205,6 @@ namespace osu.Game.Database
 
             var detached = new MapperConfiguration(c => c.CreateMap<T, T>()).CreateMapper().Map<T>(obj);
 
-            if (detached is IHasPrimaryKey dKey)
-                dKey.ID = Guid.NewGuid().ToString();
-
             return detached;
         }
 
