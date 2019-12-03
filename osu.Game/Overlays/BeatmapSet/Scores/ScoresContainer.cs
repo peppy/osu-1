@@ -66,11 +66,11 @@ namespace osu.Game.Overlays.BeatmapSet.Scores
 
                 var topScore = scoreInfos.First();
                 var userScore = value.UserScore;
-                var userScoreInfo = userScore.Score.CreateScoreInfo(rulesets);
+                var userScoreInfo = userScore?.Score.CreateScoreInfo(rulesets);
 
                 topScoresContainer.Add(new DrawableTopScore(topScore));
 
-                if (userScore != null && userScoreInfo.OnlineScoreID != topScore.OnlineScoreID)
+                if (userScoreInfo != null && userScoreInfo.OnlineScoreID != topScore.OnlineScoreID)
                     topScoresContainer.Add(new DrawableTopScore(userScoreInfo, userScore.Position));
             });
         }
