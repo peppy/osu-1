@@ -165,7 +165,7 @@ namespace osu.Game.Database
 
     public class RealmWrapper<T> where T : RealmObject, IHasPrimaryKey
     {
-        public string PrimaryKey { get; private set; }
+        public string PrimaryKey { get; }
 
         private readonly T original;
 
