@@ -138,17 +138,12 @@ namespace osu.Game.Screens.Select
 
             RightClickScrollingEnabled.ValueChanged += enabled => scroll.RightMouseScrollbar = enabled.NewValue;
             RightClickScrollingEnabled.TriggerChange();
+
+            loadBeatmapSets(beatmaps.GetAllUsableBeatmapSets());
         }
 
         [Resolved]
         private BeatmapManager beatmaps { get; set; }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            loadBeatmapSets(beatmaps.GetAllUsableBeatmapSets());
-        }
 
         public void RemoveBeatmapSet(RealmWrapper<BeatmapSetInfo> beatmapSet) => Schedule(() =>
         {
