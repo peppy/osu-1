@@ -8,6 +8,7 @@ using AutoMapper;
 using osu.Framework.Platform;
 using osu.Framework.Statistics;
 using osu.Framework.Threading;
+using osu.Game.IO.Serialization;
 using Realms;
 
 namespace osu.Game.Database
@@ -163,25 +164,31 @@ namespace osu.Game.Database
         }
     }
 
-    public class RealmWrapper<T> where T : RealmObject, IHasPrimaryKey
+    public class RealmWrapper<T> : IEquatable<RealmWrapper<T>>
+        where T : RealmObject, IHasPrimaryKey
     {
-        public string PrimaryKey { get; }
+        public string ID { get; }
 
         private readonly T original;
 
-        private readonly IDatabaseContextFactory dbFactory;
+        public readonly IDatabaseContextFactory ContextFactory;
 
-        public RealmWrapper(T original, IDatabaseContextFactory dbFactory)
+        public RealmWrapper(T original, IDatabaseContextFactory contextFactory)
         {
             this.original = original;
-            this.dbFactory = dbFactory;
-            PrimaryKey = original.ID;
+            ContextFactory = contextFactory;
+            ID = original.ID;
         }
 
-        public T Get() => dbFactory?.Get().Find<T>(PrimaryKey) ?? original;
+        public T Get() => ContextFactory?.Get().Find<T>(ID) ?? original;
+
+        public RealmWrapper<TChild> WrapChild<TChild>(Func<T, TChild> lookup)
+            where TChild : RealmObject, IHasPrimaryKey => new RealmWrapper<TChild>(lookup(Get()), ContextFactory);
 
         public static implicit operator T(RealmWrapper<T> wrapper)
             => wrapper?.Get();
+
+        public bool Equals(RealmWrapper<T> other) => other != null && other.ID == ID;
     }
 
     public static class RealmExtensions
@@ -196,6 +203,9 @@ namespace osu.Game.Database
 
         public static T Detach<T>(this T obj) where T : RealmObject
         {
+            if (!obj.IsManaged)
+                return obj;
+
             var detached = new MapperConfiguration(c => c.CreateMap<T, T>()).CreateMapper().Map<T>(obj);
 
             if (detached is IHasPrimaryKey dKey)
@@ -203,5 +213,11 @@ namespace osu.Game.Database
 
             return detached;
         }
+
+        public static RealmWrapper<T> Wrap<T>(this T obj, IDatabaseContextFactory dbFactory)
+            where T : RealmObject, IHasPrimaryKey => new RealmWrapper<T>(obj, dbFactory);
+
+        public static RealmWrapper<T> WrapAsUnmanaged<T>(this T obj)
+            where T : RealmObject, IHasPrimaryKey => new RealmWrapper<T>(obj, null);
     }
 }
