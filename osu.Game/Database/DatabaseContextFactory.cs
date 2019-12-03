@@ -209,6 +209,9 @@ namespace osu.Game.Database
     {
         private static readonly IMapper mapper = new MapperConfiguration(c =>
         {
+            c.ShouldMapField = fi => false;
+            c.ShouldMapProperty = pi => pi.SetMethod != null && pi.SetMethod.IsPublic;
+
             c.CreateMap<BeatmapDifficulty, BeatmapDifficulty>();
             c.CreateMap<BeatmapInfo, BeatmapInfo>();
             c.CreateMap<BeatmapMetadata, BeatmapMetadata>();
