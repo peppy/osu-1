@@ -8,7 +8,13 @@ using AutoMapper;
 using osu.Framework.Platform;
 using osu.Framework.Statistics;
 using osu.Framework.Threading;
-using osu.Game.IO.Serialization;
+using osu.Game.Beatmaps;
+using osu.Game.Configuration;
+using osu.Game.Input.Bindings;
+using osu.Game.IO;
+using osu.Game.Rulesets;
+using osu.Game.Scoring;
+using osu.Game.Skinning;
 using Realms;
 
 namespace osu.Game.Database
@@ -181,10 +187,10 @@ namespace osu.Game.Database
             {
                 var context = ContextFactory?.Get();
 
-                if (originalContext?.IsSameInstance(context) != false)
+                if (context == null || originalContext?.IsSameInstance(context) != false)
                     return original;
 
-                return (T)context?.Find(typeof(T).Name, ID) ?? original;
+                return (T)context.Find(typeof(T).Name, ID);
             });
         }
 
@@ -194,27 +200,41 @@ namespace osu.Game.Database
             where TChild : RealmObject, IHasPrimaryKey => new RealmWrapper<TChild>(lookup(Get()), ContextFactory);
 
         public static implicit operator T(RealmWrapper<T> wrapper)
-            => wrapper?.Get();
+            => wrapper?.Get().Detach();
 
         public bool Equals(RealmWrapper<T> other) => other != null && other.ID == ID;
     }
 
     public static class RealmExtensions
     {
-        public static T DetachDeep<T>(this T obj) where T : RealmObject, IHasPrimaryKey
+        private static readonly IMapper mapper = new MapperConfiguration(c =>
         {
-            if (!obj.IsManaged)
-                return obj;
+            c.CreateMap<BeatmapDifficulty, BeatmapDifficulty>();
+            c.CreateMap<BeatmapInfo, BeatmapInfo>();
+            c.CreateMap<BeatmapMetadata, BeatmapMetadata>();
+            c.CreateMap<BeatmapSetFileInfo, BeatmapSetFileInfo>();
 
-            return obj.Serialize().Deserialize<T>();
-        }
+            c.CreateMap<BeatmapSetInfo, BeatmapSetInfo>()
+             .ForMember(s => s.Beatmaps, d => d.MapFrom(s => s.Beatmaps))
+             .ForMember(s => s.Files, d => d.MapFrom(s => s.Files))
+             .MaxDepth(2);
+
+            c.CreateMap<DatabasedKeyBinding, DatabasedKeyBinding>();
+            c.CreateMap<DatabasedSetting, DatabasedSetting>();
+            c.CreateMap<FileInfo, FileInfo>();
+            c.CreateMap<ScoreFileInfo, ScoreFileInfo>();
+            c.CreateMap<SkinInfo, SkinInfo>();
+            c.CreateMap<RulesetInfo, RulesetInfo>();
+        }).CreateMapper();
 
         public static T Detach<T>(this T obj) where T : RealmObject
         {
             if (!obj.IsManaged)
                 return obj;
 
-            var detached = new MapperConfiguration(c => c.CreateMap<T, T>()).CreateMapper().Map<T>(obj);
+            var detached = mapper.Map<T>(obj);
+
+            //typeof(RealmObject).GetField("_realm", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(detached, null);
 
             return detached;
         }

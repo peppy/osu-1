@@ -155,10 +155,11 @@ namespace osu.Game.Beatmaps
             var b = GetBeatmap() ?? new Beatmap();
 
             // The original beatmap version needs to be preserved as the database doesn't contain it
-            BeatmapInfo.Get().BeatmapVersion = b.BeatmapInfo.BeatmapVersion;
+            int version = b.BeatmapInfo.BeatmapVersion;
 
             // Use the database-backed info for more up-to-date values (beatmap id, ranked status, etc)
-            b.BeatmapInfo = BeatmapInfo.Get().DetachDeep();
+            b.BeatmapInfo = BeatmapInfo;
+            b.BeatmapInfo.BeatmapVersion = version;
 
             return b;
         }, beatmapCancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
