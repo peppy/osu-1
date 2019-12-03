@@ -168,6 +168,8 @@ namespace osu.Game.Database
 
         private readonly T original;
 
+        private readonly ThreadLocal<T> threadValues;
+
         public readonly IDatabaseContextFactory ContextFactory;
 
         public RealmWrapper(T original, IDatabaseContextFactory contextFactory)
@@ -175,9 +177,11 @@ namespace osu.Game.Database
             this.original = original;
             ContextFactory = contextFactory;
             ID = original.ID;
+
+            threadValues = new ThreadLocal<T>(() => (T)ContextFactory?.Get().Find(typeof(T).Name, ID) ?? original);
         }
 
-        public T Get() => ContextFactory?.Get().Find<T>(ID) ?? original;
+        public T Get() => threadValues.Value;
 
         public RealmWrapper<TChild> WrapChild<TChild>(Func<T, TChild> lookup)
             where TChild : RealmObject, IHasPrimaryKey => new RealmWrapper<TChild>(lookup(Get()), ContextFactory);
