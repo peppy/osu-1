@@ -158,7 +158,7 @@ namespace osu.Game.Beatmaps
             BeatmapInfo.Get().BeatmapVersion = b.BeatmapInfo.BeatmapVersion;
 
             // Use the database-backed info for more up-to-date values (beatmap id, ranked status, etc)
-            b.BeatmapInfo = BeatmapInfo;
+            b.BeatmapInfo = BeatmapInfo.Get().DetachDeep();
 
             return b;
         }, beatmapCancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);

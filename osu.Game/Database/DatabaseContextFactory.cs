@@ -186,6 +186,14 @@ namespace osu.Game.Database
 
     public static class RealmExtensions
     {
+        public static T DetachDeep<T>(this T obj) where T : RealmObject, IHasPrimaryKey
+        {
+            if (!obj.IsManaged)
+                return obj;
+
+            return obj.Serialize().Deserialize<T>();
+        }
+
         public static T Detach<T>(this T obj) where T : RealmObject
         {
             var detached = new MapperConfiguration(c => c.CreateMap<T, T>()).CreateMapper().Map<T>(obj);

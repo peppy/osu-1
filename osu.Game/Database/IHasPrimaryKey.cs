@@ -3,10 +3,11 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using osu.Game.IO.Serialization;
 
 namespace osu.Game.Database
 {
-    public interface IHasPrimaryKey
+    public interface IHasPrimaryKey : IJsonSerializable
     {
         [JsonIgnore]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

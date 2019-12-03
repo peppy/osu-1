@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using osu.Game.Database;
 using Realms;
 
@@ -39,16 +40,19 @@ namespace osu.Game.Beatmaps
         /// <summary>
         /// The maximum star difficulty of all beatmaps in this set.
         /// </summary>
+        [JsonIgnore]
         public double MaxStarDifficulty => Beatmaps?.Max(b => b.StarDifficulty) ?? 0;
 
         /// <summary>
         /// The maximum playable length in milliseconds of all beatmaps in this set.
         /// </summary>
+        [JsonIgnore]
         public double MaxLength => Beatmaps?.Max(b => b.Length) ?? 0;
 
         /// <summary>
         /// The maximum BPM of all beatmaps in this set.
         /// </summary>
+        [JsonIgnore]
         public double MaxBPM => Beatmaps?.Max(b => b.BPM) ?? 0;
 
         public bool DeletePending { get; set; }
