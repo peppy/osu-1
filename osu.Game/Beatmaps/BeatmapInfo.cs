@@ -21,14 +21,8 @@ namespace osu.Game.Beatmaps
 
         public int BeatmapVersion;
 
-        private int? onlineBeatmapID;
-
         [JsonProperty("id")]
-        public int? OnlineBeatmapID
-        {
-            get => onlineBeatmapID;
-            set => onlineBeatmapID = value > 0 ? value : null;
-        }
+        public int? OnlineBeatmapID { get; set; }
 
         [JsonIgnore]
         public int BeatmapSetInfoID { get; set; }
