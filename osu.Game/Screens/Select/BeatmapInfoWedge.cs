@@ -151,7 +151,8 @@ namespace osu.Game.Screens.Select
             private void load(LocalisationManager localisation)
             {
                 var beatmapInfo = beatmap.BeatmapInfo.Get();
-                var metadata = beatmapInfo.Metadata ?? beatmap.BeatmapSetInfo?.Metadata ?? new BeatmapMetadata();
+
+                var metadata = beatmap.Metadata;
 
                 CacheDrawnFrameBuffer = true;
                 RedrawOnScale = false;
