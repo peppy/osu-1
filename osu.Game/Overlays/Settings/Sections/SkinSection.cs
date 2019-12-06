@@ -83,7 +83,7 @@ namespace osu.Game.Overlays.Settings.Sections
 
         private void itemRemoved(RealmWrapper<SkinInfo> s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Where(i => i.ID != s.ID).ToArray());
 
-        private void itemAdded(RealmWrapper<SkinInfo> s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Append(s).ToArray());
+        private void itemAdded(RealmWrapper<SkinInfo> s) => Schedule(() => skinDropdown.Items = skinDropdown.Items.Append(s.Get().Detach()).ToArray());
 
         protected override void Dispose(bool isDisposing)
         {

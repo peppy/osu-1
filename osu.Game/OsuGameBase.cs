@@ -173,13 +173,14 @@ namespace osu.Game
             // this should likely be moved to ArchiveModelManager when another case appears where it is necessary
             // to have inter-dependent model managers. this could be obtained with an IHasForeign<T> interface to
             // allow lookups to be done on the child (ScoreManager in this case) to perform the cascading delete.
-            List<ScoreInfo> getBeatmapScores(BeatmapSetInfo set)
+            List<ScoreInfo> getBeatmapScores(RealmWrapper<BeatmapSetInfo> set)
             {
                 List<ScoreInfo> scores = new List<ScoreInfo>();
 
-                if (set.IsManaged && set.IsValid)
+                if (set.ContextFactory != null)
                 {
-                    foreach (var beatmap in BeatmapManager.QueryBeatmaps(b => b.BeatmapSet == set))
+                    var lookup = set.Get();
+                    foreach (var beatmap in BeatmapManager.QueryBeatmaps(b => b.BeatmapSet == lookup))
                         scores.AddRange(ScoreManager.QueryScores(s => s.Beatmap == beatmap));
                 }
 

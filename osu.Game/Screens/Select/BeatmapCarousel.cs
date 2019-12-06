@@ -68,6 +68,7 @@ namespace osu.Game.Screens.Select
 
         public IEnumerable<BeatmapSetInfo> BeatmapSets
         {
+            get => beatmapSets.Select(c => c.BeatmapSet.Get());
             set => loadBeatmapSets(value.Select(b => b.WrapAsUnmanaged()));
         }
 

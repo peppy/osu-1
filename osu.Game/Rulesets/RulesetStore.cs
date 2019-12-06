@@ -46,7 +46,7 @@ namespace osu.Game.Rulesets
         /// <summary>
         /// All available rulesets.
         /// </summary>
-        public IEnumerable<RulesetInfo> AvailableRulesets => ContextFactory.Get().All<RulesetInfo>().Where(r => r.Available);
+        public IEnumerable<RulesetInfo> AvailableRulesets => ContextFactory.Get().All<RulesetInfo>().Where(r => r.Available).AsEnumerable().Select(r => r.Detach());
 
         private Assembly resolveRulesetAssembly(object sender, ResolveEventArgs args) => loadedAssemblies.Keys.FirstOrDefault(a => a.FullName == args.Name);
 

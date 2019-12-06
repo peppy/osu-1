@@ -611,15 +611,21 @@ namespace osu.Game.Tests.Beatmaps.IO
 
         private static void ensureLoaded(OsuGameBase osu, int timeout = 60000)
         {
-            IEnumerable<BeatmapSetInfo> resultSets = null;
             var store = osu.Dependencies.Get<BeatmapManager>();
-            waitForOrAssert(() => (resultSets = store.QueryBeatmapSets(s => s.OnlineBeatmapSetID == 241526)).Any(),
+
+            IEnumerable<BeatmapInfo> queryBeatmaps()
+            {
+                var lookupSet = store.QueryBeatmapSet(s => s.OnlineBeatmapSetID == 241526);
+                return store.QueryBeatmaps(s => s.BeatmapSet == lookupSet && s.BaseDifficulty != null);
+            }
+
+            IEnumerable<BeatmapSetInfo> queryBeatmapSets() => store.QueryBeatmapSets(s => s.OnlineBeatmapSetID == 241526);
+
+            waitForOrAssert(() => queryBeatmapSets().Any(),
                 @"BeatmapSet did not import to the database in allocated time.", timeout);
 
             //ensure we were stored to beatmap database backing...
-            Assert.IsTrue(resultSets.Count() == 1, $@"Incorrect result count found ({resultSets.Count()} but should be 1).");
-            IEnumerable<BeatmapInfo> queryBeatmaps() => store.QueryBeatmaps(s => s.BeatmapSet.OnlineBeatmapSetID == 241526 && s.BaseDifficultyID > 0);
-            IEnumerable<BeatmapSetInfo> queryBeatmapSets() => store.QueryBeatmapSets(s => s.OnlineBeatmapSetID == 241526);
+            Assert.IsTrue(queryBeatmapSets().Count() == 1, $@"Incorrect result count found ({queryBeatmapSets().Count()} but should be 1).");
 
             //if we don't re-check here, the set will be inserted but the beatmaps won't be present yet.
             waitForOrAssert(() => queryBeatmaps().Count() == 12,

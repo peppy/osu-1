@@ -81,7 +81,7 @@ namespace osu.Game.Tests.Visual.SongSelect
         public virtual void SetUp() => Schedule(() =>
         {
             Ruleset.Value = new OsuRuleset().RulesetInfo;
-            manager?.Delete(manager.GetAllUsableBeatmapSets());
+            manager?.Delete(manager.GetAllUsableBeatmapSetsEnumerable().ToList());
         });
 
         [Test]
