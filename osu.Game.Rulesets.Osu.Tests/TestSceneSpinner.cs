@@ -34,7 +34,7 @@ namespace osu.Game.Rulesets.Osu.Tests
 
         public TestSceneSpinner()
         {
-            base.Content.Add(content = new OsuInputManager(new RulesetInfo { ID = 0 }));
+            base.Content.Add(content = new OsuInputManager(new RulesetInfo { OnlineID = 0 }));
 
             AddStep("Miss Big", () => testSingle(2));
             AddStep("Miss Medium", () => testSingle(5));

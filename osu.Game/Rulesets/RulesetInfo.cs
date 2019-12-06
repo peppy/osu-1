@@ -4,13 +4,18 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
+using osu.Game.Database;
 using Realms;
 
 namespace osu.Game.Rulesets
 {
-    public class RulesetInfo : RealmObject, IEquatable<RulesetInfo>
+    public class RulesetInfo : RealmObject, IEquatable<RulesetInfo>, IHasPrimaryKey
     {
-        public int? ID { get; set; }
+        [PrimaryKey]
+        public string ID { get; set; }
+
+        [Indexed]
+        public int OnlineID { get; set; }
 
         public string Name { get; set; }
 
@@ -28,7 +33,7 @@ namespace osu.Game.Rulesets
             return (Ruleset)Activator.CreateInstance(Type.GetType(InstantiationInfo), this);
         }
 
-        public bool Equals(RulesetInfo other) => other != null && ID == other.ID && Available == other.Available && Name == other.Name && InstantiationInfo == other.InstantiationInfo;
+        public bool Equals(RulesetInfo other) => other != null && OnlineID == other.OnlineID && Available == other.Available && Name == other.Name && InstantiationInfo == other.InstantiationInfo;
 
         public override bool Equals(object obj) => obj is RulesetInfo rulesetInfo && Equals(rulesetInfo);
 
@@ -37,7 +42,7 @@ namespace osu.Game.Rulesets
         {
             unchecked
             {
-                var hashCode = ID.HasValue ? ID.GetHashCode() : 0;
+                var hashCode = OnlineID.GetHashCode();
                 hashCode = (hashCode * 397) ^ (InstantiationInfo != null ? InstantiationInfo.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Available.GetHashCode();
@@ -45,6 +50,6 @@ namespace osu.Game.Rulesets
             }
         }
 
-        public override string ToString() => $"{Name} ({ShortName}) ID: {ID}";
+        public override string ToString() => $"{Name} ({ShortName}) ID: {OnlineID}";
     }
 }

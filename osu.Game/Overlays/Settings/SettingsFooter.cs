@@ -32,7 +32,7 @@ namespace osu.Game.Overlays.Settings
             {
                 var icon = new ConstrainedIconContainer
                 {
-                    Icon = ruleset.CreateInstance().CreateIcon(),
+                    Icon = ruleset.Get().CreateInstance().CreateIcon(),
                     Colour = Color4.Gray,
                     Size = new Vector2(20),
                 };

@@ -124,7 +124,7 @@ namespace osu.Game.Screens.Select.Leaderboards
             if (Scope == BeatmapLeaderboardScope.Local)
             {
                 var scores = scoreManager
-                    .QueryScores(s => !s.DeletePending && s.Beatmap.ID == Beatmap.ID && s.Ruleset.ID == ruleset.Value.ID);
+                    .QueryScores(s => !s.DeletePending && s.Beatmap.ID == Beatmap.ID && s.Ruleset.OnlineID == ruleset.Value.OnlineID);
 
                 if (filterMods && !mods.Value.Any())
                 {

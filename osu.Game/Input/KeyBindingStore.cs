@@ -21,11 +21,11 @@ namespace osu.Game.Input
         {
             using (ContextFactory.GetForWrite())
             {
-                foreach (var info in rulesets.AvailableRulesets)
+                foreach (RulesetInfo info in rulesets.AvailableRulesets)
                 {
                     var ruleset = info.CreateInstance();
                     foreach (var variant in ruleset.AvailableVariants)
-                        insertDefaults(ruleset.GetDefaultKeyBindings(variant), info.ID, variant);
+                        insertDefaults(ruleset.GetDefaultKeyBindings(variant), info.OnlineID, variant);
                 }
             }
         }

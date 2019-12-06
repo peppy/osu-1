@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Game.Database;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Graphics.UserInterfaceV2;
@@ -95,7 +97,7 @@ namespace osu.Game.Tournament.Screens
                 {
                     Label = "Ruleset",
                     Description = "Decides what stats are displayed and which ranks are retrieved for players",
-                    Items = rulesets.AvailableRulesets,
+                    Items = rulesets.AvailableRulesets.Select(r => r.Get().Detach()),
                     Current = LadderInfo.Ruleset,
                 },
             };

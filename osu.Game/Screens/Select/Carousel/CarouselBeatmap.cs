@@ -30,8 +30,8 @@ namespace osu.Game.Screens.Select.Carousel
 
             bool match =
                 criteria.Ruleset == null ||
-                beatmap.RulesetID == criteria.Ruleset.ID ||
-                (beatmap.RulesetID == 0 && criteria.Ruleset.ID > 0 && criteria.AllowConvertedBeatmaps);
+                beatmap.RulesetID == criteria.Ruleset.OnlineID ||
+                (beatmap.RulesetID == 0 && criteria.Ruleset.OnlineID > 0 && criteria.AllowConvertedBeatmaps);
 
             match &= !criteria.StarDifficulty.HasFilter || criteria.StarDifficulty.IsInRange(beatmap.StarDifficulty);
             match &= !criteria.ApproachRate.HasFilter || criteria.ApproachRate.IsInRange(beatmap.BaseDifficulty.ApproachRate);

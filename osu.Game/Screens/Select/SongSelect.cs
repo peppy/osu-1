@@ -384,7 +384,7 @@ namespace osu.Game.Screens.Select
 
             void run()
             {
-                Logger.Log($"updating selection with beatmap:{beatmap?.ID.ToString() ?? "null"} ruleset:{ruleset?.ID.ToString() ?? "null"}");
+                Logger.Log($"updating selection with beatmap:{beatmap?.ID.ToString() ?? "null"} ruleset:{ruleset?.OnlineID.ToString() ?? "null"}");
 
                 if (ruleset?.Equals(decoupledRuleset.Value) == false)
                 {

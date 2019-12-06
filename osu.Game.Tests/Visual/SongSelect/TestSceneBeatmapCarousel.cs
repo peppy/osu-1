@@ -411,7 +411,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             testSingle.Beatmaps.ForEach(b =>
             {
                 b.Ruleset = rulesets.AvailableRulesets.ElementAt(1);
-                b.RulesetID = b.Ruleset.ID ?? 1;
+                b.RulesetID = b.Ruleset.OnlineID;
             });
             AddStep("add single ruleset beatmapset", () => carousel.UpdateBeatmapSet(testSingle));
             AddStep("select filtered map skipping filtered", () => carousel.SelectBeatmap(testSingle.Beatmaps[0], false));

@@ -16,6 +16,7 @@ using osu.Framework.Platform;
 using osu.Framework.Screens;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
+using osu.Game.Database;
 using osu.Game.Overlays;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Mods;
@@ -129,7 +130,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             {
                 AddStep("import multi-ruleset map", () =>
                 {
-                    var usableRulesets = rulesets.AvailableRulesets.Where(r => r.ID != 2).ToArray();
+                    var usableRulesets = rulesets.AvailableRulesets.Where(r => r.Get().OnlineID != 2).Select(r => r.Get().Detach()).ToArray();
                     manager.Import(createTestBeatmapSet(0, usableRulesets)).Wait();
                 });
             }
@@ -288,7 +289,7 @@ namespace osu.Game.Tests.Visual.SongSelect
 
         private void addRulesetImportStep(int id) => AddStep($"import test map for ruleset {id}", () => importForRuleset(id));
 
-        private void importForRuleset(int id) => manager.Import(createTestBeatmapSet(getImportId(), rulesets.AvailableRulesets.Where(r => r.ID == id).ToArray())).Wait();
+        private void importForRuleset(int id) => manager.Import(createTestBeatmapSet(getImportId(), rulesets.GetRuleset(id))).Wait();
 
         private static int importId;
         private int getImportId() => ++importId;
@@ -298,7 +299,7 @@ namespace osu.Game.Tests.Visual.SongSelect
 
         private void changeMods(params Mod[] mods) => AddStep($"change mods to {string.Join(", ", mods.Select(m => m.Acronym))}", () => Mods.Value = mods);
 
-        private void changeRuleset(int id) => AddStep($"change ruleset to {id}", () => Ruleset.Value = rulesets.AvailableRulesets.First(r => r.ID == id));
+        private void changeRuleset(int id) => AddStep($"change ruleset to {id}", () => Ruleset.Value = rulesets.GetRuleset(id));
 
         private void createSongSelect()
         {
@@ -310,14 +311,14 @@ namespace osu.Game.Tests.Visual.SongSelect
         {
             AddStep("import test maps", () =>
             {
-                var usableRulesets = rulesets.AvailableRulesets.Where(r => r.ID != 2).ToArray();
+                var usableRulesets = rulesets.AvailableRulesets.Where(r => r.Get().OnlineID != 2).Select(r => r.Get()).ToArray();
 
                 for (int i = 0; i < 100; i += 10)
                     manager.Import(createTestBeatmapSet(i, usableRulesets)).Wait();
             });
         }
 
-        private BeatmapSetInfo createTestBeatmapSet(int setId, RulesetInfo[] rulesets)
+        private BeatmapSetInfo createTestBeatmapSet(int setId, params RulesetInfo[] rulesets)
         {
             int j = 0;
             RulesetInfo getRuleset() => rulesets[j++ % rulesets.Length];

@@ -15,7 +15,7 @@ namespace osu.Game.Rulesets
     /// </summary>
     public class RulesetConfigCache : Component
     {
-        private readonly ConcurrentDictionary<int, IRulesetConfigManager> configCache = new ConcurrentDictionary<int, IRulesetConfigManager>();
+        private readonly ConcurrentDictionary<string, IRulesetConfigManager> configCache = new ConcurrentDictionary<string, IRulesetConfigManager>();
         private readonly SettingsStore settingsStore;
 
         public RulesetConfigCache(SettingsStore settingsStore)
@@ -28,14 +28,9 @@ namespace osu.Game.Rulesets
         /// </summary>
         /// <param name="ruleset">The <see cref="Ruleset"/> to retrieve the <see cref="IRulesetConfigManager"/> for.</param>
         /// <returns>The <see cref="IRulesetConfigManager"/> defined by <paramref name="ruleset"/>, null if <paramref name="ruleset"/> doesn't define one.</returns>
-        /// <exception cref="InvalidOperationException">If <paramref name="ruleset"/> doesn't have a valid <see cref="RulesetInfo.ID"/>.</exception>
-        public IRulesetConfigManager GetConfigFor(Ruleset ruleset)
-        {
-            if (ruleset.RulesetInfo.ID == null)
-                return null;
-
-            return configCache.GetOrAdd(ruleset.RulesetInfo.ID.Value, _ => ruleset.CreateConfig(settingsStore));
-        }
+        /// <exception cref="InvalidOperationException">If <paramref name="ruleset"/> doesn't have a valid <see cref="RulesetInfo.OnlineID"/>.</exception>
+        public IRulesetConfigManager GetConfigFor(Ruleset ruleset) =>
+            configCache.GetOrAdd(ruleset.RulesetInfo.ID, _ => ruleset.CreateConfig(settingsStore));
 
         protected override void Dispose(bool isDisposing)
         {

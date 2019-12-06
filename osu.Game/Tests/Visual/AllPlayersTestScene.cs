@@ -22,7 +22,7 @@ namespace osu.Game.Tests.Visual
         [BackgroundDependencyLoader]
         private void load(RulesetStore rulesets)
         {
-            foreach (var r in rulesets.AvailableRulesets)
+            foreach (RulesetInfo r in rulesets.AvailableRulesets)
             {
                 Player p = null;
                 AddStep(r.Name, () => p = loadPlayerFor(r));

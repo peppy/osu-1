@@ -28,7 +28,7 @@ namespace osu.Game.Rulesets.Taiko.Tests
 
         public TestSceneInputDrum()
         {
-            Add(new TaikoInputManager(new RulesetInfo { ID = 1 })
+            Add(new TaikoInputManager(new RulesetInfo { OnlineID = 1 })
             {
                 RelativeSizeAxes = Axes.Both,
                 Child = new Container

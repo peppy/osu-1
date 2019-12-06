@@ -51,7 +51,7 @@ namespace osu.Game.Rulesets.Osu.Tests
             get
             {
                 if (content == null)
-                    base.Content.Add(content = new OsuInputManager(new RulesetInfo { ID = 0 }));
+                    base.Content.Add(content = new OsuInputManager(new RulesetInfo { OnlineID = 0 }));
 
                 return content;
             }

@@ -281,7 +281,7 @@ namespace osu.Game.Screens.Menu
                 {
                     var modes = new List<Drawable>();
 
-                    foreach (var ruleset in rulesets.AvailableRulesets)
+                    foreach (RulesetInfo ruleset in rulesets.AvailableRulesets)
                     {
                         var icon = new ConstrainedIconContainer
                         {

@@ -19,7 +19,7 @@ namespace osu.Game.Online.API.Requests.Responses
     {
         public ScoreInfo CreateScoreInfo(RulesetStore rulesets)
         {
-            var ruleset = rulesets.GetRuleset(OnlineRulesetID);
+            RulesetInfo ruleset = rulesets.GetRuleset(OnlineRulesetID);
 
             var mods = Mods != null ? ruleset.CreateInstance().GetAllMods().Where(mod => Mods.Contains(mod.Acronym)).ToArray() : Array.Empty<Mod>();
 

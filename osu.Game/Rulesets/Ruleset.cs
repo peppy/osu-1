@@ -141,7 +141,8 @@ namespace osu.Game.Rulesets
             Name = Description,
             ShortName = ShortName,
             InstantiationInfo = GetType().AssemblyQualifiedName,
-            ID = LegacyID,
+            OnlineID = LegacyID ?? -1,
+            ID = LegacyID >= 0 ? LegacyID.ToString() : Guid.NewGuid().ToString(),
             Available = true
         };
     }

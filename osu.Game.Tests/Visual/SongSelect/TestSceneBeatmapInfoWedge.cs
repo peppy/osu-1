@@ -62,7 +62,7 @@ namespace osu.Game.Tests.Visual.SongSelect
 
             AddStep("show", () => { infoWedge.Show(); });
 
-            foreach (var rulesetInfo in rulesets.AvailableRulesets)
+            foreach (RulesetInfo rulesetInfo in rulesets.AvailableRulesets)
             {
                 var instance = rulesetInfo.CreateInstance();
                 var testBeatmap = createTestBeatmap(rulesetInfo);

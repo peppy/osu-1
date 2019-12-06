@@ -9,7 +9,7 @@ namespace osu.Game.Scoring.Legacy
     {
         public static int? GetCountGeki(this ScoreInfo scoreInfo)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 3:
                     return scoreInfo.Statistics[HitResult.Perfect];
@@ -20,7 +20,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static void SetCountGeki(this ScoreInfo scoreInfo, int value)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 3:
                     scoreInfo.Statistics[HitResult.Perfect] = value;
@@ -30,7 +30,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static int? GetCount300(this ScoreInfo scoreInfo)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 0:
                 case 1:
@@ -46,7 +46,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static void SetCount300(this ScoreInfo scoreInfo, int value)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 0:
                 case 1:
@@ -62,7 +62,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static int? GetCountKatu(this ScoreInfo scoreInfo)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 3:
                     return scoreInfo.Statistics[HitResult.Good];
@@ -73,7 +73,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static void SetCountKatu(this ScoreInfo scoreInfo, int value)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 3:
                     scoreInfo.Statistics[HitResult.Good] = value;
@@ -83,7 +83,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static int? GetCount100(this ScoreInfo scoreInfo)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 0:
                 case 1:
@@ -98,7 +98,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static void SetCount100(this ScoreInfo scoreInfo, int value)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 0:
                 case 1:
@@ -113,7 +113,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static int? GetCount50(this ScoreInfo scoreInfo)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 0:
                 case 3:
@@ -125,7 +125,7 @@ namespace osu.Game.Scoring.Legacy
 
         public static void SetCount50(this ScoreInfo scoreInfo, int value)
         {
-            switch (scoreInfo.Ruleset?.ID ?? scoreInfo.RulesetID)
+            switch (scoreInfo.Ruleset?.OnlineID ?? scoreInfo.RulesetID)
             {
                 case 0:
                 case 3:

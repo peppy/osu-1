@@ -38,12 +38,12 @@ namespace osu.Game.Online.API.Requests
 
         private void onSuccess(APILegacyScores r)
         {
-            Debug.Assert(ruleset.ID != null, "ruleset.ID != null");
+            Debug.Assert(ruleset.OnlineID >= 0, "ruleset.ID invalid");
 
             foreach (APILegacyScoreInfo score in r.Scores)
             {
                 score.Beatmap = beatmap;
-                score.OnlineRulesetID = ruleset.ID.Value;
+                score.OnlineRulesetID = ruleset.OnlineID;
             }
 
             var userScore = r.UserScore;
@@ -51,7 +51,7 @@ namespace osu.Game.Online.API.Requests
             if (userScore != null)
             {
                 userScore.Score.Beatmap = beatmap;
-                userScore.Score.OnlineRulesetID = ruleset.ID.Value;
+                userScore.Score.OnlineRulesetID = ruleset.OnlineID;
             }
         }
 

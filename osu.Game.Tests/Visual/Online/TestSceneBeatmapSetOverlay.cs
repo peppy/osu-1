@@ -237,7 +237,7 @@ namespace osu.Game.Tests.Visual.Online
                     Metrics = new BeatmapSetMetrics { Ratings = Enumerable.Range(0, 11).ToArray() },
                 };
 
-                foreach (var ruleset in rulesets.AvailableRulesets.Skip(1))
+                foreach (RulesetInfo ruleset in rulesets.AvailableRulesets.Skip(1))
                 {
                     set.Beatmaps.Add(new BeatmapInfo
                     {

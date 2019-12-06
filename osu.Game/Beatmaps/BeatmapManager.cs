@@ -313,7 +313,7 @@ namespace osu.Game.Beatmaps
                     beatmap.BeatmapInfo.Hash = hash;
                     beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
 
-                    beatmap.BeatmapInfo.Ruleset = rulesets.AvailableRulesets.FirstOrDefault(r => r.ID == beatmap.BeatmapInfo.RulesetID); // avoid getting a detached copy
+                    beatmap.BeatmapInfo.Ruleset = rulesets.GetRuleset(beatmap.BeatmapInfo.RulesetID).Get(); // avoid getting a detached copy
 
                     // TODO: this should be done in a better place once we actually need to dynamically update it.
                     beatmap.BeatmapInfo.StarDifficulty = beatmap.BeatmapInfo.Ruleset?.CreateInstance().CreateDifficultyCalculator(new DummyConversionBeatmap(beatmap)).Calculate().StarRating ?? 0;

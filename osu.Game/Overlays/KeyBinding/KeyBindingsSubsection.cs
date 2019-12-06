@@ -34,7 +34,7 @@ namespace osu.Game.Overlays.KeyBinding
         [BackgroundDependencyLoader]
         private void load(KeyBindingStore store)
         {
-            var bindings = store.Query(Ruleset?.ID, variant);
+            var bindings = store.Query(Ruleset?.OnlineID, variant);
 
             foreach (var defaultGroup in Defaults.GroupBy(d => d.Action))
             {

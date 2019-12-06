@@ -125,7 +125,7 @@ namespace osu.Game.Scoring.Legacy
             score.Statistics.TryGetValue(HitResult.Perfect, out int countGeki);
             score.Statistics.TryGetValue(HitResult.Ok, out int countKatu);
 
-            switch (score.Ruleset.ID)
+            switch (score.Ruleset.OnlineID)
             {
                 case 0:
                 {

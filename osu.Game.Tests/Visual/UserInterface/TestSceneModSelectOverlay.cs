@@ -75,7 +75,7 @@ namespace osu.Game.Tests.Visual.UserInterface
         [Test]
         public void TestOsuMods()
         {
-            var ruleset = rulesets.AvailableRulesets.First(r => r.ID == 0);
+            RulesetInfo ruleset = rulesets.GetRuleset(0);
             changeRuleset(ruleset);
 
             var instance = ruleset.CreateInstance();
@@ -106,7 +106,7 @@ namespace osu.Game.Tests.Visual.UserInterface
         [Test]
         public void TestManiaMods()
         {
-            var ruleset = rulesets.AvailableRulesets.First(r => r.ID == 3);
+            RulesetInfo ruleset = rulesets.GetRuleset(3);
             changeRuleset(ruleset);
 
             testRankedText(ruleset.CreateInstance().GetModsFor(ModType.Conversion).First(m => m is ManiaModRandom));
@@ -115,8 +115,8 @@ namespace osu.Game.Tests.Visual.UserInterface
         [Test]
         public void TestRulesetChanges()
         {
-            var rulesetOsu = rulesets.AvailableRulesets.First(r => r.ID == 0);
-            var rulesetMania = rulesets.AvailableRulesets.First(r => r.ID == 3);
+            RulesetInfo rulesetOsu = rulesets.GetRuleset(0);
+            RulesetInfo rulesetMania = rulesets.GetRuleset(3);
 
             changeRuleset(null);
 

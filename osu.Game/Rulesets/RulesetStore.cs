@@ -34,19 +34,21 @@ namespace osu.Game.Rulesets
         /// </summary>
         /// <param name="id">The ruleset's internal ID.</param>
         /// <returns>A ruleset, if available, else null.</returns>
-        public RulesetInfo GetRuleset(int id) => AvailableRulesets.FirstOrDefault(r => r.ID == id).Detach();
+        public RealmWrapper<RulesetInfo> GetRuleset(int id) => available.FirstOrDefault(r => r.OnlineID == id).Wrap(ContextFactory);
 
         /// <summary>
         /// Retrieve a ruleset using a known short name.
         /// </summary>
         /// <param name="shortName">The ruleset's short name.</param>
         /// <returns>A ruleset, if available, else null.</returns>
-        public RulesetInfo GetRuleset(string shortName) => AvailableRulesets.FirstOrDefault(r => r.ShortName == shortName).Detach();
+        public RealmWrapper<RulesetInfo> GetRuleset(string shortName) => available.FirstOrDefault(r => r.ShortName == shortName).Wrap(ContextFactory);
 
         /// <summary>
         /// All available rulesets.
         /// </summary>
-        public IEnumerable<RulesetInfo> AvailableRulesets => ContextFactory.Get().All<RulesetInfo>().Where(r => r.Available).AsEnumerable().Select(r => r.Detach());
+        public IEnumerable<RealmWrapper<RulesetInfo>> AvailableRulesets => available.AsEnumerable().Select(r => r.Wrap(ContextFactory));
+
+        private IEnumerable<RulesetInfo> available => ContextFactory.Get().All<RulesetInfo>().Where(r => r.Available);
 
         private Assembly resolveRulesetAssembly(object sender, ResolveEventArgs args) => loadedAssemblies.Keys.FirstOrDefault(a => a.FullName == args.Name);
 
@@ -61,7 +63,7 @@ namespace osu.Game.Rulesets
                 //add all legacy modes in correct order
                 foreach (var r in instances.Where(r => r.LegacyID != null).OrderBy(r => r.LegacyID))
                 {
-                    if (context.All<RulesetInfo>().SingleOrDefault(rsi => rsi.ID == r.RulesetInfo.ID) == null)
+                    if (context.All<RulesetInfo>().SingleOrDefault(rsi => rsi.OnlineID == r.RulesetInfo.OnlineID) == null)
                         context.Add(r.RulesetInfo);
                 }
 

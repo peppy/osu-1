@@ -53,7 +53,7 @@ namespace osu.Game.Screens.Multi.Play
             if (Beatmap.Value.BeatmapInfo.Get().OnlineBeatmapID != playlistItem.Beatmap.OnlineBeatmapID)
                 throw new InvalidOperationException("Current Beatmap does not match PlaylistItem's Beatmap");
 
-            if (ruleset.Value.ID != playlistItem.Ruleset.ID)
+            if (ruleset.Value.OnlineID != playlistItem.Ruleset.OnlineID)
                 throw new InvalidOperationException("Current Ruleset does not match PlaylistItem's Ruleset");
 
             if (!playlistItem.RequiredMods.All(m => Mods.Value.Any(m.Equals)))
