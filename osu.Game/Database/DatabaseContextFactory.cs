@@ -28,7 +28,9 @@ namespace osu.Game.Database
 
         private ThreadLocal<Realm> threadContexts;
 
-        private ThreadLocal<bool> refreshRequired = new ThreadLocal<bool>(true);
+        private readonly object writeLock = new object();
+
+        private ThreadLocal<bool> refreshCompleted = new ThreadLocal<bool>();
 
         private bool currentWriteDidWrite;
         private bool currentWriteDidError;
@@ -57,11 +59,10 @@ namespace osu.Game.Database
         /// </summary>
         public Realm Get()
         {
-            if (writingThread != Thread.CurrentThread && !refreshRequired.Value)
+            if (!refreshCompleted.Value)
             {
-                lock (this)
-                    threadContexts.Value.Refresh();
-                refreshRequired.Value = true;
+                threadContexts.Value.Refresh();
+                refreshCompleted.Value = true;
             }
 
             reads.Value++;
@@ -77,6 +78,7 @@ namespace osu.Game.Database
         public DatabaseWriteUsage GetForWrite(bool withTransaction = true)
         {
             writes.Value++;
+            Monitor.Enter(writeLock);
             Realm context;
 
             try
@@ -96,6 +98,7 @@ namespace osu.Game.Database
             catch
             {
                 // retrieval of a context could trigger a fatal error.
+                Monitor.Exit(writeLock);
                 throw;
             }
 
@@ -110,37 +113,43 @@ namespace osu.Game.Database
         {
             int usages = Interlocked.Decrement(ref currentWriteUsages);
 
-            currentWriteDidWrite |= usage.PerformedWrite;
-            currentWriteDidError |= usage.Errors.Any();
-
-            if (usages == 0)
+            try
             {
-                if (currentWriteDidError)
+                currentWriteDidWrite |= usage.PerformedWrite;
+                currentWriteDidError |= usage.Errors.Any();
+
+                if (usages == 0)
                 {
-                    rollbacks.Value++;
-                    currentWriteTransaction?.Rollback();
+                    if (currentWriteDidError)
+                    {
+                        rollbacks.Value++;
+                        currentWriteTransaction?.Rollback();
+                    }
+                    else
+                    {
+                        commits.Value++;
+                        currentWriteTransaction?.Commit();
+                    }
+
+                    if (currentWriteDidWrite || currentWriteDidError)
+                    {
+                        // explicitly dispose to ensure any outstanding flushes happen as soon as possible (and underlying resources are purged).
+                        //usage.Context.Dispose();
+
+                        // once all writes are complete, we want to refresh thread-specific contexts to make sure they don't have stale local caches.
+                        //recycleThreadContexts();
+                    }
+
+                    currentWriteTransaction = null;
+                    writingThread = null;
+                    currentWriteDidWrite = false;
+                    currentWriteDidError = false;
+                    refreshCompleted = new ThreadLocal<bool>();
                 }
-                else
-                {
-                    commits.Value++;
-                    currentWriteTransaction?.Commit();
-                }
-
-                refreshRequired = new ThreadLocal<bool>();
-
-                if (currentWriteDidWrite || currentWriteDidError)
-                {
-                    // explicitly dispose to ensure any outstanding flushes happen as soon as possible (and underlying resources are purged).
-                    //usage.Context.Dispose();
-
-                    // once all writes are complete, we want to refresh thread-specific contexts to make sure they don't have stale local caches.
-                    //recycleThreadContexts();
-                }
-
-                currentWriteTransaction = null;
-                writingThread = null;
-                currentWriteDidWrite = false;
-                currentWriteDidError = false;
+            }
+            finally
+            {
+                Monitor.Exit(writeLock);
             }
         }
 
@@ -160,8 +169,11 @@ namespace osu.Game.Database
 
         public void ResetDatabase()
         {
-            recreateThreadContexts();
-            storage.DeleteDatabase(database_name);
+            lock (writeLock)
+            {
+                recreateThreadContexts();
+                storage.DeleteDatabase(database_name);
+            }
         }
     }
 
