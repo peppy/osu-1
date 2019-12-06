@@ -28,7 +28,7 @@ namespace osu.Game.Database
 
         private ThreadLocal<Realm> threadContexts;
 
-        private readonly object writeLock = new object();
+        private ThreadLocal<bool> refreshRequired = new ThreadLocal<bool>(true);
 
         private bool currentWriteDidWrite;
         private bool currentWriteDidError;
@@ -49,6 +49,7 @@ namespace osu.Game.Database
         private static readonly GlobalStatistic<int> commits = GlobalStatistics.Get<int>("Database", "Commits");
         private static readonly GlobalStatistic<int> rollbacks = GlobalStatistics.Get<int>("Database", "Rollbacks");
         private static readonly GlobalStatistic<int> contexts = GlobalStatistics.Get<int>("Database", "Contexts");
+        private Thread writingThread;
 
         /// <summary>
         /// Get a context for the current thread for read-only usage.
@@ -56,7 +57,12 @@ namespace osu.Game.Database
         /// </summary>
         public Realm Get()
         {
-            threadContexts.Value.Refresh();
+            if (writingThread != Thread.CurrentThread && !refreshRequired.Value)
+            {
+                lock (this)
+                    threadContexts.Value.Refresh();
+                refreshRequired.Value = true;
+            }
 
             reads.Value++;
             return threadContexts.Value;
@@ -71,7 +77,6 @@ namespace osu.Game.Database
         public DatabaseWriteUsage GetForWrite(bool withTransaction = true)
         {
             writes.Value++;
-            Monitor.Enter(writeLock);
             Realm context;
 
             try
@@ -79,6 +84,7 @@ namespace osu.Game.Database
                 if (currentWriteTransaction == null && withTransaction)
                 {
                     context = threadContexts.Value;
+                    writingThread = Thread.CurrentThread;
                     currentWriteTransaction = context.BeginWrite();
                 }
                 else
@@ -90,7 +96,6 @@ namespace osu.Game.Database
             catch
             {
                 // retrieval of a context could trigger a fatal error.
-                Monitor.Exit(writeLock);
                 throw;
             }
 
@@ -105,41 +110,37 @@ namespace osu.Game.Database
         {
             int usages = Interlocked.Decrement(ref currentWriteUsages);
 
-            try
-            {
-                currentWriteDidWrite |= usage.PerformedWrite;
-                currentWriteDidError |= usage.Errors.Any();
+            currentWriteDidWrite |= usage.PerformedWrite;
+            currentWriteDidError |= usage.Errors.Any();
 
-                if (usages == 0)
+            if (usages == 0)
+            {
+                if (currentWriteDidError)
                 {
-                    if (currentWriteDidError)
-                    {
-                        rollbacks.Value++;
-                        currentWriteTransaction?.Rollback();
-                    }
-                    else
-                    {
-                        commits.Value++;
-                        currentWriteTransaction?.Commit();
-                    }
-
-                    if (currentWriteDidWrite || currentWriteDidError)
-                    {
-                        // explicitly dispose to ensure any outstanding flushes happen as soon as possible (and underlying resources are purged).
-                        //usage.Context.Dispose();
-
-                        // once all writes are complete, we want to refresh thread-specific contexts to make sure they don't have stale local caches.
-                        //recycleThreadContexts();
-                    }
-
-                    currentWriteTransaction = null;
-                    currentWriteDidWrite = false;
-                    currentWriteDidError = false;
+                    rollbacks.Value++;
+                    currentWriteTransaction?.Rollback();
                 }
-            }
-            finally
-            {
-                Monitor.Exit(writeLock);
+                else
+                {
+                    commits.Value++;
+                    currentWriteTransaction?.Commit();
+                }
+
+                refreshRequired = new ThreadLocal<bool>();
+
+                if (currentWriteDidWrite || currentWriteDidError)
+                {
+                    // explicitly dispose to ensure any outstanding flushes happen as soon as possible (and underlying resources are purged).
+                    //usage.Context.Dispose();
+
+                    // once all writes are complete, we want to refresh thread-specific contexts to make sure they don't have stale local caches.
+                    //recycleThreadContexts();
+                }
+
+                currentWriteTransaction = null;
+                writingThread = null;
+                currentWriteDidWrite = false;
+                currentWriteDidError = false;
             }
         }
 
@@ -159,11 +160,8 @@ namespace osu.Game.Database
 
         public void ResetDatabase()
         {
-            lock (writeLock)
-            {
-                recreateThreadContexts();
-                storage.DeleteDatabase(database_name);
-            }
+            recreateThreadContexts();
+            storage.DeleteDatabase(database_name);
         }
     }
 
@@ -201,6 +199,8 @@ namespace osu.Game.Database
 
         public static implicit operator T(RealmWrapper<T> wrapper)
             => wrapper?.Get().Detach();
+
+        public static implicit operator RealmWrapper<T>(T obj) => obj.WrapAsUnmanaged();
 
         public bool Equals(RealmWrapper<T> other) => other != null && other.ID == ID;
     }
