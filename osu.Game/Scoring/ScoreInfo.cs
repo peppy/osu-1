@@ -169,10 +169,21 @@ namespace osu.Game.Scoring
 
         public override string ToString() => $"{User} playing {Beatmap}";
 
-        public bool Equals(ScoreInfo other) =>
-            other != null
-            && other.OnlineScoreID == OnlineScoreID
-            && other.BeatmapInfoID == BeatmapInfoID
-            && other.Hash == Hash;
+        public bool Equals(ScoreInfo other)
+        {
+            if (other == null)
+                return false;
+
+            if (ID != null && other.ID != null)
+                return ID == other.ID;
+
+            if (OnlineScoreID.HasValue && other.OnlineScoreID.HasValue)
+                return OnlineScoreID == other.OnlineScoreID;
+
+            if (!string.IsNullOrEmpty(Hash) && !string.IsNullOrEmpty(other.Hash))
+                return Hash == other.Hash;
+
+            return ReferenceEquals(this, other);
+        }
     }
 }
