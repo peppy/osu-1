@@ -9,8 +9,13 @@ namespace osu.Game.IO
 {
     public class FileInfo : RealmObject, IHasPrimaryKey
     {
-        public string ID { get; set; }
+        public string ID
+        {
+            get => Hash;
+            set => Hash = value;
+        }
 
+        [PrimaryKey]
         public string Hash { get; set; }
 
         public string StoragePath => Path.Combine(Hash.Remove(1), Hash.Remove(2), Hash);
