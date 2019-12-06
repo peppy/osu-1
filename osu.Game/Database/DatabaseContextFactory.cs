@@ -164,7 +164,7 @@ namespace osu.Game.Database
         protected virtual Realm CreateContext()
         {
             contexts.Value++;
-            return Realm.GetInstance(new RealmConfiguration(storage.GetFullPath($"{database_name}.realm")));
+            return Realm.GetInstance(new RealmConfiguration(storage.GetFullPath($"{database_name}.realm", true)));
         }
 
         public void ResetDatabase()
