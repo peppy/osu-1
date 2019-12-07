@@ -113,13 +113,13 @@ namespace osu.Game.Online
 
         private void itemRemoved(RealmWrapper<TModel> s) => setDownloadStateFromManager(s, DownloadState.NotDownloaded);
 
-        private void setDownloadStateFromManager(TModel s, DownloadState state) => Schedule(() =>
+        private void setDownloadStateFromManager(TModel s, DownloadState state)
         {
             if (!s.Equals(Model.Value))
                 return;
 
             State.Value = state;
-        });
+        }
 
         #region Disposal
 
