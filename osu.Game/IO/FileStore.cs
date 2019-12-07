@@ -42,9 +42,12 @@ namespace osu.Game.IO
             {
                 string hash = data.ComputeSHA2Hash();
 
-                var existing = usage.Context.All<FileInfo>().FirstOrDefault(f => f.Hash == hash);
+                var info = usage.Context.All<FileInfo>().FirstOrDefault(f => f.Hash == hash);
 
-                var info = existing ?? new FileInfo { Hash = hash };
+                if (info == null)
+                {
+                    usage.Context.Add(info = new FileInfo { Hash = hash });
+                }
 
                 string path = info.StoragePath;
 
@@ -68,7 +71,7 @@ namespace osu.Game.IO
                     data.Seek(0, SeekOrigin.Begin);
                 }
 
-                if (reference || existing == null)
+                if (reference || info == null)
                     Reference(info);
 
                 return info;

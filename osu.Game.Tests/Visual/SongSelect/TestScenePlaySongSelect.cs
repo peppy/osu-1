@@ -187,6 +187,7 @@ namespace osu.Game.Tests.Visual.SongSelect
         public void TestImportUnderDifferentRuleset()
         {
             createSongSelect();
+            changeRuleset(0);
             addRulesetImportStep(2);
             AddUntilStep("no selection", () => songSelect.Carousel.SelectedBeatmap == null);
         }
@@ -198,10 +199,10 @@ namespace osu.Game.Tests.Visual.SongSelect
             changeRuleset(2);
             addRulesetImportStep(2);
             addRulesetImportStep(1);
-            AddUntilStep("has selection", () => songSelect.Carousel.SelectedBeatmap.RulesetID == 2);
+            AddUntilStep("has selection", () => songSelect.Carousel.SelectedBeatmap.Ruleset.OnlineID == 2);
 
             changeRuleset(1);
-            AddUntilStep("has selection", () => songSelect.Carousel.SelectedBeatmap.RulesetID == 1);
+            AddUntilStep("has selection", () => songSelect.Carousel.SelectedBeatmap.Ruleset.OnlineID == 1);
 
             changeRuleset(0);
             AddUntilStep("no selection", () => songSelect.Carousel.SelectedBeatmap == null);

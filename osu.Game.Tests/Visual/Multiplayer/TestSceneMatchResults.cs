@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 using osu.Framework.Allocation;
 using osu.Game.Beatmaps;
 using osu.Game.Online.API;
@@ -33,7 +34,7 @@ namespace osu.Game.Tests.Visual.Multiplayer
         [BackgroundDependencyLoader]
         private void load()
         {
-            var beatmapInfo = beatmaps.QueryBeatmap(b => b.RulesetID == 0);
+            var beatmapInfo = beatmaps.Beatmaps.AsEnumerable().FirstOrDefault(b => b.Ruleset.OnlineID == 0);
             if (beatmapInfo != null)
                 Beatmap.Value = beatmaps.GetWorkingBeatmap(beatmapInfo);
 

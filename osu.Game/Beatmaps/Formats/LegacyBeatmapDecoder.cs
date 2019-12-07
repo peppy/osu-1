@@ -10,6 +10,7 @@ using osu.Game.Beatmaps.Timing;
 using osu.Game.Rulesets.Objects.Legacy;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.IO;
+using osu.Game.Rulesets;
 
 namespace osu.Game.Beatmaps.Formats
 {
@@ -140,9 +141,9 @@ namespace osu.Game.Beatmaps.Formats
                     break;
 
                 case @"Mode":
-                    beatmap.BeatmapInfo.RulesetID = Parsing.ParseInt(pair.Value);
+                    beatmap.BeatmapInfo.Ruleset = new RulesetInfo { OnlineID = Parsing.ParseInt(pair.Value) };
 
-                    switch (beatmap.BeatmapInfo.RulesetID)
+                    switch (beatmap.BeatmapInfo.Ruleset.OnlineID)
                     {
                         case 0:
                             parser = new Rulesets.Objects.Legacy.Osu.ConvertHitObjectParser(getOffsetTime(), FormatVersion);

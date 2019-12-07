@@ -32,9 +32,9 @@ namespace osu.Game.Rulesets
         /// <summary>
         /// Retrieve a ruleset using a known ID.
         /// </summary>
-        /// <param name="id">The ruleset's internal ID.</param>
+        /// <param name="onlineID">The ruleset's internal ID.</param>
         /// <returns>A ruleset, if available, else null.</returns>
-        public RealmWrapper<RulesetInfo> GetRuleset(int id) => available.FirstOrDefault(r => r.OnlineID == id).Wrap(ContextFactory);
+        public RealmWrapper<RulesetInfo> GetRuleset(int onlineID) => available.FirstOrDefault(r => r.OnlineID == onlineID).Wrap(ContextFactory);
 
         /// <summary>
         /// Retrieve a ruleset using a known short name.

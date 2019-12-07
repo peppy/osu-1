@@ -103,7 +103,7 @@ namespace osu.Game.Tests.Beatmaps
             var beatmap = getBeatmap(name);
 
             var rulesetInstance = CreateRuleset();
-            beatmap.BeatmapInfo.Ruleset = beatmap.BeatmapInfo.RulesetID == rulesetInstance.RulesetInfo.OnlineID ? rulesetInstance.RulesetInfo : new RulesetInfo();
+            beatmap.BeatmapInfo.Ruleset = beatmap.BeatmapInfo.Ruleset.OnlineID == rulesetInstance.RulesetInfo.OnlineID ? rulesetInstance.RulesetInfo : new RulesetInfo();
 
             var converterResult = new Dictionary<HitObject, IEnumerable<HitObject>>();
 

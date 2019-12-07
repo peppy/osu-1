@@ -30,8 +30,8 @@ namespace osu.Game.Screens.Select.Carousel
 
             bool match =
                 criteria.Ruleset == null ||
-                beatmap.RulesetID == criteria.Ruleset.OnlineID ||
-                (beatmap.RulesetID == 0 && criteria.Ruleset.OnlineID > 0 && criteria.AllowConvertedBeatmaps);
+                beatmap.Ruleset.OnlineID == criteria.Ruleset.OnlineID ||
+                (beatmap.Ruleset.OnlineID == 0 && criteria.Ruleset.OnlineID > 0 && criteria.AllowConvertedBeatmaps);
 
             match &= !criteria.StarDifficulty.HasFilter || criteria.StarDifficulty.IsInRange(beatmap.StarDifficulty);
             match &= !criteria.ApproachRate.HasFilter || criteria.ApproachRate.IsInRange(beatmap.BaseDifficulty.ApproachRate);
@@ -72,7 +72,7 @@ namespace osu.Game.Screens.Select.Carousel
             {
                 default:
                 case SortMode.Difficulty:
-                    var ruleset = Beatmap.Get().RulesetID.CompareTo(otherBeatmap.Beatmap.Get().RulesetID);
+                    var ruleset = Beatmap.Get().Ruleset.OnlineID.CompareTo(otherBeatmap.Beatmap.Get().Ruleset.OnlineID);
                     if (ruleset != 0) return ruleset;
 
                     return Beatmap.Get().StarDifficulty.CompareTo(otherBeatmap.Beatmap.Get().StarDifficulty);

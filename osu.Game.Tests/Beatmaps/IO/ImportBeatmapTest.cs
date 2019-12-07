@@ -647,13 +647,13 @@ namespace osu.Game.Tests.Beatmaps.IO
             foreach (BeatmapInfo b in set.Beatmaps)
                 Assert.IsTrue(set.Beatmaps.Any(c => c.OnlineBeatmapID == b.OnlineBeatmapID));
             Assert.IsTrue(set.Beatmaps.Count > 0);
-            var beatmap = store.GetWorkingBeatmap(set.Beatmaps.First(b => b.RulesetID == 0))?.Beatmap;
+            var beatmap = store.GetWorkingBeatmap(set.Beatmaps.AsEnumerable().First(b => b.Ruleset.OnlineID == 0))?.Beatmap;
             Assert.IsTrue(beatmap?.HitObjects.Any() == true);
-            beatmap = store.GetWorkingBeatmap(set.Beatmaps.First(b => b.RulesetID == 1))?.Beatmap;
+            beatmap = store.GetWorkingBeatmap(set.Beatmaps.AsEnumerable().First(b => b.Ruleset.OnlineID == 1))?.Beatmap;
             Assert.IsTrue(beatmap?.HitObjects.Any() == true);
-            beatmap = store.GetWorkingBeatmap(set.Beatmaps.First(b => b.RulesetID == 2))?.Beatmap;
+            beatmap = store.GetWorkingBeatmap(set.Beatmaps.AsEnumerable().First(b => b.Ruleset.OnlineID == 2))?.Beatmap;
             Assert.IsTrue(beatmap?.HitObjects.Any() == true);
-            beatmap = store.GetWorkingBeatmap(set.Beatmaps.First(b => b.RulesetID == 3))?.Beatmap;
+            beatmap = store.GetWorkingBeatmap(set.Beatmaps.AsEnumerable().First(b => b.Ruleset.OnlineID == 3))?.Beatmap;
             Assert.IsTrue(beatmap?.HitObjects.Any() == true);
         }
 

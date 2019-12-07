@@ -390,10 +390,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                 testMixed = createTestBeatmapSet(set_count + 1);
 
                 for (int i = 0; i <= 2; i++)
-                {
                     testMixed.Beatmaps[i].Ruleset = rulesets.AvailableRulesets.ElementAt(i);
-                    testMixed.Beatmaps[i].RulesetID = i;
-                }
 
                 carousel.UpdateBeatmapSet(testMixed);
             });
@@ -408,11 +405,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                 testMixed = null;
             });
             var testSingle = createTestBeatmapSet(set_count + 2);
-            testSingle.Beatmaps.ForEach(b =>
-            {
-                b.Ruleset = rulesets.AvailableRulesets.ElementAt(1);
-                b.RulesetID = b.Ruleset.OnlineID;
-            });
+            testSingle.Beatmaps.ForEach(b => b.Ruleset = rulesets.AvailableRulesets.ElementAt(1));
             AddStep("add single ruleset beatmapset", () => carousel.UpdateBeatmapSet(testSingle));
             AddStep("select filtered map skipping filtered", () => carousel.SelectBeatmap(testSingle.Beatmaps[0], false));
             checkNoSelection();
