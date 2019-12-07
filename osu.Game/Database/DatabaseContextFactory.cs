@@ -215,6 +215,8 @@ namespace osu.Game.Database
         public static implicit operator RealmWrapper<T>(T obj) => obj.WrapAsUnmanaged();
 
         public bool Equals(RealmWrapper<T> other) => other != null && other.ID == ID;
+
+        public override string ToString() => Get().ToString();
     }
 
     public static class RealmExtensions
