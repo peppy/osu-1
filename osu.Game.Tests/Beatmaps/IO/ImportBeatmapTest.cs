@@ -13,6 +13,7 @@ using osu.Game.IPC;
 using osu.Framework.Allocation;
 using osu.Framework.Logging;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.IO;
 using osu.Game.Tests.Resources;
 using SharpCompress.Archives;
@@ -221,14 +222,14 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     var imported = await LoadOszIntoOsu(osu);
 
+                    Assert.IsTrue(imported.IsManaged && imported.IsValid);
+
                     manager.Update(imported, i => i.Hash += "-changed");
 
                     var importedSecondTime = await LoadOszIntoOsu(osu);
 
-                    Assert.IsTrue(imported.ID != importedSecondTime.ID);
-
-                    // todo: fix
-                    //Assert.IsTrue(imported.Beatmaps.First().ID < importedSecondTime.Beatmaps.First().ID);
+                    Assert.IsFalse(imported.IsValid);
+                    Assert.IsTrue(importedSecondTime.IsValid);
 
                     // only one beatmap will exist as the online set ID matched, causing purging of the first import.
                     checkBeatmapSetCount(osu, 1);
@@ -567,7 +568,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
             waitForOrAssert(() => !File.Exists(temp), "Temporary file still exists after standard import", 5000);
 
-            return imported.LastOrDefault();
+            return imported.Last().Get();
         }
 
         private void deleteBeatmapSet(BeatmapSetInfo imported, OsuGameBase osu)
