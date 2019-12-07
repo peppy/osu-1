@@ -46,7 +46,7 @@ namespace osu.Game.Tests.Visual.Gameplay
         {
             base.LoadComplete();
 
-            var beatmapInfo = beatmaps.QueryBeatmap(b => b.Ruleset.OnlineID == 0);
+            var beatmapInfo = beatmaps.Beatmaps.AsEnumerable().FirstOrDefault(b => b.Ruleset.OnlineID == 0);
             if (beatmapInfo != null)
                 Beatmap.Value = beatmaps.GetWorkingBeatmap(beatmapInfo);
         }

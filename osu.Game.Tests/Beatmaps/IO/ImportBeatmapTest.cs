@@ -14,6 +14,8 @@ using osu.Framework.Allocation;
 using osu.Framework.Logging;
 using osu.Game.Beatmaps;
 using osu.Game.IO;
+using osu.Game.Rulesets;
+using osu.Game.Rulesets.Osu;
 using osu.Game.Tests.Resources;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
@@ -335,6 +337,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                             {
                                 OnlineBeatmapID = 2,
                                 Metadata = metadata,
+                                Ruleset = new OsuRuleset().RulesetInfo,
                                 BaseDifficulty = difficulty
                             },
                             new BeatmapInfo
@@ -342,6 +345,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                                 OnlineBeatmapID = 2,
                                 Metadata = metadata,
                                 Status = BeatmapSetOnlineStatus.Loved,
+                                Ruleset = new OsuRuleset().RulesetInfo,
                                 BaseDifficulty = difficulty
                             }
                         }
