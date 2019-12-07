@@ -93,6 +93,10 @@ namespace osu.Game.Beatmaps
             if (archive != null)
                 createBeatmapDifficulties(beatmapSet.Files).ForEach(beatmapSet.Beatmaps.Add);
 
+            // populate outside of above conditional to cover the case of no archive presence, where we still want to populate primary keys
+            foreach (var beatmap in beatmapSet.Beatmaps)
+                beatmap.ID = Guid.NewGuid().ToString();
+
             foreach (BeatmapInfo b in beatmapSet.Beatmaps)
             {
                 // remove metadata from difficulties where it matches the set
@@ -337,7 +341,6 @@ namespace osu.Game.Beatmaps
                     beatmap.BeatmapInfo.StarDifficulty = beatmap.BeatmapInfo.Ruleset?.CreateInstance().CreateDifficultyCalculator(new DummyConversionBeatmap(beatmap)).Calculate().StarRating ?? 0;
                     beatmap.BeatmapInfo.Length = calculateLength(beatmap);
                     beatmap.BeatmapInfo.BPM = beatmap.ControlPointInfo.BPMMode;
-                    beatmap.BeatmapInfo.ID = Guid.NewGuid().ToString();
 
                     beatmapInfos.Add(beatmap.BeatmapInfo);
                 }
