@@ -16,6 +16,7 @@ using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Osu.Mods;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Scoring;
+using osu.Game.Scoring.Legacy;
 using osu.Game.Tests.Resources;
 using osu.Game.Users;
 
@@ -127,7 +128,7 @@ namespace osu.Game.Tests.Scores.IO
                 {
                     var osu = await loadOsu(host);
 
-                    var toImport = new ScoreInfo
+                    ScoreInfo createScore() => new ScoreInfo
                     {
                         Hash = Guid.NewGuid().ToString(),
                         Statistics = new Dictionary<HitResult, int>
@@ -137,16 +138,32 @@ namespace osu.Game.Tests.Scores.IO
                         }
                     };
 
-                    var imported = await loadIntoOsu(osu, toImport);
+                    var imported = await loadIntoOsu(osu, createScore());
 
                     var beatmapManager = osu.Dependencies.Get<BeatmapManager>();
                     var scoreManager = osu.Dependencies.Get<ScoreManager>();
 
+                    var firstImportBeatmap = imported.Beatmap.Detach();
+
                     beatmapManager.Delete(beatmapManager.QueryBeatmap(b => b.ID == imported.Beatmap.ID).BeatmapSet);
+
                     Assert.That(scoreManager.Query(s => s.ID == imported.ID).DeletePending, Is.EqualTo(true));
 
-                    var secondImport = await loadIntoOsu(osu, imported);
-                    Assert.That(secondImport, Is.Null);
+                    var secondAttempt = createScore();
+                    secondAttempt.Beatmap = firstImportBeatmap;
+
+                    bool threw = false;
+
+                    try
+                    {
+                        await loadIntoOsu(osu, secondAttempt);
+                    }
+                    catch
+                    {
+                        threw = true;
+                    }
+
+                    Assert.IsTrue(threw);
                 }
                 finally
                 {

@@ -61,6 +61,12 @@ namespace osu.Game.Scoring
             model.Ruleset = ContextFactory.Get().Find<RulesetInfo>(model.Ruleset.ID);
             model.Beatmap = ContextFactory.Get().Find<BeatmapInfo>(model.Beatmap.ID);
 
+            if (model.Beatmap?.BeatmapSet?.DeletePending != false)
+            {
+                // fail-safe for scores with no archives
+                throw new LegacyScoreParser.BeatmapNotFoundException();
+            }
+
             base.PreImport(model);
         }
 
