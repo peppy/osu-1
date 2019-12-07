@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Linq;
 using System.Threading;
 using AutoMapper;
 using osu.Framework.Platform;
@@ -32,8 +31,7 @@ namespace osu.Game.Database
 
         private ThreadLocal<bool> refreshCompleted = new ThreadLocal<bool>();
 
-        private bool currentWriteDidWrite;
-        private bool currentWriteDidError;
+        private bool rollbackRequired;
 
         private int currentWriteUsages;
 
@@ -115,12 +113,11 @@ namespace osu.Game.Database
 
             try
             {
-                currentWriteDidWrite |= usage.PerformedWrite;
-                currentWriteDidError |= usage.Errors.Any() || usage.RollbackRequested;
+                rollbackRequired |= usage.RollbackRequired;
 
                 if (usages == 0)
                 {
-                    if (currentWriteDidError)
+                    if (rollbackRequired)
                     {
                         rollbacks.Value++;
                         currentWriteTransaction?.Rollback();
@@ -133,8 +130,7 @@ namespace osu.Game.Database
 
                     currentWriteTransaction = null;
                     writingThread = null;
-                    currentWriteDidWrite = false;
-                    currentWriteDidError = false;
+                    rollbackRequired = false;
                     refreshCompleted = new ThreadLocal<bool>();
                 }
             }
