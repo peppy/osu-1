@@ -93,7 +93,7 @@ namespace osu.Game.Database
                 item.DeletePending = true;
             }
 
-            ItemRemoved?.Invoke(new RealmWrapper<T>(item, ContextFactory));
+            ItemRemoved?.Invoke(item.Detach().WrapAsUnmanaged());
             return true;
         }
 
