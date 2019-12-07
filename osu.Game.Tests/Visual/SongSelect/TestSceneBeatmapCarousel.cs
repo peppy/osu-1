@@ -577,6 +577,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                 {
                     new BeatmapInfo
                     {
+                        ID = (id * 10).ToString(),
                         OnlineBeatmapID = id * 10,
                         Metadata = metadata,
                         Path = "normal.osu",
@@ -589,6 +590,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     },
                     new BeatmapInfo
                     {
+                        ID = (id * 10 + 1).ToString(),
                         OnlineBeatmapID = id * 10 + 1,
                         Metadata = metadata,
                         Path = "hard.osu",
@@ -601,6 +603,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     },
                     new BeatmapInfo
                     {
+                        ID = (id * 10 + 2).ToString(),
                         OnlineBeatmapID = id * 10 + 2,
                         Metadata = metadata,
                         Path = "insane.osu",
