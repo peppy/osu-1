@@ -435,17 +435,18 @@ namespace osu.Game.Tests.Visual.SongSelect
         {
             createCarousel();
 
-            if (beatmapSets == null)
-            {
-                beatmapSets = new List<BeatmapSetInfo>();
-
-                for (int i = 1; i <= set_count; i++)
-                    beatmapSets.Add(createTestBeatmapSet(i));
-            }
-
             bool changed = false;
-            AddStep($"Load {beatmapSets.Count} Beatmaps", () =>
+
+            AddStep($"Load beatmaps", () =>
             {
+                if (beatmapSets == null)
+                {
+                    beatmapSets = new List<BeatmapSetInfo>();
+
+                    for (int i = 1; i <= set_count; i++)
+                        beatmapSets.Add(createTestBeatmapSet(i));
+                }
+
                 carousel.Filter(new FilterCriteria());
                 carousel.BeatmapSetsChanged = () => changed = true;
                 carousel.BeatmapSets = beatmapSets;
@@ -572,6 +573,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     {
                         ID = (id * 10).ToString(),
                         OnlineBeatmapID = id * 10,
+                        Ruleset = rulesets.GetRuleset(0),
                         Metadata = metadata,
                         Path = "normal.osu",
                         Version = "Normal",
@@ -585,6 +587,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     {
                         ID = (id * 10 + 1).ToString(),
                         OnlineBeatmapID = id * 10 + 1,
+                        Ruleset = rulesets.GetRuleset(0),
                         Metadata = metadata,
                         Path = "hard.osu",
                         Version = "Hard",
@@ -598,6 +601,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     {
                         ID = (id * 10 + 2).ToString(),
                         OnlineBeatmapID = id * 10 + 2,
+                        Ruleset = rulesets.GetRuleset(0),
                         Metadata = metadata,
                         Path = "insane.osu",
                         Version = "Insane",
