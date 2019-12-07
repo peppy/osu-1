@@ -14,7 +14,6 @@ using osu.Framework.Allocation;
 using osu.Framework.Logging;
 using osu.Game.Beatmaps;
 using osu.Game.IO;
-using osu.Game.Rulesets;
 using osu.Game.Rulesets.Osu;
 using osu.Game.Tests.Resources;
 using SharpCompress.Archives;
@@ -78,7 +77,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                     var imported = await LoadOszIntoOsu(osu);
                     var importedSecondTime = await LoadOszIntoOsu(osu);
 
-                    // check the newly "imported" beatmap is actually just the restored previous import. since it matches hash.
+                    // check the newly "imported" beatmap is the existing one, returned again. since it matches hash.
                     Assert.IsTrue(imported.ID == importedSecondTime.ID);
                     Assert.IsTrue(imported.Beatmaps.First().ID == importedSecondTime.Beatmaps.First().ID);
 
@@ -160,11 +159,11 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     var imported = await LoadOszIntoOsu(osu);
 
-                    Assert.AreEqual(0, itemAddRemoveFireCount -= 1);
+                    waitForOrAssert(() => itemAddRemoveFireCount == 1, "import added event not fired");
 
                     manager.Update(imported, i => i.Hash += "-changed");
 
-                    Assert.AreEqual(0, itemAddRemoveFireCount -= 2);
+                    waitForOrAssert(() => itemAddRemoveFireCount == 3, "import delete/added event not fired");
 
                     checkBeatmapSetCount(osu, 1);
                     checkBeatmapCount(osu, 12);
@@ -193,15 +192,15 @@ namespace osu.Game.Tests.Beatmaps.IO
                     {
                     }
 
-                    // no events should be fired in the case of a rollback.
-                    Assert.AreEqual(0, itemAddRemoveFireCount);
-
                     checkBeatmapSetCount(osu, 1);
                     checkBeatmapCount(osu, 12);
 
                     checkSingleReferencedFileCount(osu, 18);
 
                     Assert.AreEqual(1, loggedExceptionCount);
+
+                    // no events should be fired in the case of a rollback.
+                    Assert.AreEqual(3, itemAddRemoveFireCount);
                 }
                 finally
                 {
@@ -258,9 +257,9 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     var importedSecondTime = await LoadOszIntoOsu(osu);
 
-                    // check the newly "imported" beatmap is actually just the restored previous import. since it matches hash.
-                    Assert.IsTrue(imported.ID == importedSecondTime.ID);
-                    Assert.IsTrue(imported.Beatmaps.First().ID == importedSecondTime.Beatmaps.First().ID);
+                    // if the user deleted the imported beatmap, we should force another import.
+                    Assert.IsFalse(imported.IsValid);
+                    Assert.IsTrue(importedSecondTime.IsValid);
                 }
                 finally
                 {

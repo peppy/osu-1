@@ -289,18 +289,13 @@ namespace osu.Game.Database
 
             string hash = item.Hash;
 
-            void rollback()
-            {
-                if (!Delete(item))
-                {
-                    // We may have not yet added the model to the underlying table, but should still clean up files.
-                    LogForModel(hash, "Dereferencing files for incomplete import.");
-                    Files.Dereference(item.Files.Select(f => f.FileInfo).ToArray());
-                }
-            }
-
             try
             {
+                var existing = CheckForExisting(item);
+
+                if (existing?.DeletePending == false)
+                    return existing;
+
                 using (var write = ContextFactory.GetForWrite()) // used to share a context for full import. keep in mind this will block all writes.
                 {
                     LogForModel(hash, "Beginning import...");
@@ -315,28 +310,8 @@ namespace osu.Game.Database
                     {
                         if (!write.IsTransactionLeader) throw new InvalidOperationException($"Ensure there is no parent transaction so errors can correctly be handled by {this}");
 
-                        var existing = CheckForExisting(item);
-
                         if (existing != null)
                         {
-                            if (!existing.DeletePending)
-                            {
-                                rollback();
-                                return existing;
-                            }
-
-                            if (CanUndelete(existing, item))
-                            {
-                                // todo: fix rollback logic
-
-                                Undelete(existing);
-                                LogForModel(hash, $"Found existing {HumanisedModelName} for {item} (ID {existing.ID}) – skipping import.");
-                                // existing item will be used; rollback new import and exit early.
-                                rollback();
-                                flushEvents(true);
-                                return existing;
-                            }
-
                             Delete(existing);
                             ModelStore.PurgeDeletable(s => s.ID == existing.ID);
                         }
@@ -608,15 +583,6 @@ namespace osu.Game.Database
         /// <param name="model">The new model proposed for import.</param>
         /// <returns>An existing model which matches the criteria to skip importing, else null.</returns>
         protected TModel CheckForExisting(TModel model) => model.Hash == null ? null : ModelStore.ConsumableItems.FirstOrDefault(b => b.Hash == model.Hash);
-
-        /// <summary>
-        /// After an existing <typeparamref name="TModel"/> is found during an import process, the default behaviour is to restore the existing
-        /// item and skip the import. This method allows changing that behaviour.
-        /// </summary>
-        /// <param name="existing">The existing model.</param>
-        /// <param name="import">The newly imported model.</param>
-        /// <returns>Whether the existing model should be restored and used. Returning false will delete the existing and force a re-import.</returns>
-        protected virtual bool CanUndelete(TModel existing, TModel import) => true;
 
         private IQueryable<TModel> queryModel() => ContextFactory.Get().All<TModel>();
 
