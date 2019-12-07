@@ -16,6 +16,7 @@ using osu.Framework.Screens;
 using osu.Framework.Threading;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
+using osu.Game.Database;
 using osu.Game.Graphics.Containers;
 using osu.Game.Online.API;
 using osu.Game.Overlays;
@@ -358,7 +359,7 @@ namespace osu.Game.Screens.Play
         {
             var score = DrawableRuleset.ReplayScore?.ScoreInfo ?? new ScoreInfo
             {
-                Beatmap = Beatmap.Value.BeatmapInfo,
+                Beatmap = Beatmap.Value.BeatmapInfo.Get().Detach(),
                 Ruleset = rulesetInfo,
                 Mods = Mods.Value.ToArray(),
                 User = api.LocalUser.Value,

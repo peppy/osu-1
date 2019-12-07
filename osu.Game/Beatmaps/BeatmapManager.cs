@@ -127,6 +127,24 @@ namespace osu.Game.Beatmaps
             }
         }
 
+        protected override void DeleteRelatedItems(BeatmapSetInfo item)
+        {
+            foreach (var beatmap in item.Beatmaps)
+                foreach (var score in beatmap.Scores)
+                    score.DeletePending = true;
+
+            base.DeleteRelatedItems(item);
+        }
+
+        protected override void UndeleteRelatedItems(BeatmapSetInfo item)
+        {
+            foreach (var beatmap in item.Beatmaps)
+                foreach (var score in beatmap.Scores)
+                    score.DeletePending = false;
+
+            base.DeleteRelatedItems(item);
+        }
+
         private void validateOnlineIds(BeatmapSetInfo beatmapSet)
         {
             var beatmapIds = beatmapSet.Beatmaps.Where(b => b.OnlineBeatmapID.HasValue).Select(b => b.OnlineBeatmapID).ToList();

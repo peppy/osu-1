@@ -33,7 +33,6 @@ namespace osu.Game.Online.API.Requests.Responses
                 Date = Date,
                 PP = PP,
                 Beatmap = Beatmap,
-                RulesetID = OnlineRulesetID,
                 Hash = "online", // todo: temporary?
                 Rank = Rank,
                 Ruleset = ruleset,

@@ -170,26 +170,6 @@ namespace osu.Game
             dependencies.Cache(ScoreManager = new ScoreManager(RulesetStore, () => BeatmapManager, Storage, API, contextFactory, Host));
             dependencies.Cache(BeatmapManager = new BeatmapManager(Storage, contextFactory, RulesetStore, API, Audio, Host, defaultBeatmap));
 
-            // this should likely be moved to ArchiveModelManager when another case appears where it is necessary
-            // to have inter-dependent model managers. this could be obtained with an IHasForeign<T> interface to
-            // allow lookups to be done on the child (ScoreManager in this case) to perform the cascading delete.
-            List<ScoreInfo> getBeatmapScores(RealmWrapper<BeatmapSetInfo> set)
-            {
-                List<ScoreInfo> scores = new List<ScoreInfo>();
-
-                if (set.ContextFactory != null)
-                {
-                    var lookup = set.Get();
-                    foreach (var beatmap in BeatmapManager.QueryBeatmaps(b => b.BeatmapSet == lookup))
-                        scores.AddRange(ScoreManager.QueryScores(s => s.Beatmap == beatmap));
-                }
-
-                return scores;
-            }
-
-            BeatmapManager.ItemRemoved += i => ScoreManager.Delete(getBeatmapScores(i), true);
-            BeatmapManager.ItemAdded += i => ScoreManager.Undelete(getBeatmapScores(i), true);
-
             dependencies.Cache(KeyBindingStore = new KeyBindingStore(contextFactory, RulesetStore));
             dependencies.Cache(SettingsStore = new SettingsStore(contextFactory));
             dependencies.Cache(RulesetConfigCache = new RulesetConfigCache(SettingsStore));

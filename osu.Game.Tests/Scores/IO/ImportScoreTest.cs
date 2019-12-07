@@ -10,8 +10,9 @@ using NUnit.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Platform;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
+using osu.Game.Rulesets;
 using osu.Game.Rulesets.Mods;
-using osu.Game.Rulesets.Osu;
 using osu.Game.Rulesets.Osu.Mods;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Scoring;
@@ -141,7 +142,7 @@ namespace osu.Game.Tests.Scores.IO
                     var beatmapManager = osu.Dependencies.Get<BeatmapManager>();
                     var scoreManager = osu.Dependencies.Get<ScoreManager>();
 
-                    beatmapManager.Delete(beatmapManager.QueryBeatmapSet(s => s.Beatmaps.Any(b => b.ID == imported.Beatmap.ID)));
+                    beatmapManager.Delete(beatmapManager.QueryBeatmap(b => b.ID == imported.Beatmap.ID).BeatmapSet);
                     Assert.That(scoreManager.Query(s => s.ID == imported.ID).DeletePending, Is.EqualTo(true));
 
                     var secondImport = await loadIntoOsu(osu, imported);
@@ -157,12 +158,13 @@ namespace osu.Game.Tests.Scores.IO
         private async Task<ScoreInfo> loadIntoOsu(OsuGameBase osu, ScoreInfo score)
         {
             var beatmapManager = osu.Dependencies.Get<BeatmapManager>();
+            var rulesets = osu.Dependencies.Get<RulesetStore>();
 
             if (score.Beatmap == null)
-                score.Beatmap = beatmapManager.GetAllUsableBeatmapSetsEnumerable().First().Beatmaps.First();
+                score.Beatmap = beatmapManager.GetAllUsableBeatmapSetsEnumerable().First().Beatmaps.First().Detach();
 
             if (score.Ruleset == null)
-                score.Ruleset = new OsuRuleset().RulesetInfo;
+                score.Ruleset = rulesets.GetRuleset(0);
 
             var scoreManager = osu.Dependencies.Get<ScoreManager>();
             await scoreManager.Import(score);

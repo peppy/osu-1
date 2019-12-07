@@ -19,6 +19,7 @@ namespace osu.Game.Scoring
 {
     public class ScoreInfo : RealmObject, IHasFiles<ScoreFileInfo>, IHasPrimaryKey, ISoftDelete, IEquatable<ScoreInfo>
     {
+        [PrimaryKey]
         public string ID { get; set; }
 
         public int RankInt { get; set; }
@@ -47,9 +48,6 @@ namespace osu.Game.Scoring
         [JsonIgnore]
         public int Combo { get; set; } // Todo: Shouldn't exist in here
 
-        [JsonIgnore]
-        public int RulesetID { get; set; }
-
         [JsonProperty("passed")]
         [Ignored]
         public bool Passed { get; set; } = true;
@@ -57,52 +55,37 @@ namespace osu.Game.Scoring
         [JsonIgnore]
         public virtual RulesetInfo Ruleset { get; set; }
 
-        private Mod[] mods;
-
         [JsonProperty("mods")]
         [Ignored]
         public Mod[] Mods
         {
             get
             {
-                if (mods != null)
-                    return mods;
-
-                if (ModsJson == null)
+                if (ModsString == null)
                     return Array.Empty<Mod>();
 
-                return getModsFromRuleset(JsonConvert.DeserializeObject<DeserializedMod[]>(ModsJson));
+                return getModsFromRuleset(JsonConvert.DeserializeObject<DeserializedMod[]>(ModsString));
             }
-            set
-            {
-                ModsJson = mods != null ? JsonConvert.SerializeObject(mods) : null;
-                mods = value;
-            }
+            set => ModsString = JsonConvert.SerializeObject(value);
         }
 
         private Mod[] getModsFromRuleset(DeserializedMod[] mods) => Ruleset.CreateInstance().GetAllMods().Where(mod => mods.Any(d => d.Acronym == mod.Acronym)).ToArray();
 
         [JsonIgnore]
         [Column("Mods")]
-        public string ModsJson { get; set; }
+        public string ModsString { get; set; }
 
         [Ignored]
         [JsonProperty("user")]
-        public User User { get; set; }
+        public User User
+        {
+            get => new User { Username = UserString };
+            set => UserString = value.Username;
+        }
 
         [JsonIgnore]
         [Column("User")]
-        public string UserString
-        {
-            get => User?.Username;
-            set
-            {
-                if (User == null)
-                    User = new User();
-
-                User.Username = value;
-            }
-        }
+        public string UserString { get; set; }
 
         [JsonIgnore]
         [Column("UserID")]
@@ -119,9 +102,6 @@ namespace osu.Game.Scoring
         }
 
         [JsonIgnore]
-        public int BeatmapInfoID { get; set; }
-
-        [JsonIgnore]
         public virtual BeatmapInfo Beatmap { get; set; }
 
         [JsonIgnore]
@@ -131,24 +111,21 @@ namespace osu.Game.Scoring
         public DateTimeOffset Date { get; set; }
 
         [JsonProperty("statistics")]
-        public Dictionary<HitResult, int> Statistics = new Dictionary<HitResult, int>();
+        public Dictionary<HitResult, int> Statistics
+        {
+            get
+            {
+                if (StatisticsJson == null)
+                    return new Dictionary<HitResult, int>();
+
+                return JsonConvert.DeserializeObject<Dictionary<HitResult, int>>(StatisticsJson);
+            }
+            set => StatisticsJson = JsonConvert.SerializeObject(value);
+        }
 
         [JsonIgnore]
         [Column("Statistics")]
-        public string StatisticsJson
-        {
-            get => JsonConvert.SerializeObject(Statistics);
-            set
-            {
-                if (value == null)
-                {
-                    Statistics.Clear();
-                    return;
-                }
-
-                Statistics = JsonConvert.DeserializeObject<Dictionary<HitResult, int>>(value);
-            }
-        }
+        public string StatisticsJson { get; set; }
 
         [JsonIgnore]
         public IList<ScoreFileInfo> Files { get; }

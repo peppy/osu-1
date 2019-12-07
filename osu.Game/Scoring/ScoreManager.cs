@@ -56,6 +56,14 @@ namespace osu.Game.Scoring
             }
         }
 
+        protected override void PreImport(ScoreInfo model)
+        {
+            model.Ruleset = ContextFactory.Get().Find<RulesetInfo>(model.Ruleset.ID);
+            model.Beatmap = ContextFactory.Get().Find<BeatmapInfo>(model.Beatmap.ID);
+
+            base.PreImport(model);
+        }
+
         protected override IEnumerable<string> GetStableImportPaths(Storage stableStorage)
             => stableStorage.GetFiles(ImportFromStablePath).Where(p => HandledExtensions.Any(ext => Path.GetExtension(p)?.Equals(ext, StringComparison.InvariantCultureIgnoreCase) ?? false));
 

@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using osu.Game.Database;
@@ -55,6 +54,9 @@ namespace osu.Game.Beatmaps
         /// The playable length in milliseconds of this beatmap.
         /// </summary>
         public double Length { get; set; }
+
+        [Backlink(nameof(ScoreInfo.Beatmap))]
+        public IQueryable<ScoreInfo> Scores { get; }
 
         /// <summary>
         /// The most common BPM of this beatmap.
@@ -123,11 +125,6 @@ namespace osu.Game.Beatmaps
 
         [JsonProperty("difficulty_rating")]
         public double StarDifficulty { get; set; }
-
-        /// <summary>
-        /// Currently only populated for beatmap deletion. Use <see cref="ScoreManager"/> to query scores.
-        /// </summary>
-        public IList<ScoreInfo> Scores { get; }
 
         [JsonIgnore]
         public DifficultyRating DifficultyRating

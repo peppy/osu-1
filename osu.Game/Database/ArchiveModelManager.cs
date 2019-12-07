@@ -391,6 +391,8 @@ namespace osu.Game.Database
 
                 if (foundModel == null || foundModel.DeletePending) return false;
 
+                DeleteRelatedItems(item);
+
                 if (ModelStore.Delete(foundModel))
                     Files.Dereference(foundModel.Files.Select(f => f.FileInfo).ToArray());
                 return true;
@@ -480,8 +482,18 @@ namespace osu.Game.Database
             {
                 if (!ModelStore.Undelete(item)) return;
 
+                UndeleteRelatedItems(item);
+
                 Files.Reference(item.Files.Select(f => f.FileInfo).ToArray());
             }
+        }
+
+        protected virtual void DeleteRelatedItems(TModel item)
+        {
+        }
+
+        protected virtual void UndeleteRelatedItems(TModel item)
+        {
         }
 
         /// <summary>
