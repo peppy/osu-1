@@ -289,7 +289,7 @@ namespace osu.Game.Tests.Visual.SongSelect
 
         private void addRulesetImportStep(int id) => AddStep($"import test map for ruleset {id}", () => importForRuleset(id));
 
-        private void importForRuleset(int id) => manager.Import(createTestBeatmapSet(getImportId(), rulesets.GetRuleset(id))).Wait();
+        private void importForRuleset(int id) => manager.Import(createTestBeatmapSet(getImportId(), rulesets.GetRuleset(id).Get().Detach())).Wait();
 
         private static int importId;
         private int getImportId() => ++importId;
@@ -311,7 +311,7 @@ namespace osu.Game.Tests.Visual.SongSelect
         {
             AddStep("import test maps", () =>
             {
-                var usableRulesets = rulesets.AvailableRulesets.Where(r => r.Get().OnlineID != 2).Select(r => r.Get()).ToArray();
+                RulesetInfo[] usableRulesets = rulesets.AvailableRulesets.Where(r => r.Get().OnlineID != 2).Select(r => r.Get().Detach()).ToArray();
 
                 for (int i = 0; i < 100; i += 10)
                     manager.Import(createTestBeatmapSet(i, usableRulesets)).Wait();
@@ -325,6 +325,14 @@ namespace osu.Game.Tests.Visual.SongSelect
 
             var beatmaps = new List<BeatmapInfo>();
 
+            var metadata = new BeatmapMetadata
+            {
+                // Create random metadata, then we can check if sorting works based on these
+                Artist = "Some Artist " + RNG.Next(0, 9),
+                Title = $"Some Song (set id {setId})",
+                AuthorString = "Some Guy " + RNG.Next(0, 9),
+            };
+
             for (int i = 0; i < 6; i++)
             {
                 int beatmapId = setId * 10 + i;
@@ -336,6 +344,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                 {
                     Ruleset = getRuleset(),
                     OnlineBeatmapID = beatmapId,
+                    Metadata = metadata,
                     Path = "normal.osu",
                     Version = $"{beatmapId} (length {TimeSpan.FromMilliseconds(length):m\\:ss}, bpm {bpm:0.#})",
                     Length = length,
@@ -351,13 +360,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             {
                 OnlineBeatmapSetID = setId,
                 Hash = new MemoryStream(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())).ComputeMD5Hash(),
-                Metadata = new BeatmapMetadata
-                {
-                    // Create random metadata, then we can check if sorting works based on these
-                    Artist = "Some Artist " + RNG.Next(0, 9),
-                    Title = $"Some Song (set id {setId}, max bpm {beatmaps.Max(b => b.BPM):0.#})",
-                    AuthorString = "Some Guy " + RNG.Next(0, 9),
-                },
+                Metadata = metadata,
                 DateAdded = DateTimeOffset.UtcNow,
             };
 

@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using Newtonsoft.Json;
 using osu.Game.Database;
-using osu.Game.IO.Serialization;
 using osu.Game.Rulesets;
 using osu.Game.Scoring;
 using Realms;
@@ -13,7 +12,7 @@ using Realms;
 namespace osu.Game.Beatmaps
 {
     [Serializable]
-    public class BeatmapInfo : RealmObject, IEquatable<BeatmapInfo>, IJsonSerializable, IHasPrimaryKey
+    public class BeatmapInfo : RealmObject, IEquatable<BeatmapInfo>, IHasPrimaryKey
     {
         [PrimaryKey]
         public string ID { get; set; }
@@ -83,7 +82,7 @@ namespace osu.Game.Beatmaps
         public float StackLeniency { get; set; } = 0.7f;
         public bool SpecialStyle { get; set; }
 
-        public int RulesetID { get; set; }
+        public int RulesetID;
 
         public RulesetInfo Ruleset { get; set; }
 

@@ -114,6 +114,12 @@ namespace osu.Game.Beatmaps
 
         protected override void PreImport(BeatmapSetInfo beatmapSet)
         {
+            foreach (var beatmap in beatmapSet.Beatmaps)
+            {
+                if (!beatmap.Ruleset.IsManaged)
+                    beatmap.Ruleset = ContextFactory.Get().Find<RulesetInfo>(beatmap.Ruleset.ID);
+            }
+
             if (beatmapSet.Beatmaps.Any(b => b.BaseDifficulty == null))
                 throw new InvalidOperationException($"Cannot import {nameof(BeatmapInfo)} with null {nameof(BeatmapInfo.BaseDifficulty)}.");
 
