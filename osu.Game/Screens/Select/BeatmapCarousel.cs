@@ -539,7 +539,7 @@ namespace osu.Game.Screens.Select
 
         private CarouselBeatmapSet createCarouselSet(RealmWrapper<BeatmapSetInfo> beatmapSet)
         {
-            if (beatmapSet.Get().Beatmaps.All(b => b.Hidden))
+            if (!beatmapSet.Get().IsValid || beatmapSet.Get().Beatmaps.All(b => b.Hidden))
                 return null;
 
             var set = new CarouselBeatmapSet(beatmapSet);
