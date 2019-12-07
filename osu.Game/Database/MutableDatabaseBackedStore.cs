@@ -20,10 +20,13 @@ namespace osu.Game.Database
         public event Action<RealmWrapper<T>> ItemAdded;
         public event Action<RealmWrapper<T>> ItemRemoved;
 
+        //private IDisposable softDeleteSubscription;
+
         protected MutableDatabaseBackedStore(IDatabaseContextFactory contextFactory, Storage storage = null)
             : base(contextFactory, storage)
         {
-            contextFactory.Schedule(() => ContextFactory.Get().All<T>().SubscribeForNotifications(changed));
+            // deadlocking
+            //contextFactory.Schedule(() => softDeleteSubscription = ContextFactory.Get().All<T>().Where(i => !i.DeletePending).SubscribeForNotifications(changed));
         }
 
         private void changed(IRealmCollection<T> sender, ChangeSet changes, Exception error)
@@ -57,6 +60,7 @@ namespace osu.Game.Database
                     item.ID = Guid.NewGuid().ToString();
 
                 context.Add(item);
+                ItemAdded?.Invoke(new RealmWrapper<T>(item, ContextFactory));
             }
         }
 
@@ -70,9 +74,8 @@ namespace osu.Game.Database
             using (ContextFactory.GetForWrite())
                 updateAction(item);
 
-            // todo: ?
-            //ItemRemoved?.Invoke(item);
-            //ItemAdded?.Invoke(item);
+            ItemRemoved?.Invoke(item);
+            ItemAdded?.Invoke(item);
         }
 
         /// <summary>
