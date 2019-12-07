@@ -12,6 +12,8 @@ namespace osu.Game.Database
         public readonly Realm Context;
         private readonly Action<DatabaseWriteUsage> usageCompleted;
 
+        public bool RollbackRequested { get; private set; }
+
         public DatabaseWriteUsage(Realm context, Action<DatabaseWriteUsage> onCompleted)
         {
             Context = context;
@@ -50,6 +52,8 @@ namespace osu.Game.Database
                 usageCompleted?.Invoke(this);
             }
         }
+
+        public void Rollback() => RollbackRequested = true;
 
         public void Dispose()
         {

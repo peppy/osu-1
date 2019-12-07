@@ -116,7 +116,7 @@ namespace osu.Game.Database
             try
             {
                 currentWriteDidWrite |= usage.PerformedWrite;
-                currentWriteDidError |= usage.Errors.Any();
+                currentWriteDidError |= usage.Errors.Any() || usage.RollbackRequested;
 
                 if (usages == 0)
                 {
@@ -129,15 +129,6 @@ namespace osu.Game.Database
                     {
                         commits.Value++;
                         currentWriteTransaction?.Commit();
-                    }
-
-                    if (currentWriteDidWrite || currentWriteDidError)
-                    {
-                        // explicitly dispose to ensure any outstanding flushes happen as soon as possible (and underlying resources are purged).
-                        //usage.Context.Dispose();
-
-                        // once all writes are complete, we want to refresh thread-specific contexts to make sure they don't have stale local caches.
-                        //recycleThreadContexts();
                     }
 
                     currentWriteTransaction = null;
