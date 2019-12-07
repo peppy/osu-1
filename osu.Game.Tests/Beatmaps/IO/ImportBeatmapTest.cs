@@ -13,7 +13,6 @@ using osu.Game.IPC;
 using osu.Framework.Allocation;
 using osu.Framework.Logging;
 using osu.Game.Beatmaps;
-using osu.Game.Database;
 using osu.Game.IO;
 using osu.Game.Tests.Resources;
 using SharpCompress.Archives;
@@ -281,6 +280,8 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     var imported = await LoadOszIntoOsu(osu);
 
+                    string firstImportId = imported.Beatmaps.First().ID;
+
                     osu.Dependencies.Get<BeatmapManager>().Update(imported, i =>
                     {
                         if (set)
@@ -294,8 +295,10 @@ namespace osu.Game.Tests.Beatmaps.IO
                     var importedSecondTime = await LoadOszIntoOsu(osu);
 
                     // check the newly "imported" beatmap has been reimported due to mismatch (even though hashes matched)
-                    Assert.IsTrue(imported.ID != importedSecondTime.ID);
-                    Assert.IsTrue(imported.Beatmaps.First().ID != importedSecondTime.Beatmaps.First().ID);
+                    Assert.IsFalse(imported.IsValid);
+                    Assert.IsTrue(importedSecondTime.IsManaged && importedSecondTime.IsValid);
+
+                    Assert.IsTrue(firstImportId != importedSecondTime.Beatmaps.First().ID);
                 }
                 finally
                 {
