@@ -164,12 +164,14 @@ namespace osu.Game.Beatmaps.Drawables
 
             public bool SetContent(object content)
             {
-                if (!(content is BeatmapInfo beatmap))
+                if (!(content is RealmWrapper<BeatmapInfo> beatmap))
                     return false;
 
-                difficultyName.Text = beatmap.Version;
-                starRating.Text = $"{beatmap.StarDifficulty:0.##}";
-                difficultyFlow.Colour = colours.ForDifficultyRating(beatmap.DifficultyRating);
+                var unwrapped = beatmap.Get();
+
+                difficultyName.Text = unwrapped.Version;
+                starRating.Text = $"{unwrapped.StarDifficulty:0.##}";
+                difficultyFlow.Colour = colours.ForDifficultyRating(unwrapped.DifficultyRating);
 
                 return true;
             }
