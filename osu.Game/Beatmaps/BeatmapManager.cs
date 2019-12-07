@@ -122,7 +122,7 @@ namespace osu.Game.Beatmaps
                 {
                     Delete(existingOnlineId);
                     beatmaps.PurgeDeletable(s => s.ID == existingOnlineId.ID);
-                    LogForModel(beatmapSet, $"Found existing beatmap set with same OnlineBeatmapSetID ({beatmapSet.OnlineBeatmapSetID}). It has been purged.");
+                    LogForModel(beatmapSet.Hash, $"Found existing beatmap set with same OnlineBeatmapSetID ({beatmapSet.OnlineBeatmapSetID}). It has been purged.");
                 }
             }
         }
@@ -131,12 +131,12 @@ namespace osu.Game.Beatmaps
         {
             var beatmapIds = beatmapSet.Beatmaps.Where(b => b.OnlineBeatmapID.HasValue).Select(b => b.OnlineBeatmapID).ToList();
 
-            LogForModel(beatmapSet, "Validating online IDs...");
+            LogForModel(beatmapSet.Hash, "Validating online IDs...");
 
             // ensure all IDs are unique
             if (beatmapIds.GroupBy(b => b).Any(g => g.Count() > 1))
             {
-                LogForModel(beatmapSet, "Found non-unique IDs, resetting...");
+                LogForModel(beatmapSet.Hash, "Found non-unique IDs, resetting...");
                 resetIds();
                 return;
             }
@@ -379,7 +379,7 @@ namespace osu.Game.Beatmaps
                 if (api?.State != APIState.Online)
                     return Task.CompletedTask;
 
-                LogForModel(beatmapSet, "Performing online lookups...");
+                LogForModel(beatmapSet.Hash, "Performing online lookups...");
                 return Task.WhenAll(beatmapSet.Beatmaps.Select(b => UpdateAsync(beatmapSet, b, cancellationToken)).ToArray());
             }
 
@@ -408,7 +408,7 @@ namespace osu.Game.Beatmaps
                     beatmap.BeatmapSet.OnlineBeatmapSetID = res.OnlineBeatmapSetID;
                     beatmap.OnlineBeatmapID = res.OnlineBeatmapID;
 
-                    LogForModel(set, $"Online retrieval mapped {beatmap} to {res.OnlineBeatmapSetID} / {res.OnlineBeatmapID}.");
+                    LogForModel(set.Hash, $"Online retrieval mapped {beatmap} to {res.OnlineBeatmapSetID} / {res.OnlineBeatmapID}.");
                 }
                 catch (Exception e)
                 {
@@ -418,7 +418,7 @@ namespace osu.Game.Beatmaps
                 void fail(Exception e)
                 {
                     beatmap.OnlineBeatmapID = null;
-                    LogForModel(set, $"Online retrieval failed for {beatmap} ({e.Message})");
+                    LogForModel(set.Hash, $"Online retrieval failed for {beatmap} ({e.Message})");
                 }
             }
         }

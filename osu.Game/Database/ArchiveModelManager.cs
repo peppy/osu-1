@@ -198,7 +198,7 @@ namespace osu.Game.Database
             }
             catch (Exception e)
             {
-                LogForModel(import, $@"Could not delete original file after import ({Path.GetFileName(path)})", e);
+                LogForModel(import?.Hash, $@"Could not delete original file after import ({Path.GetFileName(path)})", e);
             }
 
             return import;
@@ -234,7 +234,7 @@ namespace osu.Game.Database
             }
             catch (Exception e)
             {
-                LogForModel(model, $"Model creation of {archive.Name} failed.", e);
+                LogForModel(model?.Hash, $"Model creation of {archive.Name} failed.", e);
                 return null;
             }
 
@@ -248,9 +248,9 @@ namespace osu.Game.Database
         /// </summary>
         protected abstract string[] HashableFileTypes { get; }
 
-        protected static void LogForModel(TModel model, string message, Exception e = null)
+        protected static void LogForModel(string hash, string message, Exception e = null)
         {
-            string prefix = $"[{(model?.Hash ?? "?????").Substring(0, 5)}]";
+            string prefix = $"[{(hash ?? "?????").Substring(0, 5)}]";
 
             if (e != null)
                 Logger.Error(e, $"{prefix} {message}", LoggingTarget.Database);
@@ -287,12 +287,14 @@ namespace osu.Game.Database
 
             delayEvents();
 
+            string hash = item.Hash;
+
             void rollback()
             {
                 if (!Delete(item))
                 {
                     // We may have not yet added the model to the underlying table, but should still clean up files.
-                    LogForModel(item, "Dereferencing files for incomplete import.");
+                    LogForModel(hash, "Dereferencing files for incomplete import.");
                     Files.Dereference(item.Files.Select(f => f.FileInfo).ToArray());
                 }
             }
@@ -301,7 +303,7 @@ namespace osu.Game.Database
             {
                 using (var write = ContextFactory.GetForWrite()) // used to share a context for full import. keep in mind this will block all writes.
                 {
-                    LogForModel(item, "Beginning import...");
+                    LogForModel(hash, "Beginning import...");
 
                     if (archive != null)
                         foreach (var file in createFileInfos(archive, Files))
@@ -320,7 +322,7 @@ namespace osu.Game.Database
                             if (CanUndelete(existing, item))
                             {
                                 Undelete(existing);
-                                LogForModel(item, $"Found existing {HumanisedModelName} for {item} (ID {existing.ID}) – skipping import.");
+                                LogForModel(hash, $"Found existing {HumanisedModelName} for {item} (ID {existing.ID}) – skipping import.");
                                 // existing item will be used; rollback new import and exit early.
                                 rollback();
                                 flushEvents(true);
@@ -343,14 +345,13 @@ namespace osu.Game.Database
                     }
                 }
 
-                LogForModel(item, "Import successfully completed!");
+                LogForModel(hash, "Import successfully completed!");
             }
             catch (Exception e)
             {
                 if (!(e is TaskCanceledException))
-                    LogForModel(item, "Database import or population failed and has been rolled back.", e);
+                    LogForModel(hash, "Database import or population failed and has been rolled back.", e);
 
-                rollback();
                 flushEvents(false);
                 throw;
             }
