@@ -319,8 +319,16 @@ namespace osu.Game.Database
 
                         if (existing != null)
                         {
+                            if (!existing.DeletePending)
+                            {
+                                rollback();
+                                return existing;
+                            }
+
                             if (CanUndelete(existing, item))
                             {
+                                // todo: fix rollback logic
+
                                 Undelete(existing);
                                 LogForModel(hash, $"Found existing {HumanisedModelName} for {item} (ID {existing.ID}) – skipping import.");
                                 // existing item will be used; rollback new import and exit early.
