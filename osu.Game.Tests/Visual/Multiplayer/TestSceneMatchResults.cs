@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 using osu.Framework.Allocation;
 using osu.Game.Beatmaps;
 using osu.Game.Online.API;
