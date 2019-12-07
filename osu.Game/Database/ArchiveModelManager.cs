@@ -294,14 +294,18 @@ namespace osu.Game.Database
                 var existing = CheckForExisting(item);
 
                 if (existing?.DeletePending == false)
+                {
+                    // repair files if necessary.
+                    createFileInfos(archive, Files, false);
                     return existing;
+                }
 
                 using (var write = ContextFactory.GetForWrite()) // used to share a context for full import. keep in mind this will block all writes.
                 {
                     LogForModel(hash, "Beginning import...");
 
                     if (archive != null)
-                        foreach (var file in createFileInfos(archive, Files))
+                        foreach (var file in createFileInfos(archive, Files, true))
                             item.Files.Add(file);
 
                     Populate(item, archive, cancellationToken);
@@ -474,7 +478,7 @@ namespace osu.Game.Database
         /// <summary>
         /// Create all required <see cref="FileInfo"/>s for the provided archive, adding them to the global file store.
         /// </summary>
-        private List<TFileModel> createFileInfos(ArchiveReader reader, FileStore files)
+        private List<TFileModel> createFileInfos(ArchiveReader reader, FileStore files, bool reference)
         {
             var fileInfos = new List<TFileModel>();
 
@@ -490,7 +494,7 @@ namespace osu.Game.Database
                     fileInfos.Add(new TFileModel
                     {
                         Filename = FileSafety.PathStandardise(file.Substring(prefix.Length)),
-                        FileInfo = files.Add(s)
+                        FileInfo = files.Add(s, reference)
                     });
                 }
             }

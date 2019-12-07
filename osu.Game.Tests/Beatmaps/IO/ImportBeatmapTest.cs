@@ -117,7 +117,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                     var importedSecondTime = await LoadOszIntoOsu(osu);
 
                     using (var stream = files.Storage.GetStream(firstFile.FileInfo.StoragePath))
-                        Assert.AreEqual(stream.Length, originalLength, "Corruption was not fixed on second import");
+                        Assert.AreEqual(originalLength, stream.Length, "Corruption was not fixed on second import");
 
                     // check the newly "imported" beatmap is actually just the restored previous import. since it matches hash.
                     Assert.IsTrue(imported.ID == importedSecondTime.ID);
@@ -159,11 +159,11 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     var imported = await LoadOszIntoOsu(osu);
 
-                    waitForOrAssert(() => itemAddRemoveFireCount == 1, "import added event not fired");
+                    waitForOrAssert(() => itemAddRemoveFireCount == 1, "import added event fired");
 
                     manager.Update(imported, i => i.Hash += "-changed");
 
-                    waitForOrAssert(() => itemAddRemoveFireCount == 3, "import delete/added event not fired");
+                    waitForOrAssert(() => itemAddRemoveFireCount == 3, "import delete/added event fired");
 
                     checkBeatmapSetCount(osu, 1);
                     checkBeatmapCount(osu, 12);
