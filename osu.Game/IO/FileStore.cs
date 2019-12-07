@@ -36,7 +36,7 @@ namespace osu.Game.IO
         /// <returns>Results from the provided query.</returns>
         public IEnumerable<FileInfo> QueryFiles(Expression<Func<FileInfo, bool>> query) => ContextFactory.Get().All<FileInfo>().Where(f => f.ReferenceCount > 0).Where(query);
 
-        public FileInfo Add(Stream data, bool reference = true)
+        public FileInfo Add(Stream data)
         {
             using (var usage = ContextFactory.GetForWrite())
             {
@@ -71,8 +71,7 @@ namespace osu.Game.IO
                     data.Seek(0, SeekOrigin.Begin);
                 }
 
-                if (reference || info == null)
-                    Reference(info);
+                Reference(info);
 
                 return info;
             }
