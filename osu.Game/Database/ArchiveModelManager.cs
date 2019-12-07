@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework;
 using osu.Framework.Extensions;
 using osu.Framework.Extensions.IEnumerableExtensions;
@@ -366,7 +365,7 @@ namespace osu.Game.Database
             using (ContextFactory.GetForWrite())
             {
                 // re-fetch the model on the import context.
-                var foundModel = queryModel().Include(s => s.Files).ThenInclude(f => f.FileInfo).FirstOrDefault(s => s.ID == item.ID);
+                var foundModel = queryModel().FirstOrDefault(s => s.ID == item.ID);
 
                 if (foundModel == null || foundModel.DeletePending) return false;
 

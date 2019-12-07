@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Internal;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -30,7 +29,7 @@ namespace osu.Game.Screens
         /// <summary>
         /// A user-facing title for this screen.
         /// </summary>
-        public virtual string Title => GetType().ShortDisplayName();
+        public virtual string Title => GetType().Name;
 
         public string Description => Title;
 

@@ -1,8 +1,6 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework.Platform;
 using osu.Game.Database;
 
@@ -14,10 +12,5 @@ namespace osu.Game.Scoring
             : base(factory, storage)
         {
         }
-
-        protected override IQueryable<ScoreInfo> AddIncludesForConsumption(IQueryable<ScoreInfo> query)
-            => base.AddIncludesForConsumption(query)
-                   .Include(s => s.Beatmap)
-                   .Include(s => s.Ruleset);
     }
 }

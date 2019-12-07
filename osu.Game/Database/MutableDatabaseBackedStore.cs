@@ -119,21 +119,6 @@ namespace osu.Game.Database
         }
 
         /// <summary>
-        /// Allow implementations to add database-side includes or constraints when querying for consumption of items.
-        /// </summary>
-        /// <param name="query">The input query.</param>
-        /// <returns>A potentially modified output query.</returns>
-        protected virtual IQueryable<T> AddIncludesForConsumption(IQueryable<T> query) => query;
-
-        /// <summary>
-        /// Allow implementations to add database-side includes or constraints when deleting items.
-        /// Included properties could then be subsequently deleted by overriding <see cref="Purge"/>.
-        /// </summary>
-        /// <param name="query">The input query.</param>
-        /// <returns>A potentially modified output query.</returns>
-        protected virtual IQueryable<T> AddIncludesForDeletion(IQueryable<T> query) => query;
-
-        /// <summary>
         /// Called when removing an item completely from the database.
         /// </summary>
         /// <param name="items">The items to be purged.</param>
@@ -159,8 +144,6 @@ namespace osu.Game.Database
                 var lookup = context.All<T>().Where(s => s.DeletePending);
 
                 if (query != null) lookup = lookup.Where(query);
-
-                lookup = AddIncludesForDeletion(lookup);
 
                 var purgeable = lookup.ToList();
 
