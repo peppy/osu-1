@@ -57,23 +57,16 @@ namespace osu.Game.Database
         /// </summary>
         public Realm Get()
         {
-            if (!refreshCompleted.Value)
-            {
-                threadContexts.Value.Refresh();
-                refreshCompleted.Value = true;
-            }
-
             reads.Value++;
-            return threadContexts.Value;
+            return getContextForCurrentThread();
         }
 
         /// <summary>
         /// Request a context for write usage. Can be consumed in a nested fashion (and will return the same underlying context).
         /// This method may block if a write is already active on a different thread.
         /// </summary>
-        /// <param name="withTransaction">Whether to start a transaction for this write.</param>
         /// <returns>A usage containing a usable context.</returns>
-        public DatabaseWriteUsage GetForWrite(bool withTransaction = true)
+        public DatabaseWriteUsage GetForWrite()
         {
             writes.Value++;
             Monitor.Enter(writeLock);
@@ -81,16 +74,12 @@ namespace osu.Game.Database
 
             try
             {
-                if (currentWriteTransaction == null && withTransaction)
+                context = getContextForCurrentThread();
+
+                if (currentWriteTransaction == null)
                 {
-                    context = threadContexts.Value;
                     writingThread = Thread.CurrentThread;
                     currentWriteTransaction = context.BeginWrite();
-                }
-                else
-                {
-                    // we want to try-catch the retrieval of the context because it could throw an error (in CreateContext).
-                    context = threadContexts.Value;
                 }
             }
             catch
@@ -106,6 +95,21 @@ namespace osu.Game.Database
         }
 
         public void Schedule(Action action) => scheduler.Add(action);
+
+        private Realm getContextForCurrentThread()
+        {
+            var context = threadContexts.Value;
+            if (context?.IsClosed != false)
+                threadContexts.Value = context = CreateContext();
+
+            if (!refreshCompleted.Value)
+            {
+                context.Refresh();
+                refreshCompleted.Value = true;
+            }
+
+            return context;
+        }
 
         private void usageCompleted(DatabaseWriteUsage usage)
         {
@@ -131,6 +135,7 @@ namespace osu.Game.Database
                     currentWriteTransaction = null;
                     writingThread = null;
                     rollbackRequired = false;
+
                     refreshCompleted = new ThreadLocal<bool>();
                 }
             }

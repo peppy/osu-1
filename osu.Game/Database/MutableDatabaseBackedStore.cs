@@ -72,10 +72,12 @@ namespace osu.Game.Database
         public void Update(T item, Action<T> updateAction)
         {
             using (ContextFactory.GetForWrite())
+            {
                 updateAction(item);
 
-            ItemRemoved?.Invoke(item);
-            ItemAdded?.Invoke(item);
+                ItemRemoved?.Invoke(item);
+                ItemAdded?.Invoke(item);
+            }
         }
 
         /// <summary>
