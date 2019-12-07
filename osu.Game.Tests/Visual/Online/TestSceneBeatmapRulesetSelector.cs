@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Extensions.IEnumerableExtensions;
+using osu.Game.Database;
 
 namespace osu.Game.Tests.Visual.Online
 {
@@ -35,12 +36,16 @@ namespace osu.Game.Tests.Visual.Online
         [Test]
         public void TestMultipleRulesetsBeatmapSet()
         {
-            var enabledRulesets = rulesets.AvailableRulesets.Skip(1).Take(2);
+            IEnumerable<RealmWrapper<RulesetInfo>> enabledRulesets = null;
 
             AddStep("load multiple rulesets beatmapset", () =>
             {
-                selector.BeatmapSet = new BeatmapSetInfo();
-                enabledRulesets.Select(r => new BeatmapInfo { Ruleset = r }).ForEach(selector.BeatmapSet.Beatmaps.Add);
+                enabledRulesets = rulesets.AvailableRulesets.Skip(1).Take(2);
+
+                var set = new BeatmapSetInfo();
+                enabledRulesets.Select(r => new BeatmapInfo { Ruleset = r }).ForEach(set.Beatmaps.Add);
+
+                selector.BeatmapSet = set;
             });
 
             var tabItems = selector.TabContainer.TabItems;
