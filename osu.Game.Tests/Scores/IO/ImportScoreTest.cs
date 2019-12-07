@@ -16,7 +16,6 @@ using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Osu.Mods;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Scoring;
-using osu.Game.Scoring.Legacy;
 using osu.Game.Tests.Resources;
 using osu.Game.Users;
 

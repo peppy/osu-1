@@ -235,7 +235,7 @@ namespace osu.Game.Database
             catch (Exception e)
             {
                 LogForModel(model?.Hash, $"Model creation of {archive.Name} failed.", e);
-                return null;
+                throw;
             }
 
             return Import(model, archive, cancellationToken);

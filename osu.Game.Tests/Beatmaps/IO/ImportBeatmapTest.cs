@@ -13,6 +13,7 @@ using osu.Game.IPC;
 using osu.Framework.Allocation;
 using osu.Framework.Logging;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.IO;
 using osu.Game.Rulesets.Osu;
 using osu.Game.Tests.Resources;
@@ -74,8 +75,8 @@ namespace osu.Game.Tests.Beatmaps.IO
                 {
                     var osu = loadOsu(host);
 
-                    var imported = await LoadOszIntoOsu(osu);
-                    var importedSecondTime = await LoadOszIntoOsu(osu);
+                    var imported = (await LoadOszIntoOsu(osu)).Get();
+                    var importedSecondTime = (await LoadOszIntoOsu(osu)).Get();
 
                     // check the newly "imported" beatmap is the existing one, returned again. since it matches hash.
                     Assert.IsTrue(imported.ID == importedSecondTime.ID);
@@ -101,7 +102,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                 {
                     var osu = loadOsu(host);
 
-                    var imported = await LoadOszIntoOsu(osu);
+                    var imported = (await LoadOszIntoOsu(osu)).Get();
 
                     var firstFile = imported.Files.First();
 
@@ -114,7 +115,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                     using (var stream = files.Storage.GetStream(firstFile.FileInfo.StoragePath, FileAccess.Write, FileMode.Create))
                         stream.WriteByte(0);
 
-                    var importedSecondTime = await LoadOszIntoOsu(osu);
+                    var importedSecondTime = (await LoadOszIntoOsu(osu)).Get();
 
                     using (var stream = files.Storage.GetStream(firstFile.FileInfo.StoragePath))
                         Assert.AreEqual(originalLength, stream.Length, "Corruption was not fixed on second import");
@@ -161,7 +162,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     waitForOrAssert(() => itemAddRemoveFireCount == 1, "import added event fired");
 
-                    manager.Update(imported, i => i.Hash += "-changed");
+                    manager.Update(imported.Get(), i => i.Hash += "-changed");
 
                     waitForOrAssert(() => itemAddRemoveFireCount == 3, "import delete/added event fired");
 
@@ -220,13 +221,13 @@ namespace osu.Game.Tests.Beatmaps.IO
                     var osu = loadOsu(host);
                     var manager = osu.Dependencies.Get<BeatmapManager>();
 
-                    var imported = await LoadOszIntoOsu(osu);
+                    var imported = (await LoadOszIntoOsu(osu)).Get();
 
                     Assert.IsTrue(imported.IsManaged && imported.IsValid);
 
                     manager.Update(imported, i => i.Hash += "-changed");
 
-                    var importedSecondTime = await LoadOszIntoOsu(osu);
+                    var importedSecondTime = (await LoadOszIntoOsu(osu)).Get();
 
                     Assert.IsFalse(imported.IsValid);
                     Assert.IsTrue(importedSecondTime.IsValid);
@@ -251,11 +252,11 @@ namespace osu.Game.Tests.Beatmaps.IO
                 {
                     var osu = loadOsu(host);
 
-                    var imported = await LoadOszIntoOsu(osu);
+                    var imported = (await LoadOszIntoOsu(osu)).Get();
 
                     deleteBeatmapSet(imported, osu);
 
-                    var importedSecondTime = await LoadOszIntoOsu(osu);
+                    var importedSecondTime = (await LoadOszIntoOsu(osu)).Get();
 
                     // if the user deleted the imported beatmap, we should force another import.
                     Assert.IsFalse(imported.IsValid);
@@ -279,7 +280,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                 {
                     var osu = loadOsu(host);
 
-                    var imported = await LoadOszIntoOsu(osu);
+                    var imported = (await LoadOszIntoOsu(osu)).Get();
 
                     string firstImportId = imported.Beatmaps.First().ID;
 
@@ -293,7 +294,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
                     deleteBeatmapSet(imported, osu);
 
-                    var importedSecondTime = await LoadOszIntoOsu(osu);
+                    var importedSecondTime = (await LoadOszIntoOsu(osu)).Get();
 
                     // check the newly "imported" beatmap has been reimported due to mismatch (even though hashes matched)
                     Assert.IsFalse(imported.IsValid);
@@ -560,7 +561,7 @@ namespace osu.Game.Tests.Beatmaps.IO
             }
         }
 
-        public static async Task<BeatmapSetInfo> LoadOszIntoOsu(OsuGameBase osu, string path = null, bool virtualTrack = false)
+        public static async Task<RealmWrapper<BeatmapSetInfo>> LoadOszIntoOsu(OsuGameBase osu, string path = null, bool virtualTrack = false)
         {
             var temp = path ?? TestResources.GetTestBeatmapForImport(virtualTrack);
 
@@ -574,7 +575,7 @@ namespace osu.Game.Tests.Beatmaps.IO
 
             waitForOrAssert(() => !File.Exists(temp), "Temporary file still exists after standard import", 5000);
 
-            return imported.Last().Get();
+            return imported.Last();
         }
 
         private void deleteBeatmapSet(BeatmapSetInfo imported, OsuGameBase osu)
