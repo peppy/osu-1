@@ -171,7 +171,7 @@ namespace osu.Game.Beatmaps.Drawables
 
                 difficultyName.Text = unwrapped.Version;
                 starRating.Text = $"{unwrapped.StarDifficulty:0.##}";
-                difficultyFlow.Colour = colours.ForDifficultyRating(unwrapped.DifficultyRating);
+                difficultyFlow.Colour = colours.ForDifficultyRating(unwrapped.DifficultyRating, true);
 
                 return true;
             }
