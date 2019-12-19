@@ -6,6 +6,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
+using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Screens.Edit.Components.Timelines.Summary.Parts;
@@ -16,24 +17,25 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
 {
     internal class TimelineHitObjectDisplay : TimelinePart
     {
-        private IEditorBeatmap beatmap { get; }
+        private IEditorBeatmap editorBeatmap { get; }
 
-        public TimelineHitObjectDisplay(IEditorBeatmap beatmap)
+        public TimelineHitObjectDisplay(IEditorBeatmap beatmap, WorkingBeatmap working)
+            : base(working)
         {
             RelativeSizeAxes = Axes.Both;
 
-            this.beatmap = beatmap;
+            editorBeatmap = beatmap;
         }
 
         [BackgroundDependencyLoader]
         private void load()
         {
-            foreach (var h in beatmap.HitObjects)
+            foreach (var h in editorBeatmap.HitObjects)
                 add(h);
 
-            beatmap.HitObjectAdded += add;
-            beatmap.HitObjectRemoved += remove;
-            beatmap.StartTimeChanged += h =>
+            editorBeatmap.HitObjectAdded += add;
+            editorBeatmap.HitObjectRemoved += remove;
+            editorBeatmap.StartTimeChanged += h =>
             {
                 remove(h);
                 add(h);

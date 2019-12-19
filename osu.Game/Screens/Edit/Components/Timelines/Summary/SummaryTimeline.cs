@@ -3,10 +3,11 @@
 
 using osuTK;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Timing;
+using osu.Game.Beatmaps;
 using osu.Game.Graphics;
 using osu.Game.Screens.Edit.Components.Timelines.Summary.Parts;
 
@@ -17,25 +18,20 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary
     /// </summary>
     public class SummaryTimeline : BottomBarContainer
     {
+        private Container belowContent;
+        private Container aboveContent;
+
+        private IBindable<WorkingBeatmap> beatmap { get; set; }
+
         [BackgroundDependencyLoader]
-        private void load(OsuColour colours, IAdjustableClock adjustableClock)
+        private void load(OsuColour colours)
         {
             Children = new Drawable[]
             {
-                new MarkerPart(adjustableClock) { RelativeSizeAxes = Axes.Both },
-                new ControlPointPart
+                new MarkerPart() { RelativeSizeAxes = Axes.Both },
+                belowContent = new Container
                 {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.BottomCentre,
                     RelativeSizeAxes = Axes.Both,
-                    Height = 0.35f
-                },
-                new BookmarkPart
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.TopCentre,
-                    RelativeSizeAxes = Axes.Both,
-                    Height = 0.35f
                 },
                 new Container
                 {
@@ -65,14 +61,39 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary
                         },
                     }
                 },
-                new BreakPart
+                aboveContent = new Container
                 {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
-                    Height = 0.25f
-                }
+                },
             };
+
+            belowContent.Clear();
+            aboveContent.Clear();
+
+            LoadComponentAsync(new ControlPointPart
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.BottomCentre,
+                RelativeSizeAxes = Axes.Both,
+                Depth = 1, // guarantee below bookmarks
+                Height = 0.35f
+            }, belowContent.Add);
+
+            LoadComponentAsync(new BookmarkPart
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.TopCentre,
+                RelativeSizeAxes = Axes.Both,
+                Height = 0.35f
+            }, belowContent.Add);
+
+            LoadComponentAsync(new BreakPart
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                RelativeSizeAxes = Axes.Both,
+                Height = 0.25f
+            }, aboveContent.Add);
         }
     }
 }

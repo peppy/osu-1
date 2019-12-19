@@ -14,6 +14,7 @@ using osu.Framework.Timing;
 using osu.Game.Beatmaps;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.Screens.Edit;
 using osu.Game.Screens.Edit.Compose.Components.Timeline;
 using osuTK;
@@ -32,6 +33,16 @@ namespace osu.Game.Tests.Visual.Editor
             typeof(TimelineButton),
             typeof(CentreMarker)
         };
+
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
+        {
+            var dependencies = new DependencyContainer(parent);
+
+            dependencies.CacheAs<IEditorBeatmap>(EditorBeatmap);
+            dependencies.CacheAs<IEditorBeatmap<HitObject>>(EditorBeatmap);
+
+            return base.CreateChildDependencies(dependencies);
+        }
 
         [BackgroundDependencyLoader]
         private void load(AudioManager audio)

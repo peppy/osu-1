@@ -2,8 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osuTK;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -16,45 +14,35 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary.Parts
     /// </summary>
     public abstract class TimelinePart : Container
     {
-        protected readonly IBindable<WorkingBeatmap> Beatmap = new Bindable<WorkingBeatmap>();
+        private readonly WorkingBeatmap beatmap;
 
         private readonly Container timeline;
 
         protected override Container<Drawable> Content => timeline;
 
-        protected TimelinePart()
+        protected TimelinePart(WorkingBeatmap beatmap)
         {
+            this.beatmap = beatmap;
             AddInternal(timeline = new Container { RelativeSizeAxes = Axes.Both });
-
-            Beatmap.ValueChanged += b =>
-            {
-                updateRelativeChildSize();
-                LoadBeatmap(b.NewValue);
-            };
         }
 
-        [BackgroundDependencyLoader]
-        private void load(IBindable<WorkingBeatmap> beatmap)
+        protected override void LoadComplete()
         {
-            Beatmap.BindTo(beatmap);
+            updateRelativeChildSize();
+            base.LoadComplete();
         }
 
         private void updateRelativeChildSize()
         {
             // the track may not be loaded completely (only has a length once it is).
-            if (!Beatmap.Value.Track.IsLoaded)
+            if (!beatmap.Track.IsLoaded)
             {
                 timeline.RelativeChildSize = Vector2.One;
                 Schedule(updateRelativeChildSize);
                 return;
             }
 
-            timeline.RelativeChildSize = new Vector2((float)Math.Max(1, Beatmap.Value.Track.Length), 1);
-        }
-
-        protected virtual void LoadBeatmap(WorkingBeatmap beatmap)
-        {
-            timeline.Clear();
+            timeline.RelativeChildSize = new Vector2((float)Math.Max(1, beatmap.Track.Length), 1);
         }
     }
 }

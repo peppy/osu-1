@@ -10,7 +10,6 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
 using osu.Framework.Threading;
 using osu.Framework.Timing;
-using osu.Game.Beatmaps;
 using osu.Game.Graphics;
 
 namespace osu.Game.Screens.Edit.Components.Timelines.Summary.Parts
@@ -20,14 +19,14 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary.Parts
     /// </summary>
     public class MarkerPart : TimelinePart
     {
-        private readonly Drawable marker;
+        private Drawable marker;
 
-        private readonly IAdjustableClock adjustableClock;
+        [Resolved]
+        private IAdjustableClock adjustableClock { get; set; }
 
-        public MarkerPart(IAdjustableClock adjustableClock)
+        [BackgroundDependencyLoader]
+        private void load()
         {
-            this.adjustableClock = adjustableClock;
-
             Add(marker = new MarkerVisualisation());
         }
 
@@ -69,11 +68,6 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary.Parts
         {
             base.Update();
             marker.X = (float)adjustableClock.CurrentTime;
-        }
-
-        protected override void LoadBeatmap(WorkingBeatmap beatmap)
-        {
-            // block base call so we don't clear our marker (can be reused on beatmap change).
         }
 
         private class MarkerVisualisation : CompositeDrawable

@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Allocation;
-using osu.Game.Beatmaps;
 using osu.Game.Graphics;
 using osu.Game.Screens.Edit.Components.Timelines.Summary.Visualisations;
 
@@ -13,10 +12,10 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary.Parts
     /// </summary>
     public class BookmarkPart : TimelinePart
     {
-        protected override void LoadBeatmap(WorkingBeatmap beatmap)
+        [BackgroundDependencyLoader]
+        private void load()
         {
-            base.LoadBeatmap(beatmap);
-            foreach (int bookmark in beatmap.BeatmapInfo.Bookmarks)
+            foreach (int bookmark in Beatmap.Value.BeatmapInfo.Bookmarks)
                 Add(new BookmarkVisualisation(bookmark));
         }
 
