@@ -66,7 +66,7 @@ namespace osu.Game.Scoring
 
                 return getModsFromRuleset(JsonConvert.DeserializeObject<DeserializedMod[]>(ModsString));
             }
-            set => ModsString = JsonConvert.SerializeObject(value);
+            set => ModsString = JsonConvert.SerializeObject(value.Select(m => new DeserializedMod { Acronym = m.Acronym }));
         }
 
         private Mod[] getModsFromRuleset(DeserializedMod[] mods) => Ruleset.CreateInstance().GetAllMods().Where(mod => mods.Any(d => d.Acronym == mod.Acronym)).ToArray();

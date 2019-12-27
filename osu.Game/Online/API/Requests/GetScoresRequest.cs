@@ -43,7 +43,7 @@ namespace osu.Game.Online.API.Requests
             foreach (APILegacyScoreInfo score in r.Scores)
             {
                 score.Beatmap = beatmap;
-                score.OnlineRulesetID = ruleset.OnlineID;
+                score.OnlineRulesetID = ruleset.OnlineID.Value;
             }
 
             var userScore = r.UserScore;
@@ -51,7 +51,7 @@ namespace osu.Game.Online.API.Requests
             if (userScore != null)
             {
                 userScore.Score.Beatmap = beatmap;
-                userScore.Score.OnlineRulesetID = ruleset.OnlineID;
+                userScore.Score.OnlineRulesetID = ruleset.OnlineID.Value;
             }
         }
 

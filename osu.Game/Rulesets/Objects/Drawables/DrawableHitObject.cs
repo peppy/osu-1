@@ -150,8 +150,8 @@ namespace osu.Game.Rulesets.Objects.Drawables
 
             if (HitObject.SampleControlPoint == null)
             {
-                throw new ArgumentNullException(nameof(HitObject.SampleControlPoint), $"{nameof(HitObject)}s must always have an attached {nameof(HitObject.SampleControlPoint)}."
-                                                                                      + $" This is an indication that {nameof(HitObject.ApplyDefaults)} has not been invoked on {this}.");
+                throw new InvalidOperationException($"{nameof(HitObject)}s must always have an attached {nameof(HitObject.SampleControlPoint)}."
+                                                    + $" This is an indication that {nameof(HitObject.ApplyDefaults)} has not been invoked on {this}.");
             }
 
             samples = samples.Select(s => HitObject.SampleControlPoint.ApplyTo(s)).ToArray();
@@ -356,7 +356,7 @@ namespace osu.Game.Rulesets.Objects.Drawables
         {
             if (HitObject is IHasComboInformation combo)
             {
-                var comboColours = CurrentSkin.GetConfig<GlobalSkinConfiguration, List<Color4>>(GlobalSkinConfiguration.ComboColours)?.Value;
+                var comboColours = CurrentSkin.GetConfig<GlobalSkinConfiguration, IReadOnlyList<Color4>>(GlobalSkinConfiguration.ComboColours)?.Value;
                 AccentColour.Value = comboColours?.Count > 0 ? comboColours[combo.ComboIndex % comboColours.Count] : Color4.White;
             }
         }

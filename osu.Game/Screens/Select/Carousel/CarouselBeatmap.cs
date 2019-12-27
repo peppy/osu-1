@@ -72,7 +72,7 @@ namespace osu.Game.Screens.Select.Carousel
             {
                 default:
                 case SortMode.Difficulty:
-                    var ruleset = Beatmap.Get().Ruleset.OnlineID.CompareTo(otherBeatmap.Beatmap.Get().Ruleset.OnlineID);
+                    var ruleset = Comparer<int?>.Default.Compare(Beatmap.Get().Ruleset.OnlineID, otherBeatmap.Beatmap.Get().Ruleset.OnlineID);
                     if (ruleset != 0) return ruleset;
 
                     return Beatmap.Get().StarDifficulty.CompareTo(otherBeatmap.Beatmap.Get().StarDifficulty);

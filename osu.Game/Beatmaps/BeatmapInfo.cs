@@ -97,7 +97,7 @@ namespace osu.Game.Beatmaps
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    Bookmarks = new int[0];
+                    Bookmarks = Array.Empty<int>();
                     return;
                 }
 
@@ -110,7 +110,7 @@ namespace osu.Game.Beatmaps
         }
 
         [Ignored]
-        public int[] Bookmarks { get; set; } = new int[0];
+        public int[] Bookmarks { get; set; } = Array.Empty<int>();
 
         public double DistanceSpacing { get; set; }
         public int BeatDivisor { get; set; }

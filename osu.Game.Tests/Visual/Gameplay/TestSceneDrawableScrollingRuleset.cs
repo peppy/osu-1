@@ -194,16 +194,11 @@ namespace osu.Game.Tests.Visual.Gameplay
 
         private class TestScrollingRuleset : Ruleset
         {
-            public TestScrollingRuleset(RulesetInfo rulesetInfo = null)
-                : base(rulesetInfo)
-            {
-            }
-
             public override IEnumerable<Mod> GetModsFor(ModType type) => throw new NotImplementedException();
 
             public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) => new TestDrawableScrollingRuleset(this, beatmap, mods);
 
-            public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new TestBeatmapConverter(beatmap);
+            public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new TestBeatmapConverter(beatmap, null);
 
             public override DifficultyCalculator CreateDifficultyCalculator(WorkingBeatmap beatmap) => throw new NotImplementedException();
 
@@ -273,12 +268,12 @@ namespace osu.Game.Tests.Visual.Gameplay
 
         private class TestBeatmapConverter : BeatmapConverter<TestHitObject>
         {
-            public TestBeatmapConverter(IBeatmap beatmap)
-                : base(beatmap)
+            public TestBeatmapConverter(IBeatmap beatmap, Ruleset ruleset)
+                : base(beatmap, ruleset)
             {
             }
 
-            protected override IEnumerable<Type> ValidConversionTypes => new[] { typeof(HitObject) };
+            public override bool CanConvert() => true;
 
             protected override IEnumerable<TestHitObject> ConvertHitObject(HitObject original, IBeatmap beatmap)
             {

@@ -187,7 +187,8 @@ namespace osu.Game
                     return;
                 }
 
-                configRuleset.Value = r.NewValue.OnlineID;
+                // todo: shouldn't be using online id
+                configRuleset.Value = r.NewValue.OnlineID.Value;
             }, true);
 
             // bind config int to database SkinInfo

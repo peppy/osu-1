@@ -34,7 +34,8 @@ namespace osu.Game.Database
 
         private readonly MutableDatabaseBackedStoreWithFileIncludes<TModel, TFileModel> modelStore;
 
-        protected DownloadableArchiveModelManager(Storage storage, IDatabaseContextFactory contextFactory, IAPIProvider api, MutableDatabaseBackedStoreWithFileIncludes<TModel, TFileModel> modelStore, IIpcHost importHost = null)
+        protected DownloadableArchiveModelManager(Storage storage, IDatabaseContextFactory contextFactory, IAPIProvider api, MutableDatabaseBackedStoreWithFileIncludes<TModel, TFileModel> modelStore,
+                                                  IIpcHost importHost = null)
             : base(storage, contextFactory, modelStore, importHost)
         {
             this.api = api;
@@ -125,7 +126,8 @@ namespace osu.Game.Database
         /// <param name="model">The <typeparamref name="TModel"/> whose existence needs to be checked.</param>
         /// <param name="items">The usable items present in the store.</param>
         /// <returns>Whether the <typeparamref name="TModel"/> exists.</returns>
-        protected abstract bool CheckLocalAvailability(TModel model, IQueryable<TModel> items);
+        protected virtual bool CheckLocalAvailability(TModel model, IQueryable<TModel> items)
+            => model.ID != null && items.Any(i => i.ID == model.ID && i.Files.Any());
 
         public ArchiveDownloadRequest<TModel> GetExistingDownload(TModel model) => currentDownloads.Find(r => r.Model.Equals(model));
 

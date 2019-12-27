@@ -6,9 +6,9 @@ using Realms;
 
 namespace osu.Game.Database
 {
-    public abstract class MutableDatabaseBackedStoreWithFileIncludes<T, U> : MutableDatabaseBackedStore<T>
-        where T : RealmObject, IHasPrimaryKey, ISoftDelete, IHasFiles<U>
-        where U : INamedFileInfo
+    public abstract class MutableDatabaseBackedStoreWithFileIncludes<T, TFileInfo> : MutableDatabaseBackedStore<T>
+        where T : RealmObject, IHasPrimaryKey, ISoftDelete, IHasFiles<TFileInfo>
+        where TFileInfo : INamedFileInfo
     {
         protected MutableDatabaseBackedStoreWithFileIncludes(IDatabaseContextFactory contextFactory, Storage storage = null)
             : base(contextFactory, storage)

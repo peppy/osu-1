@@ -13,6 +13,8 @@ namespace osu.Game.Skinning
         public LegacyBeatmapSkin(RealmWrapper<BeatmapInfo> beatmap, IResourceStore<byte[]> storage, AudioManager audioManager)
             : base(createSkinInfo(beatmap), new LegacySkinResourceStore<BeatmapSetFileInfo>(() => beatmap.Get().BeatmapSet, storage), audioManager, beatmap.Get().Path)
         {
+            // Disallow default colours fallback on beatmap skins to allow using parent skin combo colours. (via SkinProvidingContainer)
+            Configuration.AllowDefaultComboColoursFallback = false;
         }
 
         private static SkinInfo createSkinInfo(BeatmapInfo beatmap) =>

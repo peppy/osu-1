@@ -38,7 +38,7 @@ namespace osu.Game.Screens.Select
             {
                 Beatmap = Beatmap.Value.BeatmapInfo,
                 Ruleset = Ruleset.Value,
-                RulesetID = Ruleset.Value.OnlineID
+                RulesetID = Ruleset.Value.OnlineID ?? 0
             };
 
             item.RequiredMods.AddRange(Mods.Value);

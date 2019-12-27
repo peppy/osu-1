@@ -38,13 +38,13 @@ namespace osu.Game.Screens.Select.Carousel
             {
                 default:
                 case SortMode.Artist:
-                    return string.Compare(BeatmapSet.Get().Metadata.Artist, otherSet.BeatmapSet.Get().Metadata.Artist, StringComparison.InvariantCultureIgnoreCase);
+                    return string.Compare(BeatmapSet.Get().Metadata.Artist, otherSet.BeatmapSet.Get().Metadata.Artist, StringComparison.OrdinalIgnoreCase);
 
                 case SortMode.Title:
-                    return string.Compare(BeatmapSet.Get().Metadata.Title, otherSet.BeatmapSet.Get().Metadata.Title, StringComparison.InvariantCultureIgnoreCase);
+                    return string.Compare(BeatmapSet.Get().Metadata.Title, otherSet.BeatmapSet.Get().Metadata.Title, StringComparison.OrdinalIgnoreCase);
 
                 case SortMode.Author:
-                    return string.Compare(BeatmapSet.Get().Metadata.Author?.Username, otherSet.BeatmapSet.Get().Metadata.Author?.Username, StringComparison.InvariantCultureIgnoreCase);
+                    return string.Compare(BeatmapSet.Get().Metadata.Author.Username, otherSet.BeatmapSet.Get().Metadata.Author.Username, StringComparison.OrdinalIgnoreCase);
 
                 case SortMode.DateAdded:
                     return otherSet.BeatmapSet.Get().DateAdded.CompareTo(BeatmapSet.Get().DateAdded);

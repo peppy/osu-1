@@ -70,7 +70,7 @@ namespace osu.Game.Scoring
         }
 
         protected override IEnumerable<string> GetStableImportPaths(Storage stableStorage)
-            => stableStorage.GetFiles(ImportFromStablePath).Where(p => HandledExtensions.Any(ext => Path.GetExtension(p)?.Equals(ext, StringComparison.InvariantCultureIgnoreCase) ?? false));
+            => stableStorage.GetFiles(ImportFromStablePath).Where(p => HandledExtensions.Any(ext => Path.GetExtension(p)?.Equals(ext, StringComparison.OrdinalIgnoreCase) ?? false));
 
         public Score GetScore(ScoreInfo score) => new LegacyDatabasedScore(score, rulesets, beatmaps(), Files.Store);
 
@@ -82,6 +82,6 @@ namespace osu.Game.Scoring
 
         protected override ArchiveDownloadRequest<ScoreInfo> CreateDownloadRequest(ScoreInfo score, bool minimiseDownload) => new DownloadReplayRequest(score);
 
-        protected override bool CheckLocalAvailability(ScoreInfo model, IQueryable<ScoreInfo> items) => items.FirstOrDefault(s => s.OnlineScoreID == model.OnlineScoreID)?.Files.Any() == true;
+        protected override bool CheckLocalAvailability(ScoreInfo model, IQueryable<ScoreInfo> items) => base.CheckLocalAvailability(model, items) || (model.OnlineScoreID != null && items.Any(i => i.OnlineScoreID == model.OnlineScoreID));
     }
 }

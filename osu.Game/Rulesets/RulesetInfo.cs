@@ -15,7 +15,7 @@ namespace osu.Game.Rulesets
         public string ID { get; set; }
 
         [Indexed]
-        public int OnlineID { get; set; }
+        public int? OnlineID { get; set; }
 
         public string Name { get; set; }
 
@@ -26,11 +26,17 @@ namespace osu.Game.Rulesets
         [JsonIgnore]
         public bool Available { get; set; }
 
+        // TODO: this should probably be moved to RulesetStore.
         public virtual Ruleset CreateInstance()
         {
             if (!Available) return null;
 
-            return (Ruleset)Activator.CreateInstance(Type.GetType(InstantiationInfo), this);
+            var ruleset = (Ruleset)Activator.CreateInstance(Type.GetType(InstantiationInfo));
+
+            // overwrite the pre-populated RulesetInfo with a potentially database attached copy.
+            ruleset.RulesetInfo = this;
+
+            return ruleset;
         }
 
         public bool Equals(RulesetInfo other) => other != null && OnlineID == other.OnlineID && Available == other.Available && Name == other.Name && InstantiationInfo == other.InstantiationInfo;
