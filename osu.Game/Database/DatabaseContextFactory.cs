@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using AutoMapper;
 using osu.Framework.Platform;
@@ -169,6 +170,7 @@ namespace osu.Game.Database
         }
     }
 
+    [SuppressMessage("ReSharper", "CA2225")]
     public class RealmWrapper<T> : IEquatable<RealmWrapper<T>>
         where T : RealmObject, IHasPrimaryKey
     {
@@ -201,9 +203,11 @@ namespace osu.Game.Database
         public RealmWrapper<TChild> WrapChild<TChild>(Func<T, TChild> lookup)
             where TChild : RealmObject, IHasPrimaryKey => new RealmWrapper<TChild>(lookup(Get()), ContextFactory);
 
+        // ReSharper disable once CA2225
         public static implicit operator T(RealmWrapper<T> wrapper)
             => wrapper?.Get().Detach();
 
+        // ReSharper disable once CA2225
         public static implicit operator RealmWrapper<T>(T obj) => obj.WrapAsUnmanaged();
 
         public bool Equals(RealmWrapper<T> other) => other != null && other.ID == ID;

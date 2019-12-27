@@ -14,7 +14,6 @@ namespace osu.Game.Rulesets
         [PrimaryKey]
         public string ID { get; set; }
 
-        [Indexed]
         public int? OnlineID { get; set; }
 
         public string Name { get; set; }
