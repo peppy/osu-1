@@ -21,6 +21,7 @@ using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Scoring;
 using osu.Game.Skinning;
+using osu.Game.Users;
 
 namespace osu.Game.Rulesets
 {
@@ -58,7 +59,7 @@ namespace osu.Game.Rulesets
                 ID = (this as ILegacyRuleset)?.LegacyID.ToString() ?? Guid.NewGuid().ToString(),
                 OnlineID = (this as ILegacyRuleset)?.LegacyID,
                 InstantiationInfo = GetType().AssemblyQualifiedName,
-                Available = true
+                Available = true,
             };
         }
 
@@ -72,16 +73,16 @@ namespace osu.Game.Rulesets
         public abstract DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null);
 
         /// <summary>
-        /// Creates a <see cref="ScoreProcessor"/> for a beatmap converted to this ruleset.
+        /// Creates a <see cref="ScoreProcessor"/> for this <see cref="Ruleset"/>.
         /// </summary>
         /// <returns>The score processor.</returns>
-        public virtual ScoreProcessor CreateScoreProcessor(IBeatmap beatmap) => new ScoreProcessor(beatmap);
+        public virtual ScoreProcessor CreateScoreProcessor() => new ScoreProcessor();
 
         /// <summary>
-        /// Creates a <see cref="HealthProcessor"/> for a beatmap converted to this ruleset.
+        /// Creates a <see cref="HealthProcessor"/> for this <see cref="Ruleset"/>.
         /// </summary>
         /// <returns>The health processor.</returns>
-        public virtual HealthProcessor CreateHealthProcessor(IBeatmap beatmap) => new HealthProcessor(beatmap);
+        public virtual HealthProcessor CreateHealthProcessor(double drainStartTime) => new DrainingHealthProcessor(drainStartTime);
 
         /// <summary>
         /// Creates a <see cref="IBeatmapConverter"/> to convert a <see cref="IBeatmap"/> to one that is applicable for this <see cref="Ruleset"/>.
@@ -105,7 +106,7 @@ namespace osu.Game.Rulesets
 
         public virtual Drawable CreateIcon() => new SpriteIcon { Icon = FontAwesome.Solid.QuestionCircle };
 
-        public virtual IResourceStore<byte[]> CreateResourceStore() => new NamespacedResourceStore<byte[]>(new DllResourceStore(GetType().Assembly.Location), @"Resources");
+        public virtual IResourceStore<byte[]> CreateResourceStore() => new NamespacedResourceStore<byte[]>(new DllResourceStore(GetType().Assembly), @"Resources");
 
         public abstract string Description { get; }
 
@@ -121,6 +122,11 @@ namespace osu.Game.Rulesets
         /// A unique short name to reference this ruleset in online requests.
         /// </summary>
         public abstract string ShortName { get; }
+
+        /// <summary>
+        /// The playing verb to be shown in the <see cref="UserActivity.SoloGame.Status"/>.
+        /// </summary>
+        public virtual string PlayingVerb => "Playing solo";
 
         /// <summary>
         /// A list of available variant ids.

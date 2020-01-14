@@ -7,6 +7,7 @@ using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Game.Beatmaps;
+using osu.Game.Database;
 using osu.Game.Online.API;
 using osu.Game.Online.API.Requests;
 using osu.Game.Online.API.Requests.Responses;
@@ -103,6 +104,8 @@ namespace osu.Game.Screens.Select.Leaderboards
             {
                 ScoreSelected = s => ScoreSelected?.Invoke(s)
             });
+
+            scoreManager.ItemRemoved += onScoreRemoved;
         }
 
         protected override void Reset()
@@ -110,6 +113,8 @@ namespace osu.Game.Screens.Select.Leaderboards
             base.Reset();
             TopScore = null;
         }
+
+        private void onScoreRemoved(RealmWrapper<ScoreInfo> realmWrapper) => Schedule(RefreshScores);
 
         protected override bool IsOnlineScope => Scope != BeatmapLeaderboardScope.Local;
 
@@ -186,5 +191,13 @@ namespace osu.Game.Screens.Select.Leaderboards
         {
             Action = () => ScoreSelected?.Invoke(model)
         };
+
+        protected override void Dispose(bool isDisposing)
+        {
+            base.Dispose(isDisposing);
+
+            if (scoreManager != null)
+                scoreManager.ItemRemoved -= onScoreRemoved;
+        }
     }
 }

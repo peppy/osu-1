@@ -28,9 +28,7 @@ namespace osu.Game.Rulesets.Catch
     {
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) => new DrawableCatchRuleset(this, beatmap, mods);
 
-        public override ScoreProcessor CreateScoreProcessor(IBeatmap beatmap) => new CatchScoreProcessor(beatmap);
-
-        public override HealthProcessor CreateHealthProcessor(IBeatmap beatmap) => new CatchHealthProcessor(beatmap);
+        public override ScoreProcessor CreateScoreProcessor() => new CatchScoreProcessor();
 
         public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new CatchBeatmapConverter(beatmap, this);
 
@@ -136,6 +134,8 @@ namespace osu.Game.Rulesets.Catch
         public override string Description => "osu!catch";
 
         public override string ShortName => SHORT_NAME;
+
+        public override string PlayingVerb => "Catching fruit";
 
         public override Drawable CreateIcon() => new SpriteIcon { Icon = OsuIcon.RulesetCatch };
 
