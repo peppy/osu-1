@@ -34,7 +34,7 @@ namespace osu.Game.Database
     /// <typeparam name="TFileModel">The associated file join type.</typeparam>
     public abstract class ArchiveModelManager<TModel, TFileModel> : ICanAcceptFiles, IModelManager<TModel>
         where TModel : class, IHasFiles<TFileModel>, IHasPrimaryKey, ISoftDelete
-        where TFileModel : class, INamedFileInfo, new()
+        where TFileModel : NamedFileInfo, new()
     {
         private const int import_queue_request_concurrency = 1;
 
@@ -314,6 +314,10 @@ namespace osu.Game.Database
 
                 using (var write = ContextFactory.GetForWrite()) // used to share a context for full import. keep in mind this will block all writes.
                 {
+                    // we are likely on a different thread due to await Populate call. need to re-fetch files from local context.
+                    foreach (var file in item.Files)
+                        file.FileInfo = Files.QueryFiles(f => f.ID == file.FileInfo.ID).First();
+
                     try
                     {
                         if (!write.IsTransactionLeader) throw new InvalidOperationException($"Ensure there is no parent transaction so errors can correctly be handled by {this}");

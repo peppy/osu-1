@@ -3,7 +3,6 @@
 
 using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using osu.Framework.Logging;
 using osu.Framework.Statistics;
@@ -113,7 +112,7 @@ namespace osu.Game.Database
             optionsBuilder
                 // this is required for the time being due to the way we are querying in places like BeatmapStore.
                 // if we ever move to having consumers file their own .Includes, or get eager loading support, this could be re-enabled.
-                .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning))
+                //.ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning))
                 .UseSqlite(connectionString, sqliteOptions => sqliteOptions.CommandTimeout(10))
                 .UseLoggerFactory(logger.Value);
         }
@@ -147,6 +146,9 @@ namespace osu.Game.Database
             modelBuilder.Entity<BeatmapInfo>().HasOne(b => b.BaseDifficulty);
 
             modelBuilder.Entity<ScoreInfo>().HasIndex(b => b.OnlineScoreID).IsUnique();
+
+            modelBuilder.Entity<BeatmapSetFileInfo>().HasIndex(b => b.BeatmapSetInfoID);
+            modelBuilder.Entity<SkinFileInfo>().HasIndex(b => b.SkinInfoID);
         }
 
         private class OsuDbLoggerFactory : ILoggerFactory
@@ -196,11 +198,7 @@ namespace osu.Game.Database
 
                 public bool IsEnabled(LogLevel logLevel)
                 {
-#if DEBUG_DATABASE
                     return logLevel > LogLevel.Debug;
-#else
-                    return logLevel > LogLevel.Information;
-#endif
                 }
 
                 public IDisposable BeginScope<TState>(TState state) => null;

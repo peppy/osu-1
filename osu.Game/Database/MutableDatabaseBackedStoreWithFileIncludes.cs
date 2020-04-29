@@ -9,7 +9,7 @@ namespace osu.Game.Database
 {
     public abstract class MutableDatabaseBackedStoreWithFileIncludes<T, TFileInfo> : MutableDatabaseBackedStore<T>
         where T : class, IHasPrimaryKey, ISoftDelete, IHasFiles<TFileInfo>
-        where TFileInfo : INamedFileInfo
+        where TFileInfo : NamedFileInfo
     {
         protected MutableDatabaseBackedStoreWithFileIncludes(IDatabaseContextFactory contextFactory, Storage storage = null)
             : base(contextFactory, storage)

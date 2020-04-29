@@ -11,7 +11,7 @@ using osu.Game.Database;
 namespace osu.Game.Skinning
 {
     public class LegacySkinResourceStore<T> : ResourceStore<byte[]>
-        where T : INamedFileInfo
+        where T : NamedFileInfo
     {
         private readonly IHasFiles<T> source;
 

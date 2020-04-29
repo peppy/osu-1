@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using osu.Framework.Extensions;
 using osu.Framework.IO.Stores;
 using osu.Framework.Logging;
@@ -35,7 +34,7 @@ namespace osu.Game.IO
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>Results from the provided query.</returns>
-        public IEnumerable<FileInfo> QueryFiles(Expression<Func<FileInfo, bool>> query) => ContextFactory.Get().Set<FileInfo>().AsNoTracking().Where(f => f.ReferenceCount > 0).Where(query);
+        public IEnumerable<FileInfo> QueryFiles(Expression<Func<FileInfo, bool>> query) => ContextFactory.Get().Set<FileInfo>().Where(f => f.ReferenceCount > 0).Where(query);
 
         public FileInfo Add(Stream data, bool reference = true)
         {
