@@ -176,7 +176,7 @@ namespace osu.Game.Screens.Play
 
             InternalChild = GameplayClockContainer = new GameplayClockContainer(Beatmap.Value, Mods.Value, DrawableRuleset.GameplayStartTime);
 
-            AddInternal(gameplayBeatmap = new GameplayBeatmap(playableBeatmap));
+            AddInternal(gameplayBeatmap = new GameplayBeatmap(playableBeatmap, GameplayClockContainer.GameplayClock));
 
             dependencies.CacheAs(gameplayBeatmap);
 

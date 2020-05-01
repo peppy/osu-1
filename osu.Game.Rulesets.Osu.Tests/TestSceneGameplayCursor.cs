@@ -40,7 +40,7 @@ namespace osu.Game.Rulesets.Osu.Tests
 
         public TestSceneGameplayCursor()
         {
-            gameplayBeatmap = new GameplayBeatmap(CreateBeatmap(new OsuRuleset().RulesetInfo));
+            gameplayBeatmap = new GameplayBeatmap(CreateBeatmap(new OsuRuleset().RulesetInfo), null);
         }
 
         [TestCase(1, 1)]
