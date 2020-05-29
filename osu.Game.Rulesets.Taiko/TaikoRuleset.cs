@@ -21,6 +21,7 @@ using osu.Game.Rulesets.Taiko.Difficulty;
 using osu.Game.Rulesets.Taiko.Scoring;
 using osu.Game.Scoring;
 using System;
+using osu.Game.Rulesets.Edit;
 using osu.Game.Rulesets.Taiko.Skinning;
 using osu.Game.Skinning;
 
@@ -31,6 +32,9 @@ namespace osu.Game.Rulesets.Taiko
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) => new DrawableTaikoRuleset(this, beatmap, mods);
 
         public override ScoreProcessor CreateScoreProcessor() => new TaikoScoreProcessor();
+
+        public override HitObjectComposer CreateHitObjectComposer()
+            => new TaikoHitObjectComposer(this);
 
         public override HealthProcessor CreateHealthProcessor(double drainStartTime) => new TaikoHealthProcessor();
 
