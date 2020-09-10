@@ -8,7 +8,7 @@ namespace osu.Game.IO
 {
     public class FileInfo : IHasPrimaryKey
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         public string Hash { get; set; }
 

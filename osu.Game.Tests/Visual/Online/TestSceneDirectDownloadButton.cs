@@ -1,6 +1,7 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using osu.Framework.Allocation;
@@ -69,7 +70,7 @@ namespace osu.Game.Tests.Visual.Online
         {
             return new BeatmapSetInfo
             {
-                ID = 1,
+                ID = Guid.NewGuid().ToString(),
                 OnlineBeatmapSetID = 241526,
                 OnlineInfo = new BeatmapSetOnlineInfo
                 {

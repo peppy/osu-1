@@ -27,7 +27,7 @@ namespace osu.Game.Overlays.Settings.Sections
         };
 
         private readonly Bindable<SkinInfo> dropdownBindable = new Bindable<SkinInfo> { Default = SkinInfo.Default };
-        private readonly Bindable<int> configBindable = new Bindable<int>();
+        private readonly Bindable<string> configBindable = new Bindable<string>();
 
         [Resolved]
         private SkinManager skins { get; set; }
@@ -86,7 +86,7 @@ namespace osu.Game.Overlays.Settings.Sections
 
             // Todo: This should not be necessary when OsuConfigManager is databased
             if (skinDropdown.Items.All(s => s.ID != configBindable.Value))
-                configBindable.Value = 0;
+                configBindable.Value = null;
 
             configBindable.BindValueChanged(id => dropdownBindable.Value = skinDropdown.Items.Single(s => s.ID == id.NewValue), true);
             dropdownBindable.BindValueChanged(skin => configBindable.Value = skin.NewValue.ID);

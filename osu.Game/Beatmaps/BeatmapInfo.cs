@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
@@ -19,7 +18,7 @@ namespace osu.Game.Beatmaps
     [Serializable]
     public class BeatmapInfo : IEquatable<BeatmapInfo>, IJsonSerializable, IHasPrimaryKey
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         public int BeatmapVersion;
 
@@ -37,7 +36,7 @@ namespace osu.Game.Beatmaps
 
         public BeatmapSetOnlineStatus Status { get; set; } = BeatmapSetOnlineStatus.None;
 
-        [Required]
+        [System.ComponentModel.DataAnnotations.Required]
         public BeatmapSetInfo BeatmapSet { get; set; }
 
         public BeatmapMetadata Metadata { get; set; }
@@ -165,7 +164,9 @@ namespace osu.Game.Beatmaps
 
         public bool Equals(BeatmapInfo other)
         {
-            if (ID == 0 || other?.ID == 0)
+            //todo: unnecessary?
+
+            if (ID == null || other?.ID == null)
                 // one of the two BeatmapInfos we are comparing isn't sourced from a database.
                 // fall back to reference equality.
                 return ReferenceEquals(this, other);

@@ -16,7 +16,7 @@ namespace osu.Game.Beatmaps
     [Serializable]
     public class BeatmapMetadata : IEquatable<BeatmapMetadata>, IHasPrimaryKey
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         public string Title { get; set; }
         public string TitleUnicode { get; set; }

@@ -744,14 +744,14 @@ namespace osu.Game.Screens.Select
 
         private void delete(BeatmapSetInfo beatmap)
         {
-            if (beatmap == null || beatmap.ID <= 0) return;
+            if (beatmap?.ID == null) return;
 
             dialogOverlay?.Push(new BeatmapDeleteDialog(beatmap));
         }
 
         private void clearScores(BeatmapInfo beatmap)
         {
-            if (beatmap == null || beatmap.ID <= 0) return;
+            if (beatmap?.ID == null) return;
 
             dialogOverlay?.Push(new BeatmapClearScoresDialog(beatmap, () =>
                 // schedule done here rather than inside the dialog as the dialog may fade out and never callback.

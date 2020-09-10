@@ -19,7 +19,7 @@ namespace osu.Game.Scoring
 {
     public class ScoreInfo : IHasFiles<ScoreFileInfo>, IHasPrimaryKey, ISoftDelete, IEquatable<ScoreInfo>
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         [JsonProperty("rank")]
         [JsonConverter(typeof(StringEnumConverter))]

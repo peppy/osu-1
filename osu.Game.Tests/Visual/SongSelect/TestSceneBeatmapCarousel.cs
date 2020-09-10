@@ -28,7 +28,7 @@ namespace osu.Game.Tests.Visual.SongSelect
         private RulesetStore rulesets;
 
         private readonly Stack<BeatmapSetInfo> selectedSets = new Stack<BeatmapSetInfo>();
-        private readonly HashSet<int> eagerSelectedIDs = new HashSet<int>();
+        private readonly HashSet<string> eagerSelectedIDs = new HashSet<string>();
 
         private BeatmapInfo currentSelection => carousel.SelectedBeatmap;
 
@@ -413,10 +413,10 @@ namespace osu.Game.Tests.Visual.SongSelect
             loadBeatmaps(sets);
 
             AddStep("Sort by artist", () => carousel.Filter(new FilterCriteria { Sort = SortMode.Artist }, false));
-            AddAssert("Items remain in original order", () => carousel.BeatmapSets.Select((set, index) => set.ID == index).All(b => b));
+            AddAssert("Items remain in original order", () => carousel.BeatmapSets.Select((set, index) => set.ID == index.ToString()).All(b => b));
 
             AddStep("Sort by title", () => carousel.Filter(new FilterCriteria { Sort = SortMode.Title }, false));
-            AddAssert("Items remain in original order", () => carousel.BeatmapSets.Select((set, index) => set.ID == index).All(b => b));
+            AddAssert("Items remain in original order", () => carousel.BeatmapSets.Select((set, index) => set.ID == index.ToString()).All(b => b));
         }
 
         [Test]
@@ -824,7 +824,7 @@ namespace osu.Game.Tests.Visual.SongSelect
         {
             return new BeatmapSetInfo
             {
-                ID = id,
+                ID = id.ToString(),
                 OnlineBeatmapSetID = id,
                 Hash = new MemoryStream(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())).ComputeMD5Hash(),
                 Metadata = new BeatmapMetadata
@@ -877,7 +877,7 @@ namespace osu.Game.Tests.Visual.SongSelect
         {
             var toReturn = new BeatmapSetInfo
             {
-                ID = id,
+                ID = id.ToString(),
                 OnlineBeatmapSetID = id,
                 Hash = new MemoryStream(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())).ComputeMD5Hash(),
                 Metadata = new BeatmapMetadata

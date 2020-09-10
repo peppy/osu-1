@@ -9,6 +9,8 @@ namespace osu.Game.Skinning
 {
     public class DefaultLegacySkin : LegacySkin
     {
+        public const string LEGACY_SKIN_ID = "legacy";
+
         public DefaultLegacySkin(IResourceStore<byte[]> storage, AudioManager audioManager)
             : base(Info, storage, audioManager, string.Empty)
         {
@@ -25,7 +27,7 @@ namespace osu.Game.Skinning
 
         public static SkinInfo Info { get; } = new SkinInfo
         {
-            ID = -1, // this is temporary until database storage is decided upon.
+            ID = LEGACY_SKIN_ID, // this is temporary until database storage is decided upon.
             Name = "osu!classic",
             Creator = "team osu!"
         };

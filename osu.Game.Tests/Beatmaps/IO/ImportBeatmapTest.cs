@@ -375,6 +375,39 @@ namespace osu.Game.Tests.Beatmaps.IO
         }
 
         [Test]
+        public async Task TestImportThenImportDifferentHash()
+        {
+            //unfortunately for the time being we need to reference osu.Framework.Desktop for a game host here.
+            using (HeadlessGameHost host = new CleanRunHeadlessGameHost(nameof(TestImportThenImportDifferentHash)))
+            {
+                try
+                {
+                    var osu = loadOsu(host);
+                    var manager = osu.Dependencies.Get<BeatmapManager>();
+
+                    var imported = await LoadOszIntoOsu(osu);
+
+                    imported.Hash += "-changed";
+                    manager.Update(imported);
+
+                    var importedSecondTime = await LoadOszIntoOsu(osu);
+
+                    Assert.IsTrue(imported.ID != importedSecondTime.ID);
+
+                    // todo: fix
+                    //Assert.IsTrue(imported.Beatmaps.First().ID < importedSecondTime.Beatmaps.First().ID);
+
+                    // only one beatmap will exist as the online set ID matched, causing purging of the first import.
+                    checkBeatmapSetCount(osu, 1);
+                }
+                finally
+                {
+                    host.Exit();
+                }
+            }
+        }
+
+        [Test]
         public async Task TestImportThenDeleteThenImport()
         {
             // unfortunately for the time being we need to reference osu.Framework.Desktop for a game host here.

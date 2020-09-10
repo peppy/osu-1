@@ -9,7 +9,7 @@ namespace osu.Game.Skinning
 {
     public class SkinFileInfo : INamedFileInfo, IHasPrimaryKey
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
         public int SkinInfoID { get; set; }
 
