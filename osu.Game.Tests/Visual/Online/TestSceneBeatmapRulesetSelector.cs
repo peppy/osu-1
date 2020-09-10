@@ -10,6 +10,7 @@ using osu.Game.Overlays.BeatmapSet;
 using osu.Game.Rulesets;
 using System.Collections.Generic;
 using System.Linq;
+using osu.Framework.Extensions.IEnumerableExtensions;
 
 namespace osu.Game.Tests.Visual.Online
 {
@@ -35,10 +36,8 @@ namespace osu.Game.Tests.Visual.Online
 
             AddStep("load multiple rulesets beatmapset", () =>
             {
-                selector.BeatmapSet = new BeatmapSetInfo
-                {
-                    Beatmaps = enabledRulesets.Select(r => new BeatmapInfo { Ruleset = r }).ToList()
-                };
+                selector.BeatmapSet = new BeatmapSetInfo();
+                enabledRulesets.Select(r => new BeatmapInfo { Ruleset = r }).ForEach(selector.BeatmapSet.Beatmaps.Add);
             });
 
             var tabItems = selector.TabContainer.TabItems;
@@ -55,7 +54,7 @@ namespace osu.Game.Tests.Visual.Online
             {
                 selector.BeatmapSet = new BeatmapSetInfo
                 {
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
@@ -71,10 +70,7 @@ namespace osu.Game.Tests.Visual.Online
         [Test]
         public void TestEmptyBeatmapSet()
         {
-            AddStep("load empty beatmapset", () => selector.BeatmapSet = new BeatmapSetInfo
-            {
-                Beatmaps = new List<BeatmapInfo>()
-            });
+            AddStep("load empty beatmapset", () => selector.BeatmapSet = new BeatmapSetInfo());
 
             AddAssert("no ruleset selected", () => selector.SelectedTab == null);
             AddAssert("all rulesets disabled", () => selector.TabContainer.TabItems.All(t => !t.Enabled.Value));

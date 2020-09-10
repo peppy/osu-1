@@ -46,7 +46,7 @@ namespace osu.Game.Tests.Visual.Online
             static BeatmapSetInfo createSet() => new BeatmapSetInfo
             {
                 Metrics = new BeatmapSetMetrics { Ratings = Enumerable.Range(0, 11).Select(_ => RNG.Next(10)).ToArray() },
-                Beatmaps = new List<BeatmapInfo>
+                Beatmaps =
                 {
                     new BeatmapInfo
                     {

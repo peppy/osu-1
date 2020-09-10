@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 using osu.Framework.Extensions;
 using osu.Framework.IO.Stores;
 using osu.Game.Database;
@@ -35,7 +36,7 @@ namespace osu.Game.Skinning
         }
 
         private string getPathForFile(string filename) =>
-            source.Files.Find(f => string.Equals(f.Filename, filename, StringComparison.OrdinalIgnoreCase))?.FileInfo.StoragePath;
+            source.Files.FirstOrDefault(f => string.Equals(f.Filename, filename, StringComparison.OrdinalIgnoreCase))?.FileInfo.StoragePath;
 
         public override IEnumerable<string> GetAvailableResources() => source.Files.Select(f => f.Filename);
     }

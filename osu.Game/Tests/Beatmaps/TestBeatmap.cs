@@ -27,8 +27,7 @@ namespace osu.Game.Tests.Beatmaps
             BeatmapInfo.Ruleset = ruleset;
             BeatmapInfo.RulesetID = ruleset.ID ?? 0;
             BeatmapInfo.BeatmapSet.Metadata = BeatmapInfo.Metadata;
-            BeatmapInfo.BeatmapSet.Files = new List<BeatmapSetFileInfo>();
-            BeatmapInfo.BeatmapSet.Beatmaps = new List<BeatmapInfo> { BeatmapInfo };
+            BeatmapInfo.BeatmapSet.Beatmaps.Add(BeatmapInfo);
             BeatmapInfo.BeatmapSet.OnlineInfo = new BeatmapSetOnlineInfo
             {
                 Status = BeatmapSetOnlineStatus.Ranked,

@@ -45,7 +45,7 @@ namespace osu.Game.Tests.Visual.Online
                 HasStoryboard = true,
                 Covers = new BeatmapSetOnlineCovers(),
             },
-            Beatmaps = new List<BeatmapInfo>
+            Beatmaps =
             {
                 new BeatmapInfo
                 {
@@ -58,22 +58,7 @@ namespace osu.Game.Tests.Visual.Online
 
         private BeatmapSetInfo getManyDifficultiesBeatmapSet(RulesetStore rulesets)
         {
-            var beatmaps = new List<BeatmapInfo>();
-
-            for (int i = 0; i < 100; i++)
-            {
-                beatmaps.Add(new BeatmapInfo
-                {
-                    Ruleset = rulesets.GetRuleset(i % 4),
-                    StarDifficulty = 2 + i % 4 * 2,
-                    BaseDifficulty = new BeatmapDifficulty
-                    {
-                        OverallDifficulty = 3.5f,
-                    }
-                });
-            }
-
-            return new BeatmapSetInfo
+            var set = new BeatmapSetInfo
             {
                 OnlineBeatmapSetID = 1,
                 Metadata = new BeatmapMetadata
@@ -92,8 +77,22 @@ namespace osu.Game.Tests.Visual.Online
                     HasStoryboard = true,
                     Covers = new BeatmapSetOnlineCovers(),
                 },
-                Beatmaps = beatmaps,
             };
+
+            for (int i = 0; i < 100; i++)
+            {
+                set.Beatmaps.Add(new BeatmapInfo
+                {
+                    Ruleset = rulesets.GetRuleset(i % 4),
+                    StarDifficulty = 2 + i % 4 * 2,
+                    BaseDifficulty = new BeatmapDifficulty
+                    {
+                        OverallDifficulty = 3.5f,
+                    }
+                });
+            }
+
+            return set;
         }
 
         [BackgroundDependencyLoader]

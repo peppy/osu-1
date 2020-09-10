@@ -25,10 +25,10 @@ namespace osu.Game.Beatmaps
         public string ArtistUnicode { get; set; }
 
         [JsonIgnore]
-        public List<BeatmapInfo> Beatmaps { get; set; }
+        public IList<BeatmapInfo> Beatmaps { get; }
 
         [JsonIgnore]
-        public List<BeatmapSetInfo> BeatmapSets { get; set; }
+        public IList<BeatmapSetInfo> BeatmapSets { get; }
 
         /// <summary>
         /// Helper property to deserialize a username to <see cref="User"/>.

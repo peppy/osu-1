@@ -34,7 +34,13 @@ namespace osu.Game.Beatmaps
         [JsonIgnore]
         public int BeatmapSetInfoID { get; set; }
 
-        public BeatmapSetOnlineStatus Status { get; set; } = BeatmapSetOnlineStatus.None;
+        public int StatusInt { get; set; } = (int)BeatmapSetOnlineStatus.None;
+
+        public BeatmapSetOnlineStatus Status
+        {
+            get => (BeatmapSetOnlineStatus)StatusInt;
+            set => StatusInt = (int)value;
+        }
 
         // [System.ComponentModel.DataAnnotations.Required]
         public BeatmapSetInfo BeatmapSet { get; set; }
@@ -131,7 +137,7 @@ namespace osu.Game.Beatmaps
         /// <summary>
         /// Currently only populated for beatmap deletion. Use <see cref="ScoreManager"/> to query scores.
         /// </summary>
-        public List<ScoreInfo> Scores { get; set; }
+        public IList<ScoreInfo> Scores { get; }
 
         [JsonIgnore]
         public DifficultyRating DifficultyRating

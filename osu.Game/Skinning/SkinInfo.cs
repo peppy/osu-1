@@ -19,9 +19,9 @@ namespace osu.Game.Skinning
 
         public string Creator { get; set; }
 
-        public List<SkinFileInfo> Files { get; set; }
+        public IList<SkinFileInfo> Files { get; }
 
-        public List<DatabasedSetting> Settings { get; set; }
+        public IList<DatabasedSetting> Settings { get; }
 
         public bool DeletePending { get; set; }
 

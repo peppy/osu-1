@@ -74,7 +74,7 @@ namespace osu.Game.Tests.Visual.Online
                         Covers = new BeatmapSetOnlineCovers(),
                     },
                     Metrics = new BeatmapSetMetrics { Ratings = Enumerable.Range(0, 11).ToArray() },
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
@@ -152,7 +152,7 @@ namespace osu.Game.Tests.Visual.Online
                         Genre = new BeatmapSetOnlineGenre { Id = 4, Name = "Rock" },
                     },
                     Metrics = new BeatmapSetMetrics { Ratings = Enumerable.Range(0, 11).ToArray() },
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
@@ -192,25 +192,7 @@ namespace osu.Game.Tests.Visual.Online
         {
             AddStep("show multiple rulesets beatmap", () =>
             {
-                var beatmaps = new List<BeatmapInfo>();
-
-                foreach (var ruleset in rulesets.AvailableRulesets.Skip(1))
-                {
-                    beatmaps.Add(new BeatmapInfo
-                    {
-                        Version = ruleset.Name,
-                        Ruleset = ruleset,
-                        BaseDifficulty = new BeatmapDifficulty(),
-                        OnlineInfo = new BeatmapOnlineInfo(),
-                        Metrics = new BeatmapMetrics
-                        {
-                            Fails = Enumerable.Range(1, 100).Select(i => i % 12 - 6).ToArray(),
-                            Retries = Enumerable.Range(-2, 100).Select(i => i % 12 - 6).ToArray(),
-                        },
-                    });
-                }
-
-                overlay.ShowBeatmapSet(new BeatmapSetInfo
+                var set = new BeatmapSetInfo
                 {
                     Metadata = new BeatmapMetadata
                     {
@@ -227,8 +209,25 @@ namespace osu.Game.Tests.Visual.Online
                         Covers = new BeatmapSetOnlineCovers(),
                     },
                     Metrics = new BeatmapSetMetrics { Ratings = Enumerable.Range(0, 11).ToArray() },
-                    Beatmaps = beatmaps
-                });
+                };
+
+                foreach (var ruleset in rulesets.AvailableRulesets.Skip(1))
+                {
+                    set.Beatmaps.Add(new BeatmapInfo
+                    {
+                        Version = ruleset.Name,
+                        Ruleset = ruleset,
+                        BaseDifficulty = new BeatmapDifficulty(),
+                        OnlineInfo = new BeatmapOnlineInfo(),
+                        Metrics = new BeatmapMetrics
+                        {
+                            Fails = Enumerable.Range(1, 100).Select(i => i % 12 - 6).ToArray(),
+                            Retries = Enumerable.Range(-2, 100).Select(i => i % 12 - 6).ToArray(),
+                        },
+                    });
+                }
+
+                overlay.ShowBeatmapSet(set);
             });
 
             AddAssert("shown beatmaps of current ruleset", () => overlay.Header.Picker.Difficulties.All(b => b.Beatmap.Ruleset.Equals(overlay.Header.RulesetSelector.Current.Value)));
@@ -249,30 +248,7 @@ namespace osu.Game.Tests.Visual.Online
 
         private BeatmapSetInfo createManyDifficultiesBeatmapSet()
         {
-            var beatmaps = new List<BeatmapInfo>();
-
-            for (int i = 1; i < 41; i++)
-            {
-                beatmaps.Add(new BeatmapInfo
-                {
-                    OnlineBeatmapID = i * 10,
-                    Version = $"Test #{i}",
-                    Ruleset = Ruleset.Value,
-                    StarDifficulty = 2 + i * 0.1,
-                    BaseDifficulty = new BeatmapDifficulty
-                    {
-                        OverallDifficulty = 3.5f,
-                    },
-                    OnlineInfo = new BeatmapOnlineInfo(),
-                    Metrics = new BeatmapMetrics
-                    {
-                        Fails = Enumerable.Range(1, 100).Select(j => j % 12 - 6).ToArray(),
-                        Retries = Enumerable.Range(-2, 100).Select(j => j % 12 - 6).ToArray(),
-                    },
-                });
-            }
-
-            return new BeatmapSetInfo
+            var set = new BeatmapSetInfo
             {
                 OnlineBeatmapSetID = 123,
                 Metadata = new BeatmapMetadata
@@ -293,8 +269,30 @@ namespace osu.Game.Tests.Visual.Online
                     Covers = new BeatmapSetOnlineCovers(),
                 },
                 Metrics = new BeatmapSetMetrics { Ratings = Enumerable.Range(0, 11).ToArray() },
-                Beatmaps = beatmaps,
             };
+
+            for (int i = 1; i < 41; i++)
+            {
+                set.Beatmaps.Add(new BeatmapInfo
+                {
+                    OnlineBeatmapID = i * 10,
+                    Version = $"Test #{i}",
+                    Ruleset = Ruleset.Value,
+                    StarDifficulty = 2 + i * 0.1,
+                    BaseDifficulty = new BeatmapDifficulty
+                    {
+                        OverallDifficulty = 3.5f,
+                    },
+                    OnlineInfo = new BeatmapOnlineInfo(),
+                    Metrics = new BeatmapMetrics
+                    {
+                        Fails = Enumerable.Range(1, 100).Select(j => j % 12 - 6).ToArray(),
+                        Retries = Enumerable.Range(-2, 100).Select(j => j % 12 - 6).ToArray(),
+                    },
+                });
+            }
+
+            return set;
         }
 
         private void downloadAssert(bool shown)

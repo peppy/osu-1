@@ -25,11 +25,17 @@ namespace osu.Game.Beatmaps
 
         public DateTimeOffset DateAdded { get; set; }
 
-        public BeatmapSetOnlineStatus Status { get; set; } = BeatmapSetOnlineStatus.None;
+        public int StatusInt { get; set; } = (int)BeatmapSetOnlineStatus.None;
+
+        public BeatmapSetOnlineStatus Status
+        {
+            get => (BeatmapSetOnlineStatus)StatusInt;
+            set => StatusInt = (int)value;
+        }
 
         public BeatmapMetadata Metadata { get; set; }
 
-        public List<BeatmapInfo> Beatmaps { get; set; }
+        public IList<BeatmapInfo> Beatmaps { get; }
 
         [Ignored]
         public BeatmapSetOnlineInfo OnlineInfo { get; set; }
@@ -57,9 +63,9 @@ namespace osu.Game.Beatmaps
 
         public string Hash { get; set; }
 
-        public string StoryboardFile => Files?.Find(f => f.Filename.EndsWith(".osb"))?.Filename;
+        public string StoryboardFile => Files?.FirstOrDefault(f => f.Filename.EndsWith(".osb"))?.Filename;
 
-        public List<BeatmapSetFileInfo> Files { get; set; }
+        public IList<BeatmapSetFileInfo> Files { get; }
 
         public override string ToString() => Metadata?.ToString() ?? base.ToString();
 

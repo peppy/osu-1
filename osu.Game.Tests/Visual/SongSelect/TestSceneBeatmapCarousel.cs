@@ -9,6 +9,7 @@ using System.Text;
 using NUnit.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions;
+using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Beatmaps;
@@ -834,7 +835,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                     Title = $"test set #{id}!",
                     AuthorString = string.Concat(Enumerable.Repeat((char)('z' - Math.Min(25, id - 1)), 5))
                 },
-                Beatmaps = new List<BeatmapInfo>(new[]
+                Beatmaps =
                 {
                     new BeatmapInfo
                     {
@@ -869,7 +870,7 @@ namespace osu.Game.Tests.Visual.SongSelect
                             OverallDifficulty = 7,
                         }
                     },
-                }),
+                },
             };
         }
 
@@ -887,7 +888,6 @@ namespace osu.Game.Tests.Visual.SongSelect
                     Title = $"test set #{id}!",
                     AuthorString = string.Concat(Enumerable.Repeat((char)('z' - Math.Min(25, id - 1)), 5))
                 },
-                Beatmaps = new List<BeatmapInfo>(),
             };
 
             for (int b = 1; b < 101; b++)

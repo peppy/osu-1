@@ -22,9 +22,15 @@ namespace osu.Game.Scoring
     {
         public string ID { get; set; }
 
+        public int RankInt { get; set; }
+
         [JsonProperty("rank")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public ScoreRank Rank { get; set; }
+        public ScoreRank Rank
+        {
+            get => (ScoreRank)RankInt;
+            set => RankInt = (int)value;
+        }
 
         [JsonProperty("total_score")]
         public long TotalScore { get; set; }
@@ -172,7 +178,7 @@ namespace osu.Game.Scoring
         public List<HitEvent> HitEvents { get; set; }
 
         [JsonIgnore]
-        public List<ScoreFileInfo> Files { get; set; }
+        public IList<ScoreFileInfo> Files { get; }
 
         [JsonIgnore]
         public string Hash { get; set; }

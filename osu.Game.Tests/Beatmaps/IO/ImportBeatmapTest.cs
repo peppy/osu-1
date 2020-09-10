@@ -490,7 +490,7 @@ namespace osu.Game.Tests.Beatmaps.IO
                     {
                         OnlineBeatmapSetID = 1,
                         Metadata = metadata,
-                        Beatmaps = new List<BeatmapInfo>
+                        Beatmaps =
                         {
                             new BeatmapInfo
                             {

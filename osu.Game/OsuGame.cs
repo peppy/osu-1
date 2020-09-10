@@ -329,7 +329,7 @@ namespace osu.Game
         /// If omitted, this will try to present the first beatmap from the current ruleset.
         /// In case of failure the first difficulty of the set will be presented, ignoring the predicate.
         /// </param>
-        public void PresentBeatmap(BeatmapSetInfo beatmap, Predicate<BeatmapInfo> difficultyCriteria = null)
+        public void PresentBeatmap(BeatmapSetInfo beatmap, Func<BeatmapInfo, bool> difficultyCriteria = null)
         {
             difficultyCriteria ??= b => b.Ruleset.Equals(Ruleset.Value);
 
@@ -356,7 +356,7 @@ namespace osu.Game
                 }
 
                 // Find first beatmap that matches our predicate.
-                var first = databasedSet.Beatmaps.Find(difficultyCriteria) ?? databasedSet.Beatmaps.First();
+                var first = databasedSet.Beatmaps.FirstOrDefault(difficultyCriteria) ?? databasedSet.Beatmaps.First();
 
                 Ruleset.Value = first.Ruleset;
                 Beatmap.Value = BeatmapManager.GetWorkingBeatmap(first);
