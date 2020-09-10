@@ -115,8 +115,9 @@ namespace osu.Game.Rulesets
 
                         r.Available = true;
                     }
-                    catch
+                    catch (Exception exception)
                     {
+                        Console.WriteLine(exception.ToString());
                         r.Available = false;
                     }
                 }

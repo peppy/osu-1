@@ -19,12 +19,12 @@ namespace osu.Game.Rulesets
 
         public string ShortName { get; set; }
 
-        private string instantiationInfo;
+        public string RawInstantiationInfo { get; set; }
 
         public string InstantiationInfo
         {
-            get => instantiationInfo;
-            set => instantiationInfo = abbreviateInstantiationInfo(value);
+            get => RawInstantiationInfo;
+            set => RawInstantiationInfo = abbreviateInstantiationInfo(value);
         }
 
         private string abbreviateInstantiationInfo(string value)

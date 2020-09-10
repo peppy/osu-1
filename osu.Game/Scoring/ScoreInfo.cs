@@ -172,6 +172,7 @@ namespace osu.Game.Scoring
 
         [NotMapped]
         [JsonIgnore]
+        [Ignored]
         public List<HitEvent> HitEvents { get; set; }
 
         [JsonIgnore]
