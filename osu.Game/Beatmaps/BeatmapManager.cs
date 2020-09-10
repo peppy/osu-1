@@ -8,7 +8,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
@@ -99,7 +98,6 @@ namespace osu.Game.Beatmaps
 
         protected override bool ShouldDeleteArchive(string path) => Path.GetExtension(path)?.ToLowerInvariant() == ".osz";
 
-<<<<<<< HEAD
         public WorkingBeatmap CreateNew(RulesetInfo ruleset, User user)
         {
             var metadata = new BeatmapMetadata
@@ -112,7 +110,7 @@ namespace osu.Game.Beatmaps
             var set = new BeatmapSetInfo
             {
                 Metadata = metadata,
-                Beatmaps = new List<BeatmapInfo>
+                Beatmaps =
                 {
                     new BeatmapInfo
                     {
@@ -146,11 +144,8 @@ namespace osu.Game.Beatmaps
 
             bool hadOnlineBeatmapIDs = beatmapSet.Beatmaps.Any(b => b.OnlineBeatmapID > 0);
 
-            if (onlineLookupQueue != null)
-            {
-                // todo: fix
-                onlineLookupQueue.UpdateAsync(beatmapSet, cancellationToken).Wait();
-            }
+            // todo: fix
+            onlineLookupQueue?.UpdateAsync(beatmapSet, cancellationToken).Wait(cancellationToken);
 
             // ensure at least one beatmap was able to retrieve or keep an online ID, else drop the set ID.
             if (hadOnlineBeatmapIDs && !beatmapSet.Beatmaps.Any(b => b.OnlineBeatmapID > 0))

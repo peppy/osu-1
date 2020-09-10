@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using osu.Framework.Screens;
@@ -96,7 +95,7 @@ namespace osu.Game.Tests.Visual.Navigation
                     Hash = Guid.NewGuid().ToString(),
                     OnlineBeatmapSetID = i,
                     Metadata = metadata,
-                    Beatmaps = new List<BeatmapInfo>
+                    Beatmaps =
                     {
                         new BeatmapInfo
                         {
@@ -132,7 +131,7 @@ namespace osu.Game.Tests.Visual.Navigation
 
         private void presentSecondDifficultyAndConfirm(Func<BeatmapSetInfo> getImport, int importedID)
         {
-            Predicate<BeatmapInfo> pred = b => b.OnlineBeatmapID == importedID * 2048;
+            Func<BeatmapInfo, bool> pred = b => b.OnlineBeatmapID == importedID * 2048;
             AddStep("present difficulty", () => Game.PresentBeatmap(getImport(), pred));
 
             AddUntilStep("wait for song select", () => Game.ScreenStack.CurrentScreen is Screens.Select.SongSelect);

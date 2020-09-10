@@ -1,11 +1,11 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
 using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Platform;
 using osu.Framework.Testing;
-using osu.Framework.Utils;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets;
 using osu.Game.Tests.Visual;
@@ -144,7 +144,7 @@ namespace osu.Game.Tournament.Tests
         };
 
         public static BeatmapInfo CreateSampleBeatmapInfo() =>
-            new BeatmapInfo { Metadata = new BeatmapMetadata { Title = "Test Title", Artist = "Test Artist", ID = RNG.Next(0, 1000000) } };
+            new BeatmapInfo { Metadata = new BeatmapMetadata { Title = "Test Title", Artist = "Test Artist", ID = Guid.NewGuid().ToString() } };
 
         protected override ITestSceneTestRunner CreateRunner() => new TournamentTestSceneTestRunner();
 

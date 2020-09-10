@@ -9,7 +9,6 @@ using osu.Game.Overlays.BeatmapSet;
 using osu.Game.Rulesets;
 using osu.Game.Users;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace osu.Game.Tests.Visual.Online

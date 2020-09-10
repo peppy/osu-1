@@ -230,7 +230,7 @@ namespace osu.Game.Beatmaps
             rulesetInfo ??= beatmapInfo.Ruleset;
 
             // Difficulty can only be computed if the beatmap and ruleset are locally available.
-            if (beatmapInfo.ID == 0 || rulesetInfo.ID == null)
+            if (string.IsNullOrEmpty(beatmapInfo.ID) || rulesetInfo.ID == null)
             {
                 // If not, fall back to the existing star difficulty (e.g. from an online source).
                 existingDifficulty = new StarDifficulty(beatmapInfo.StarDifficulty);
@@ -253,11 +253,11 @@ namespace osu.Game.Beatmaps
 
         public readonly struct DifficultyCacheLookup : IEquatable<DifficultyCacheLookup>
         {
-            public readonly int BeatmapId;
+            public readonly string BeatmapId;
             public readonly int RulesetId;
             public readonly Mod[] Mods;
 
-            public DifficultyCacheLookup(int beatmapId, int rulesetId, IEnumerable<Mod> mods)
+            public DifficultyCacheLookup(string beatmapId, int rulesetId, IEnumerable<Mod> mods)
             {
                 BeatmapId = beatmapId;
                 RulesetId = rulesetId;

@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
 using osu.Framework.Extensions;
 using osu.Framework.IO.Stores;
 using osu.Game.Database;

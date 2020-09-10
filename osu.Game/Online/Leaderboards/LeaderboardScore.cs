@@ -388,7 +388,7 @@ namespace osu.Game.Online.Leaderboards
                 if (score.Mods.Length > 0 && modsContainer.Any(s => s.IsHovered) && songSelect != null)
                     items.Add(new OsuMenuItem("Use these mods", MenuItemType.Highlighted, () => songSelect.Mods.Value = score.Mods));
 
-                if (string.IsNullOrEmpty(score.ID != 0))
+                if (!string.IsNullOrEmpty(score.ID))
                     items.Add(new OsuMenuItem("Delete", MenuItemType.Destructive, () => dialogOverlay?.Push(new LocalScoreDeleteDialog(score))));
 
                 return items.ToArray();

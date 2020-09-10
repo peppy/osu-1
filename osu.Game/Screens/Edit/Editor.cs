@@ -252,7 +252,8 @@ namespace osu.Game.Screens.Edit
         protected void Save()
         {
             // apply any set-level metadata changes.
-            beatmapManager.Update(playableBeatmap.BeatmapInfo.BeatmapSet);
+            // TODO: fix
+            // beatmapManager.Update(playableBeatmap.BeatmapInfo.BeatmapSet);
 
             // save the loaded beatmap's data stream.
             beatmapManager.Save(playableBeatmap.BeatmapInfo, editorBeatmap, editorBeatmap.BeatmapSkin);

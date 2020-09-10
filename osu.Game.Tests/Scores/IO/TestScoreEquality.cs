@@ -29,8 +29,8 @@ namespace osu.Game.Tests.Scores.IO
         [Test]
         public void TestNonMatchingByPrimaryKey()
         {
-            ScoreInfo score1 = new ScoreInfo { ID = 1 };
-            ScoreInfo score2 = new ScoreInfo { ID = 2 };
+            ScoreInfo score1 = new ScoreInfo { ID = "1" };
+            ScoreInfo score2 = new ScoreInfo { ID = "2" };
 
             Assert.That(score1, Is.Not.EqualTo(score2));
         }
@@ -38,8 +38,8 @@ namespace osu.Game.Tests.Scores.IO
         [Test]
         public void TestMatchingByPrimaryKey()
         {
-            ScoreInfo score1 = new ScoreInfo { ID = 1 };
-            ScoreInfo score2 = new ScoreInfo { ID = 1 };
+            ScoreInfo score1 = new ScoreInfo { ID = "1" };
+            ScoreInfo score2 = new ScoreInfo { ID = "1" };
 
             Assert.That(score1, Is.EqualTo(score2));
         }

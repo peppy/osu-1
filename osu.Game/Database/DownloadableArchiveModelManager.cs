@@ -131,7 +131,7 @@ namespace osu.Game.Database
         /// <param name="items">The usable items present in the store.</param>
         /// <returns>Whether the <typeparamref name="TModel"/> exists.</returns>
         protected virtual bool CheckLocalAvailability(TModel model, IQueryable<TModel> items)
-            => model.ID > 0 && items.Any(i => i.ID == model.ID && i.Files.Any());
+            => !string.IsNullOrEmpty(model.ID) && items.Any(i => i.ID == model.ID && i.Files.Any());
 
         public ArchiveDownloadRequest<TModel> GetExistingDownload(TModel model) => currentDownloads.Find(r => r.Model.Equals(model));
 

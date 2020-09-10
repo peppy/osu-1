@@ -56,10 +56,10 @@ namespace osu.Game.Tests.Visual.UserInterface
                         Scope = BeatmapLeaderboardScope.Local,
                         Beatmap = new BeatmapInfo
                         {
-                            ID = 1,
+                            ID = "1",
                             Metadata = new BeatmapMetadata
                             {
-                                ID = 1,
+                                ID = "1",
                                 Title = "TestSong",
                                 Artist = "TestArtist",
                                 Author = new User
@@ -91,7 +91,6 @@ namespace osu.Game.Tests.Visual.UserInterface
                 {
                     OnlineScoreID = i,
                     Beatmap = beatmap,
-                    BeatmapInfoID = beatmap.ID,
                     Accuracy = RNG.NextDouble(),
                     TotalScore = RNG.Next(1, 1000000),
                     MaxCombo = RNG.Next(1, 1000),

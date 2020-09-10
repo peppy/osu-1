@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using osu.Framework.Logging;
 using osu.Framework.Platform;
 using Realms;
 
@@ -43,7 +41,7 @@ namespace osu.Game.Database
             var localThreadItems = ContextFactory.Get().All<T>().AsRealmCollection();
 
             foreach (var i in changes.InsertedIndices)
-                ItemAdded?.Invoke(localThreadItems[i]);
+                ItemUpdated?.Invoke(localThreadItems[i]);
 
             foreach (var i in changes.DeletedIndices)
                 ItemRemoved?.Invoke(localThreadItems[i]);

@@ -683,7 +683,7 @@ namespace osu.Game.Tests.Visual.SongSelect
 
             AddAssert("Check ruleset is osu!", () => Ruleset.Value.ID == 0);
 
-            int previousSetID = 0;
+            string previousSetID = null;
 
             AddStep("record set ID", () => previousSetID = Beatmap.Value.BeatmapSetInfo.ID);
 
@@ -817,7 +817,7 @@ namespace osu.Game.Tests.Visual.SongSelect
             AddUntilStep("wait for difficulty panels visible", () => songSelect.Carousel.ChildrenOfType<DrawableCarouselBeatmap>().Any());
         }
 
-        private int getBeatmapIndex(BeatmapSetInfo set, BeatmapInfo info) => set.Beatmaps.FindIndex(b => b == info);
+        private int getBeatmapIndex(BeatmapSetInfo set, BeatmapInfo info) => set.Beatmaps.IndexOf(info);
 
         private int getCurrentBeatmapIndex() => getBeatmapIndex(songSelect.Carousel.SelectedBeatmapSet, songSelect.Carousel.SelectedBeatmap);
 

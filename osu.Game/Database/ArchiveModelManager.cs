@@ -417,18 +417,19 @@ namespace osu.Game.Database
                     Files.Dereference(file.FileInfo);
 
                     // Remove the file model.
-                    usage.Context.Set<TFileModel>().Remove(file);
+                    usage.Context.Remove(file);
                 }
 
-                // Add the new file info and containing file model.
-                model.Files.Remove(file);
-                model.Files.Add(new TFileModel
+                Update(model, m =>
                 {
-                    Filename = file.Filename,
-                    FileInfo = Files.Add(contents)
+                    // Add the new file info and containing file model.
+                    model.Files.Remove(file);
+                    model.Files.Add(new TFileModel
+                    {
+                        Filename = file.Filename,
+                        FileInfo = Files.Add(contents)
+                    });
                 });
-
-                Update(model);
             }
         }
 
@@ -682,13 +683,13 @@ namespace osu.Game.Database
             getIDs(existing.Files).SequenceEqual(getIDs(import.Files)) &&
             getFilenames(existing.Files).SequenceEqual(getFilenames(import.Files));
 
-        private IEnumerable<long> getIDs(List<TFileModel> files)
+        private IEnumerable<string> getIDs(IList<TFileModel> files)
         {
             foreach (var f in files.OrderBy(f => f.Filename))
                 yield return f.FileInfo.ID;
         }
 
-        private IEnumerable<string> getFilenames(List<TFileModel> files)
+        private IEnumerable<string> getFilenames(IList<TFileModel> files)
         {
             foreach (var f in files.OrderBy(f => f.Filename))
                 yield return f.Filename;

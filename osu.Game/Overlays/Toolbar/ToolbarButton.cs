@@ -171,8 +171,8 @@ namespace osu.Game.Overlays.Toolbar
             if (tooltipKeyBinding.IsValid)
                 return;
 
-            var binding = keyBindings.Query().Find(b => (GlobalAction)b.Action == Hotkey);
-            var keyBindingString = binding?.KeyCombination.ReadableString();
+            var binding = keyBindings.Query().Find(b => ((GlobalAction)b.KeyBinding.Action) == Hotkey);
+            var keyBindingString = binding?.KeyBinding.KeyCombination.ReadableString();
             keyBindingTooltip.Text = !string.IsNullOrEmpty(keyBindingString) ? $" ({keyBindingString})" : string.Empty;
 
             tooltipKeyBinding.Validate();

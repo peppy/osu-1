@@ -71,7 +71,6 @@ namespace osu.Game.Online.Multiplayer
                 TotalScore = TotalScore,
                 MaxCombo = MaxCombo,
                 Beatmap = playlistItem.Beatmap.Value,
-                BeatmapInfoID = playlistItem.BeatmapID,
                 Ruleset = playlistItem.Ruleset.Value,
                 RulesetID = playlistItem.RulesetID,
                 Statistics = Statistics,

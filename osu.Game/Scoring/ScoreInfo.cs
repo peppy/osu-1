@@ -140,9 +140,6 @@ namespace osu.Game.Scoring
         }
 
         [JsonIgnore]
-        public int BeatmapInfoID { get; set; }
-
-        [JsonIgnore]
         public virtual BeatmapInfo Beatmap { get; set; }
 
         [JsonIgnore]
@@ -208,7 +205,7 @@ namespace osu.Game.Scoring
             if (other == null)
                 return false;
 
-            if (ID != 0 && other.ID != 0)
+            if (!string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(other.ID))
                 return ID == other.ID;
 
             if (OnlineScoreID.HasValue && other.OnlineScoreID.HasValue)

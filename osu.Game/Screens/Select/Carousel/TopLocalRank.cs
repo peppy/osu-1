@@ -55,7 +55,7 @@ namespace osu.Game.Screens.Select.Carousel
         {
             if (weakScore.NewValue.TryGetTarget(out var score))
             {
-                if (score.BeatmapInfoID == beatmap.ID)
+                if (score.Beatmap.ID == beatmap.ID)
                     fetchAndLoadTopScore();
             }
         }
@@ -82,7 +82,7 @@ namespace osu.Game.Screens.Select.Carousel
             if (scores == null || beatmap == null || ruleset?.Value == null || api?.LocalUser.Value == null)
                 return null;
 
-            return scores.QueryScores(s => s.UserID == api.LocalUser.Value.Id && s.BeatmapInfoID == beatmap.ID && s.RulesetID == ruleset.Value.ID && !s.DeletePending)
+            return scores.QueryScores(s => s.UserID == api.LocalUser.Value.Id && s.Beatmap.ID == beatmap.ID && s.RulesetID == ruleset.Value.ID && !s.DeletePending)
                          .OrderByDescending(s => s.TotalScore)
                          .FirstOrDefault();
         }

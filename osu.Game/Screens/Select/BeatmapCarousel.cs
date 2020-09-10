@@ -157,9 +157,6 @@ namespace osu.Game.Screens.Select
             };
         }
 
-        [Resolved]
-        private BeatmapManager beatmaps { get; set; }
-
         [BackgroundDependencyLoader(permitNulls: true)]
         private void load(OsuConfigManager config)
         {
@@ -665,13 +662,13 @@ namespace osu.Game.Screens.Select
         private void beatmapRestored(ValueChangedEvent<WeakReference<BeatmapInfo>> weakItem)
         {
             if (weakItem.NewValue.TryGetTarget(out var b))
-                UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSetInfoID));
+                UpdateBeatmapSet(b.BeatmapSet);
         }
 
         private void beatmapHidden(ValueChangedEvent<WeakReference<BeatmapInfo>> weakItem)
         {
             if (weakItem.NewValue.TryGetTarget(out var b))
-                UpdateBeatmapSet(beatmaps.QueryBeatmapSet(s => s.ID == b.BeatmapSetInfoID));
+                UpdateBeatmapSet(b.BeatmapSet);
         }
 
         private CarouselBeatmapSet createCarouselSet(BeatmapSetInfo beatmapSet)

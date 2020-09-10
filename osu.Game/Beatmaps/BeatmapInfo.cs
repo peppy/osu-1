@@ -2,7 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
 using osu.Framework.Testing;
@@ -137,7 +137,7 @@ namespace osu.Game.Beatmaps
         /// <summary>
         /// Currently only populated for beatmap deletion. Use <see cref="ScoreManager"/> to query scores.
         /// </summary>
-        public IList<ScoreInfo> Scores { get; }
+        // public IList<ScoreInfo> Scores { get; }
 
         [JsonIgnore]
         public DifficultyRating DifficultyRating

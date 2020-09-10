@@ -162,7 +162,7 @@ namespace osu.Game.Database
             foreach (var context in threadContexts.Values)
                 context.Dispose();
 
-            recycleThreadContexts();
+            recreateThreadContexts();
         }
     }
 

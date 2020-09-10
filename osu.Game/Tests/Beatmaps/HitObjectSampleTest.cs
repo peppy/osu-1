@@ -79,23 +79,18 @@ namespace osu.Game.Tests.Beatmaps
         {
             AddStep("setup skins", () =>
             {
-                userSkinInfo.Files = new List<SkinFileInfo>
-                {
+                userSkinInfo.Files.Add(
                     new SkinFileInfo
                     {
                         Filename = userFile,
                         FileInfo = new IO.FileInfo { Hash = userFile }
-                    }
-                };
+                    });
 
-                beatmapInfo.BeatmapSet.Files = new List<BeatmapSetFileInfo>
+                beatmapInfo.BeatmapSet.Files.Add(new BeatmapSetFileInfo
                 {
-                    new BeatmapSetFileInfo
-                    {
-                        Filename = beatmapFile,
-                        FileInfo = new IO.FileInfo { Hash = beatmapFile }
-                    }
-                };
+                    Filename = beatmapFile,
+                    FileInfo = new IO.FileInfo { Hash = beatmapFile }
+                });
 
                 // Need to refresh the cached skin source to refresh the skin resource store.
                 dependencies.SkinSource = new SkinProvidingContainer(Skin = new LegacySkin(userSkinInfo, userSkinResourceStore, Audio));

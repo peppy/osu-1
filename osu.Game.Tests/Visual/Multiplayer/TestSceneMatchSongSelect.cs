@@ -65,7 +65,7 @@ namespace osu.Game.Tests.Visual.Multiplayer
                 });
             }
 
-            manager.Import(new BeatmapSetInfo
+            var beatmapSetInfo = new BeatmapSetInfo
             {
                 OnlineBeatmapSetID = 10,
                 Hash = new MemoryStream(Encoding.UTF8.GetBytes(Guid.NewGuid().ToString())).ComputeMD5Hash(),
@@ -76,9 +76,13 @@ namespace osu.Game.Tests.Visual.Multiplayer
                     Title = $"Some Song (set id 10), max bpm {beatmaps.Max(b => b.BPM):0.#})",
                     AuthorString = "Some Guy " + RNG.Next(0, 9),
                 },
-                Beatmaps = beatmaps,
                 DateAdded = DateTimeOffset.UtcNow,
-            }).Wait();
+            };
+
+            foreach (var b in beatmaps)
+                beatmapSetInfo.Beatmaps.Add(b);
+
+            manager.Import(beatmapSetInfo).Wait();
         }
 
         public override void SetUpSteps()

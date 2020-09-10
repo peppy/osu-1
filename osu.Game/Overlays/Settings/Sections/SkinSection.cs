@@ -133,7 +133,7 @@ namespace osu.Game.Overlays.Settings.Sections
                 Action = export;
 
                 currentSkin = skins.CurrentSkin.GetBoundCopy();
-                currentSkin.BindValueChanged(skin => Enabled.Value = skin.NewValue.SkinInfo.ID > 0, true);
+                currentSkin.BindValueChanged(skin => Enabled.Value = !string.IsNullOrEmpty(skin.NewValue.SkinInfo.ID), true);
             }
 
             private void export()
