@@ -6,6 +6,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Game.Beatmaps;
+using osu.Game.Skinning;
 
 namespace osu.Game.Screens.Edit
 {
@@ -21,15 +22,19 @@ namespace osu.Game.Screens.Edit
         protected EditorBeatmap EditorBeatmap { get; private set; }
 
         protected override Container<Drawable> Content => content;
-        private readonly Container content;
+        private Container content;
 
         protected EditorScreen()
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             RelativeSizeAxes = Axes.Both;
+        }
 
-            InternalChild = content = new Container { RelativeSizeAxes = Axes.Both };
+        [BackgroundDependencyLoader]
+        private void load(ISkinSource skin)
+        {
+            InternalChild = content = new SkinProvidingContainer(skin) { RelativeSizeAxes = Axes.Both };
         }
 
         protected override void LoadComplete()
