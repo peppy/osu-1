@@ -57,6 +57,8 @@ namespace osu.Game.Graphics.Backgrounds
             }
         }
 
+        private Random rng;
+
         /// <summary>
         /// Whether we want to expire triangles as they exit our draw area completely.
         /// </summary>
@@ -91,8 +93,11 @@ namespace osu.Game.Graphics.Backgrounds
         private IShader shader;
         private readonly Texture texture;
 
-        public Triangles()
+        public Triangles(int? seed = null)
         {
+            if (seed != null)
+                rng = new Random(seed.Value);
+
             texture = Texture.WhitePixel;
         }
 
@@ -175,12 +180,14 @@ namespace osu.Game.Graphics.Backgrounds
         {
             TriangleParticle particle = CreateTriangle();
 
-            particle.Position = new Vector2(RNG.NextSingle(), randomY ? RNG.NextSingle() : 1);
-            particle.ColourShade = RNG.NextSingle();
+            particle.Position = new Vector2(nextRandom(), randomY ? nextRandom() : 1);
+            particle.ColourShade = nextRandom();
             particle.Colour = CreateTriangleShade(particle.ColourShade);
 
             return particle;
         }
+
+        private float nextRandom() => (float)(rng?.NextDouble() ?? RNG.NextSingle());
 
         /// <summary>
         /// Creates a triangle particle with a random scale.
@@ -191,8 +198,8 @@ namespace osu.Game.Graphics.Backgrounds
             const float std_dev = 0.16f;
             const float mean = 0.5f;
 
-            float u1 = 1 - RNG.NextSingle(); //uniform(0,1] random floats
-            float u2 = 1 - RNG.NextSingle();
+            float u1 = 1 - nextRandom(); //uniform(0,1] random floats
+            float u2 = 1 - nextRandom();
             float randStdNormal = (float)(Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2)); // random normal(0,1)
             var scale = Math.Max(triangleScale * (mean + std_dev * randStdNormal), 0.1f); // random normal(mean,stdDev^2)
 
