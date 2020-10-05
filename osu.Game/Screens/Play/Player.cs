@@ -89,6 +89,8 @@ namespace osu.Game.Screens.Play
 
         private BreakTracker breakTracker;
 
+        public override bool DisallowExternalBeatmapRulesetChanges => true;
+
         private SkipOverlay skipOverlay;
 
         protected ScoreProcessor ScoreProcessor { get; private set; }
