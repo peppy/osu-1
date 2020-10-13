@@ -11,9 +11,11 @@ using osu.Framework.Allocation;
 using osu.Framework.Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Testing;
 using osu.Framework.Utils;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
+using osu.Game.Graphics.Containers;
 using osu.Game.Rulesets;
 using osu.Game.Screens.Select;
 using osu.Game.Screens.Select.Carousel;
@@ -45,12 +47,30 @@ namespace osu.Game.Tests.Visual.SongSelect
         public void TestManyPanels()
         {
             loadBeatmaps(count: 5000, randomDifficulties: true);
+
+            setSelected(1, 1);
+            AddWaitStep("wait some", 10);
+
+            setSelected(5000, 1);
+            AddWaitStep("wait some", 10);
+
+            AddRepeatStep("scroll much", () => carousel.ScrollContainer.ScrollTo(carousel.ScrollContainer.Current - 1000), 100);
+
+            AddWaitStep("wait some", 10);
+
+            AddStep("collect", GC.Collect);
+
+            AddWaitStep("wait some", 10);
+
+            for (int i = 1; i < 50; i++)
+                setSelected(i, 1);
+
+            AddWaitStep("wait some", 10);
         }
 
         [Test]
         public void TestKeyRepeat()
         {
-            loadBeatmaps();
             advanceSelection(false);
 
             AddStep("press down arrow", () => InputManager.PressKey(Key.Down));
@@ -912,6 +932,8 @@ namespace osu.Game.Tests.Visual.SongSelect
         private class TestBeatmapCarousel : BeatmapCarousel
         {
             public bool PendingFilterTask => PendingFilter != null;
+
+            public OsuScrollContainer ScrollContainer => this.ChildrenOfType<OsuScrollContainer>().FirstOrDefault();
 
             public IEnumerable<DrawableCarouselItem> Items
             {
