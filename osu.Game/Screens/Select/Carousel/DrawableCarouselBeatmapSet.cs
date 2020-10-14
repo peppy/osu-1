@@ -9,6 +9,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
+using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.UserInterface;
 using osu.Game.Beatmaps;
 using osu.Game.Collections;
@@ -19,6 +20,16 @@ namespace osu.Game.Screens.Select.Carousel
 {
     public class DrawableCarouselBeatmapSet : DrawableCarouselItem, IHasContextMenu
     {
+        protected override bool ComputeIsMaskedAway(RectangleF maskingBounds)
+        {
+            return false;
+        }
+
+        public override bool UpdateSubTreeMasking(Drawable source, RectangleF maskingBounds)
+        {
+            return true;
+        }
+
         public const float HEIGHT = MAX_HEIGHT;
 
         private Action<BeatmapSetInfo> restoreHiddenRequested;
@@ -77,15 +88,25 @@ namespace osu.Game.Screens.Select.Carousel
 
             Header.Children = new Drawable[]
             {
-                background = new DelayedLoadWrapper(new SetPanelBackground(manager.GetWorkingBeatmap(beatmapSet.Beatmaps.FirstOrDefault()))
+                background = new CarouselLoadWrapper(new SetPanelBackground(manager.GetWorkingBeatmap(beatmapSet.Beatmaps.FirstOrDefault()))
                 {
                     RelativeSizeAxes = Axes.Both,
                 }, 300),
-                mainFlow = new DelayedLoadWrapper(new SetPanelContent((CarouselBeatmapSet)Item), 100),
+                mainFlow = new CarouselLoadWrapper(new SetPanelContent((CarouselBeatmapSet)Item), 100),
             };
 
             background.DelayedLoadComplete += fadeContentIn;
             mainFlow.DelayedLoadComplete += fadeContentIn;
+        }
+
+        public class CarouselLoadWrapper : DelayedLoadWrapper
+        {
+            public CarouselLoadWrapper(Drawable content, double timeBeforeLoad = 500)
+                : base(content, timeBeforeLoad)
+            {
+            }
+
+            protected override bool ValidForDisplay => true;
         }
 
         private void fadeContentIn(Drawable d) => d.FadeInFromZero(750, Easing.OutQuint);

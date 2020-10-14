@@ -11,6 +11,7 @@ using osu.Framework.Caching;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
+using osu.Framework.Graphics.Primitives;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Framework.Threading;
@@ -890,6 +891,11 @@ namespace osu.Game.Screens.Select
         private class CarouselScrollContainer : OsuScrollContainer
         {
             private bool rightMouseScrollBlocked;
+
+            public override bool UpdateSubTreeMasking(Drawable source, RectangleF maskingBounds)
+            {
+                return true;
+            }
 
             /// <summary>
             /// Whether the last scroll event was user triggered, directly on the scroll container.
