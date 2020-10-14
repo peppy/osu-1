@@ -84,8 +84,13 @@ namespace osu.Game.Skinning
             if (Drawable != null)
             {
                 scaling.Invalidate();
-                Drawable.Origin = Anchor.Centre;
-                Drawable.Anchor = Anchor.Centre;
+
+                if (RelativeSizeAxes != Axes.Both)
+                {
+                    Drawable.Origin = Anchor.Centre;
+                    Drawable.Anchor = Anchor.Centre;
+                }
+
                 InternalChild = Drawable;
             }
             else
