@@ -10,12 +10,12 @@ using osu.Framework.Graphics;
 using osu.Framework.Screens;
 using osu.Game.Beatmaps;
 using osu.Game.Online.Rooms;
-using osu.Game.Screens.OnlinePlay;
 using osu.Game.Screens.OnlinePlay.Components;
+using osu.Game.Screens.Select;
 
-namespace osu.Game.Screens.Select
+namespace osu.Game.Screens.OnlinePlay.Playlists
 {
-    public class MatchSongSelect : SongSelect, IOnlinePlaySubScreen
+    public class PlaylistsSongSelect : SongSelect, IOnlinePlaySubScreen
     {
         public Action<PlaylistItem> Selected;
 
@@ -30,7 +30,7 @@ namespace osu.Game.Screens.Select
         [Resolved]
         private BeatmapManager beatmaps { get; set; }
 
-        public MatchSongSelect()
+        public PlaylistsSongSelect()
         {
             Padding = new MarginPadding { Horizontal = HORIZONTAL_OVERFLOW_PADDING };
         }
