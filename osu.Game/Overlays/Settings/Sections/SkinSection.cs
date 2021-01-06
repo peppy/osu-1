@@ -71,7 +71,7 @@ namespace osu.Game.Overlays.Settings.Sections
             config.BindWith(OsuSetting.Skin, configBindable);
 
             skinDropdown.Bindable = dropdownBindable;
-            skinDropdown.Items = skins.GetAllUsableSkins().ToArray();
+            skinDropdown.Items = skins.GetAllUsableSkins();
 
             // Todo: This should not be necessary when OsuConfigManager is databased
             if (skinDropdown.Items.All(s => s.ID != configBindable.Value))

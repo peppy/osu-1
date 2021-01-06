@@ -48,10 +48,10 @@ namespace osu.Game.Skinning
                     CurrentSkinInfo.Value = SkinInfo.Default;
             };
 
-            CurrentSkinInfo.ValueChanged += skin => CurrentSkin.Value = GetSkin(skin.NewValue);
+            CurrentSkinInfo.ValueChanged += skin => CurrentSkin.Value = GetSkin(skin.NewValue.Detach());
             CurrentSkin.ValueChanged += skin =>
             {
-                if (skin.NewValue.SkinInfo != CurrentSkinInfo.Value)
+                if (skin.NewValue.SkinInfo.ID != CurrentSkinInfo.Value.ID)
                     throw new InvalidOperationException($"Setting {nameof(CurrentSkin)}'s value directly is not supported. Use {nameof(CurrentSkinInfo)} instead.");
 
                 SourceChanged?.Invoke();
@@ -76,7 +76,7 @@ namespace osu.Game.Skinning
         /// Returns a list of all usable <see cref="SkinInfo"/>s that have been loaded by the user.
         /// </summary>
         /// <returns>A list of available <see cref="SkinInfo"/>.</returns>
-        public List<SkinInfo> GetAllUserSkins() => ModelStore.ConsumableItems.Where(s => !s.DeletePending).ToList();
+        public List<SkinInfo> GetAllUserSkins() => ModelStore.ConsumableItems.Where(s => !s.DeletePending).ToList().Select(s => s.Detach()).ToList();
 
         protected override SkinInfo CreateModel(ArchiveReader archive) => new SkinInfo { Name = archive.Name };
 
