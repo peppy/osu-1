@@ -9,6 +9,14 @@
     <AssemblyName>osu.iOS</AssemblyName>
     <MtouchUseLlvm>false</MtouchUseLlvm> <!-- This currently causes random lockups during gameplay. https://github.com/mono/mono/issues/18973 -->
   </PropertyGroup>
+    <PropertyGroup>
+    <MessagePackGeneratedResolverNamespace>MessagePack</MessagePackGeneratedResolverNamespace>
+    <MessagePackGeneratedResolverName>GeneratedResolver</MessagePackGeneratedResolverName>
+    <MessagePackGeneratedUsesMapMode>false</MessagePackGeneratedUsesMapMode>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+      <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    </PropertyGroup>
   <Import Project="..\osu.iOS.props" />
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -28,7 +36,14 @@
   <ItemGroup>
     <LinkDescription Include="Linker.xml" />
   </ItemGroup>
+      <ItemGroup Label="Package References">
+        <PackageReference Include="MessagePack.MSBuild.Tasks" Version="2.2.85">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+</ItemGroup>
   <ItemGroup>
+
     <ProjectReference Include="..\osu.Game\osu.Game.csproj">
       <Project>{2A66DD92-ADB1-4994-89E2-C94E04ACDA0D}</Project>
       <Name>osu.Game</Name>
