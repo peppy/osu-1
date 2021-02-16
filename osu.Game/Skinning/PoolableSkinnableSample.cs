@@ -73,6 +73,13 @@ namespace osu.Game.Skinning
         protected override void SkinChanged(ISkinSource skin, bool allowFallback)
         {
             base.SkinChanged(skin, allowFallback);
+
+            if (sampleContainer.Children.Count > 0)
+            {
+                // try to force a failure
+                Play();
+            }
+
             updateSample();
         }
 

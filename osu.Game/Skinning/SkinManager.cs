@@ -59,6 +59,8 @@ namespace osu.Game.Skinning
                 if (skin.NewValue.SkinInfo != CurrentSkinInfo.Value)
                     throw new InvalidOperationException($"Setting {nameof(CurrentSkin)}'s value directly is not supported. Use {nameof(CurrentSkinInfo)} instead.");
 
+                skin.OldValue?.Dispose();
+
                 SourceChanged?.Invoke();
             };
         }
