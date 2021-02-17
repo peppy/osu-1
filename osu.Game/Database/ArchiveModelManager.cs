@@ -45,7 +45,7 @@ namespace osu.Game.Database
         /// This scheduler generally performs IO and CPU intensive work so concurrency is limited harshly.
         /// It is mainly being used as a queue mechanism for large imports.
         /// </remarks>
-        private static readonly ThreadedTaskScheduler import_scheduler = new ThreadedTaskScheduler(import_queue_request_concurrency, nameof(ArchiveModelManager<TModel, TFileModel>));
+        private static readonly ImportTaskScheduler import_scheduler = new ImportTaskScheduler(import_queue_request_concurrency, nameof(ArchiveModelManager<TModel, TFileModel>));
 
         /// <summary>
         /// Set an endpoint for notifications to be posted to.
@@ -307,8 +307,9 @@ namespace osu.Game.Database
         /// </summary>
         /// <param name="item">The model to be imported.</param>
         /// <param name="archive">An optional archive to use for model population.</param>
+        /// <param name="lowPriority">Whether this is a low priority import.</param>
         /// <param name="cancellationToken">An optional cancellation token.</param>
-        public virtual async Task<TModel> Import(TModel item, ArchiveReader archive = null, CancellationToken cancellationToken = default) => await Task.Factory.StartNew(async () =>
+        public virtual async Task<TModel> Import(TModel item, ArchiveReader archive = null, bool lowPriority = false, CancellationToken cancellationToken = default) => await import_scheduler.Queue(async () =>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -383,7 +384,7 @@ namespace osu.Game.Database
 
             flushEvents(true);
             return item;
-        }, cancellationToken, TaskCreationOptions.HideScheduler, import_scheduler).Unwrap();
+        }, cancellationToken, lowPriority);
 
         /// <summary>
         /// Exports an item to a legacy (.zip based) package.
