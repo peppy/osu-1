@@ -11,13 +11,14 @@ using osu.Framework.Timing;
 using osu.Framework.Utils;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Screens.Play;
 
 namespace osu.Game.Screens.Edit
 {
     /// <summary>
     /// A decoupled clock which adds editor-specific functionality, such as snapping to a user-defined beat divisor.
     /// </summary>
-    public class EditorClock : Component, IFrameBasedClock, IAdjustableClock, ISourceChangeableClock
+    public class EditorClock : GameplayOffsetClockContainer, IFrameBasedClock, IAdjustableClock, ISourceChangeableClock
     {
         public IBindable<Track> Track => track;
 
@@ -28,8 +29,6 @@ namespace osu.Game.Screens.Edit
         public ControlPointInfo ControlPointInfo;
 
         private readonly BindableBeatDivisor beatDivisor;
-
-        private readonly DecoupleableInterpolatingFramedClock underlyingClock;
 
         public IBindable<bool> SeekingOrStopped => seekingOrStopped;
 
@@ -50,8 +49,6 @@ namespace osu.Game.Screens.Edit
             this.beatDivisor = beatDivisor;
 
             ControlPointInfo = controlPointInfo;
-
-            underlyingClock = new DecoupleableInterpolatingFramedClock();
         }
 
         public EditorClock()
@@ -64,7 +61,7 @@ namespace osu.Game.Screens.Edit
         /// </summary>
         /// <param name="position">The raw position which should be seeked around.</param>
         /// <returns>Whether the seek could be performed.</returns>
-        public bool SeekSnapped(double position)
+        public void SeekSnapped(double position)
         {
             var timingPoint = ControlPointInfo.TimingPointAt(position);
             double beatSnapLength = timingPoint.BeatLength / beatDivisor.Value;
@@ -82,7 +79,7 @@ namespace osu.Game.Screens.Edit
             if (position > nextTimingPoint?.Time)
                 position = nextTimingPoint.Time;
 
-            return Seek(position);
+            Seek(position);
         }
 
         /// <summary>
@@ -159,32 +156,38 @@ namespace osu.Game.Screens.Edit
         public double CurrentTimeAccurate =>
             Transforms.OfType<TransformSeek>().FirstOrDefault()?.EndValue ?? CurrentTime;
 
-        public double CurrentTime => underlyingClock.CurrentTime;
+        public double CurrentTime => FinalConsumableOffsetClock.CurrentTime;
 
         public void Reset()
         {
             ClearTransforms();
-            underlyingClock.Reset();
+            AdjustableClock.Reset();
         }
 
         public void Start()
         {
             ClearTransforms();
-            underlyingClock.Start();
+            AdjustableClock.Start();
         }
 
         public void Stop()
         {
             seekingOrStopped.Value = true;
-            underlyingClock.Stop();
+            AdjustableClock.Stop();
         }
 
-        public bool Seek(double position)
+        public override void Seek(double position)
         {
             seekingOrStopped.Value = IsSeeking = true;
 
             ClearTransforms();
-            return underlyingClock.Seek(position);
+            base.Seek(position);
+        }
+
+        bool IAdjustableClock.Seek(double position)
+        {
+            Seek(position);
+            return true;
         }
 
         /// <summary>
@@ -204,38 +207,40 @@ namespace osu.Game.Screens.Edit
             }
         }
 
-        public void ResetSpeedAdjustments() => underlyingClock.ResetSpeedAdjustments();
+        public void ResetSpeedAdjustments() => AdjustableClock.ResetSpeedAdjustments();
 
         double IAdjustableClock.Rate
         {
-            get => underlyingClock.Rate;
-            set => underlyingClock.Rate = value;
+            get => FinalConsumableOffsetClock.Rate;
+            set => AdjustableClock.Rate = value;
         }
 
-        double IClock.Rate => underlyingClock.Rate;
+        double IClock.Rate => FinalConsumableOffsetClock.Rate;
 
-        public bool IsRunning => underlyingClock.IsRunning;
+        public bool IsRunning => FinalConsumableOffsetClock.IsRunning;
 
-        public void ProcessFrame() => underlyingClock.ProcessFrame();
+        public void ProcessFrame()
+        {
+        }
 
-        public double ElapsedFrameTime => underlyingClock.ElapsedFrameTime;
+        public double ElapsedFrameTime => FinalConsumableOffsetClock.ElapsedFrameTime;
 
-        public double FramesPerSecond => underlyingClock.FramesPerSecond;
+        public double FramesPerSecond => FinalConsumableOffsetClock.FramesPerSecond;
 
-        public FrameTimeInfo TimeInfo => underlyingClock.TimeInfo;
+        public FrameTimeInfo TimeInfo => FinalConsumableOffsetClock.TimeInfo;
 
         public void ChangeSource(IClock source)
         {
             track.Value = source as Track;
-            underlyingClock.ChangeSource(source);
+            AdjustableClock.ChangeSource(source);
         }
 
-        public IClock Source => underlyingClock.Source;
+        public IClock Source => FinalConsumableOffsetClock.Source;
 
         public bool IsCoupled
         {
-            get => underlyingClock.IsCoupled;
-            set => underlyingClock.IsCoupled = value;
+            get => AdjustableClock.IsCoupled;
+            set => AdjustableClock.IsCoupled = value;
         }
 
         private const double transform_time = 300;
@@ -272,8 +277,8 @@ namespace osu.Game.Screens.Edit
 
         private double currentTime
         {
-            get => underlyingClock.CurrentTime;
-            set => underlyingClock.Seek(value);
+            get => FinalConsumableOffsetClock.CurrentTime;
+            set => AdjustableClock.Seek(value);
         }
 
         private class TransformSeek : Transform<double, EditorClock>
