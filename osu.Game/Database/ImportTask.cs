@@ -26,19 +26,27 @@ namespace osu.Game.Database
         public Stream? Stream { get; }
 
         /// <summary>
+        /// Whether this task should be considered lower priority than interactive imports.
+        /// Should be applied to long-running background tasks.
+        /// </summary>
+        public bool LowPriority { get; }
+
+        /// <summary>
         /// Construct a new import task from a path (on a local filesystem).
         /// </summary>
-        public ImportTask(string path)
+        public ImportTask(string path, bool lowPriority = false)
         {
             Path = path;
+            LowPriority = lowPriority;
         }
 
         /// <summary>
         /// Construct a new import task from a stream.
         /// </summary>
-        public ImportTask(Stream stream, string filename)
+        public ImportTask(Stream stream, string filename, bool lowPriority = false)
         {
             Path = filename;
+            LowPriority = lowPriority;
             Stream = stream;
         }
 
