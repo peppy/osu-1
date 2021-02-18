@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Logging;
 using osu.Framework.Statistics;
@@ -263,8 +264,20 @@ namespace osu.Game.Beatmaps
 
         private Track loadedTrack;
 
+        private readonly BindableDouble replayGainVolumeAdjust = new BindableDouble();
+
         [NotNull]
-        public Track LoadTrack() => loadedTrack = GetBeatmapTrack() ?? GetVirtualTrack(1000);
+        public Track LoadTrack()
+        {
+            loadedTrack = GetBeatmapTrack() ?? GetVirtualTrack(1000);
+
+            replayGainVolumeAdjust.Value = (loadedTrack as TrackBass)?.ReplayGainVolumeAdjust ?? 1;
+            Logger.Log($"REPLAYGAIN APPLYING TO BEATMAP TRACK: volume to {replayGainVolumeAdjust.Value}");
+
+            loadedTrack.AddAdjustment(AdjustableProperty.Volume, replayGainVolumeAdjust);
+
+            return loadedTrack;
+        }
 
         /// <summary>
         /// Transfer a valid audio track into this working beatmap. Used as an optimisation to avoid reload / track swap
