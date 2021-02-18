@@ -57,12 +57,6 @@ namespace osu.Game.Collections
         private void load()
         {
             Collections.CollectionChanged += collectionsChanged;
-
-            if (storage.Exists(database_name))
-            {
-                using (var stream = storage.GetStream(database_name))
-                    importCollections(readCollections(stream));
-            }
         }
 
         private void collectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
