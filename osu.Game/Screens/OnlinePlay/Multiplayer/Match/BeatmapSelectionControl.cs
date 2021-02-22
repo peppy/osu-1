@@ -47,11 +47,21 @@ namespace osu.Game.Screens.OnlinePlay.Multiplayer.Match
                         RelativeSizeAxes = Axes.X,
                         Height = 40,
                         Text = "Select beatmap",
-                        Action = () => matchSubScreen.Push(new MultiplayerMatchSongSelect()),
+                        Action = () => ShowSelectScreen(),
                         Alpha = 0
                     }
                 }
             };
+        }
+
+        private bool selectionAllowed;
+
+        public bool ShowSelectScreen()
+        {
+            if (!selectionAllowed) return false;
+
+            matchSubScreen.Push(new MultiplayerMatchSongSelect());
+            return true;
         }
 
         protected override void LoadComplete()
@@ -61,7 +71,8 @@ namespace osu.Game.Screens.OnlinePlay.Multiplayer.Match
             SelectedItem.BindValueChanged(_ => updateBeatmap(), true);
             Host.BindValueChanged(host =>
             {
-                if (RoomID.Value == null || host.NewValue?.Equals(api.LocalUser.Value) == true)
+                selectionAllowed = RoomID.Value == null || host.NewValue?.Equals(api.LocalUser.Value) == true;
+                if (selectionAllowed)
                     selectButton.Show();
                 else
                     selectButton.Hide();

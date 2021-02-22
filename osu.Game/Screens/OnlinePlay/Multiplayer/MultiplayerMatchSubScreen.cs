@@ -148,7 +148,7 @@ namespace osu.Game.Screens.OnlinePlay.Multiplayer
                                                                         Children = new Drawable[]
                                                                         {
                                                                             new OverlinedHeader("Beatmap"),
-                                                                            new BeatmapSelectionControl { RelativeSizeAxes = Axes.X }
+                                                                            beatmapSelectionControl = new BeatmapSelectionControl { RelativeSizeAxes = Axes.X }
                                                                         }
                                                                     },
                                                                     UserModsSection = new FillFlowContainer
@@ -268,6 +268,8 @@ namespace osu.Game.Screens.OnlinePlay.Multiplayer
             }, true);
         }
 
+        public bool LoadBeatmapSelection() => beatmapSelectionControl.ShowSelectScreen();
+
         protected override void UpdateMods()
         {
             if (SelectedItem.Value == null || client.LocalUser == null)
@@ -292,6 +294,7 @@ namespace osu.Game.Screens.OnlinePlay.Multiplayer
 
         private ModSettingChangeTracker modSettingChangeTracker;
         private ScheduledDelegate debouncedModSettingsUpdate;
+        private BeatmapSelectionControl beatmapSelectionControl;
 
         private void onUserModsChanged(ValueChangedEvent<IReadOnlyList<Mod>> mods)
         {

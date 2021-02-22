@@ -52,6 +52,7 @@ using osu.Game.Utils;
 using LogLevel = osu.Framework.Logging.LogLevel;
 using osu.Game.Database;
 using osu.Game.IO;
+using osu.Game.Screens.OnlinePlay.Multiplayer;
 
 namespace osu.Game
 {
@@ -361,9 +362,17 @@ namespace osu.Game
 
             PerformFromScreen(screen =>
             {
-                // we might already be at song select, so a check is required before performing the load to solo.
-                if (screen is MainMenu)
-                    menuScreen.LoadToSolo();
+                switch (screen)
+                {
+                    // we might already be at song select, so a check is required before performing the load to solo.
+                    case MainMenu mainMenu:
+                        mainMenu.LoadToSolo();
+                        break;
+
+                    case Multiplayer multi:
+                        (((IHasSubScreenStack)multi).SubScreenStack.CurrentScreen as MultiplayerMatchSubScreen)?.LoadBeatmapSelection();
+                        break;
+                }
 
                 // we might even already be at the song
                 if (Beatmap.Value.BeatmapSetInfo.Hash == databasedSet.Hash && (difficultyCriteria?.Invoke(Beatmap.Value.BeatmapInfo) ?? true))
