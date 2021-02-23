@@ -9,6 +9,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Events;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Containers;
@@ -59,7 +60,6 @@ namespace osu.Game.Collections
         {
             public readonly Bindable<bool> IsCreated = new Bindable<bool>();
 
-            private readonly IBindable<string> collectionName;
             private readonly BeatmapCollection collection;
 
             [Resolved(CanBeNull = true)]
@@ -75,8 +75,6 @@ namespace osu.Game.Collections
                 RelativeSizeAxes = Axes.X;
                 Height = item_height;
                 Masking = true;
-
-                collectionName = collection.Name.GetBoundCopy();
             }
 
             [BackgroundDependencyLoader]
@@ -102,19 +100,29 @@ namespace osu.Game.Collections
                                 RelativeSizeAxes = Axes.Both,
                                 Size = Vector2.One,
                                 CornerRadius = item_height / 2,
-                                Current = collection.Name,
+                                Text = collection.Name.Value,
+                                CommitOnFocusLost = true,
                                 PlaceholderText = IsCreated.Value ? string.Empty : "Create a new collection"
                             },
                         }
                     },
                 };
+
+                textBox.OnCommit += onCommit;
+            }
+
+            private void onCommit(TextBox sender, bool newText)
+            {
+                collection.Name.Value = sender.Text;
+
+                if (!IsCreated.Value)
+                    createNewCollection();
             }
 
             protected override void LoadComplete()
             {
                 base.LoadComplete();
 
-                collectionName.BindValueChanged(_ => createNewCollection(), true);
                 IsCreated.BindValueChanged(created => textBoxPaddingContainer.Padding = new MarginPadding { Right = created.NewValue ? button_width : 0 }, true);
             }
 
@@ -123,7 +131,7 @@ namespace osu.Game.Collections
                 if (IsCreated.Value)
                     return;
 
-                if (string.IsNullOrEmpty(collectionName.Value))
+                if (string.IsNullOrEmpty(collection.Name.Value))
                     return;
 
                 // Add the new collection and disable our placeholder. If all text is removed, the placeholder should not show back again.
