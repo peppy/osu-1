@@ -7,6 +7,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.UserInterface;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Framework.Testing;
 using osu.Game.Beatmaps;
@@ -54,7 +55,7 @@ namespace osu.Game.Tests.Visual.Collections
         [SetUp]
         public void SetUp() => Schedule(() =>
         {
-            manager.Collections.Clear();
+            manager.DeleteAll();
             Child = dialog = new ManageCollectionsDialog();
         });
 
@@ -80,11 +81,11 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestAddCollectionExternal()
         {
-            AddStep("add collection", () => manager.Collections.Add(new BeatmapCollection { Name = { Value = "First collection" } }));
+            AddStep("add collection", () => manager.Add(new BeatmapCollection { Name = { Value = "First collection" } }));
             assertCollectionCount(1);
             assertCollectionName(0, "First collection");
 
-            AddStep("add another collection", () => manager.Collections.Add(new BeatmapCollection { Name = { Value = "Second collection" } }));
+            AddStep("add another collection", () => manager.Add(new BeatmapCollection { Name = { Value = "Second collection" } }));
             assertCollectionCount(2);
             assertCollectionName(1, "Second collection");
         }
@@ -123,13 +124,13 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestRemoveCollectionExternal()
         {
-            AddStep("add two collections", () => manager.Collections.AddRange(new[]
+            AddStep("add two collections", () =>
             {
-                new BeatmapCollection { Name = { Value = "1" } },
-                new BeatmapCollection { Name = { Value = "2" } },
-            }));
+                manager.Add(new BeatmapCollection { Name = { Value = "1" } });
+                manager.Add(new BeatmapCollection { Name = { Value = "2" } });
+            });
 
-            AddStep("remove first collection", () => manager.Collections.RemoveAt(0));
+            AddStep("remove first collection", () => manager.Remove(manager.Collections[0]));
             assertCollectionCount(1);
             assertCollectionName(0, "2");
         }
@@ -137,11 +138,11 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestRemoveCollectionViaButton()
         {
-            AddStep("add two collections", () => manager.Collections.AddRange(new[]
+            AddStep("add two collections", () =>
             {
-                new BeatmapCollection { Name = { Value = "1" } },
-                new BeatmapCollection { Name = { Value = "2" }, Beatmaps = { beatmapManager.GetAllUsableBeatmapSets().First().Beatmaps[0] } },
-            }));
+                manager.Add(new BeatmapCollection { Name = { Value = "1" } });
+                manager.Add(new BeatmapCollection { Name = { Value = "2" }, Beatmaps = { beatmapManager.GetAllUsableBeatmapSets().First().Beatmaps[0] } });
+            });
 
             assertCollectionCount(2);
 
@@ -174,10 +175,7 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestCollectionNotRemovedWhenDialogCancelled()
         {
-            AddStep("add two collections", () => manager.Collections.AddRange(new[]
-            {
-                new BeatmapCollection { Name = { Value = "1" }, Beatmaps = { beatmapManager.GetAllUsableBeatmapSets().First().Beatmaps[0] } },
-            }));
+            AddStep("add collection", () => manager.Add(new BeatmapCollection { Name = { Value = "1" }, Beatmaps = { beatmapManager.GetAllUsableBeatmapSets().First().Beatmaps[0] } }));
 
             assertCollectionCount(1);
 
@@ -200,11 +198,11 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestCollectionRenamedExternal()
         {
-            AddStep("add two collections", () => manager.Collections.AddRange(new[]
+            AddStep("add two collections", () =>
             {
-                new BeatmapCollection { Name = { Value = "1" } },
-                new BeatmapCollection { Name = { Value = "2" } },
-            }));
+                manager.Add(new BeatmapCollection { Name = { Value = "1" } });
+                manager.Add(new BeatmapCollection { Name = { Value = "2" } });
+            });
 
             AddStep("change first collection name", () => manager.Collections[0].Name.Value = "First");
 
@@ -214,11 +212,11 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestCollectionRenamedOnTextChange()
         {
-            AddStep("add two collections", () => manager.Collections.AddRange(new[]
+            AddStep("add two collections", () =>
             {
-                new BeatmapCollection { Name = { Value = "1" } },
-                new BeatmapCollection { Name = { Value = "2" } },
-            }));
+                manager.Add(new BeatmapCollection { Name = { Value = "1" } });
+                manager.Add(new BeatmapCollection { Name = { Value = "2" } });
+            });
 
             assertCollectionCount(2);
 
