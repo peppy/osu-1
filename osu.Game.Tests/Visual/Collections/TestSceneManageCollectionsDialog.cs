@@ -198,11 +198,12 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestCollectionRenamedExternal()
         {
-            AddStep("add two collections", () =>
-            {
-                manager.Add(new BeatmapCollection { Name = { Value = "1" } });
-                manager.Add(new BeatmapCollection { Name = { Value = "2" } });
-            });
+            // collections need to be added one at a time because these test rely on order of drawable items which are loaded asynchronously.
+            AddStep("add one collection", () => manager.Add(new BeatmapCollection { Name = { Value = "1" } }));
+            assertCollectionCount(1);
+
+            AddStep("add second collection", () => manager.Add(new BeatmapCollection { Name = { Value = "2" } }));
+            assertCollectionCount(2);
 
             AddStep("change first collection name", () => manager.Collections[0].Name.Value = "First");
 
@@ -212,12 +213,11 @@ namespace osu.Game.Tests.Visual.Collections
         [Test]
         public void TestCollectionRenamedOnTextChange()
         {
-            AddStep("add two collections", () =>
-            {
-                manager.Add(new BeatmapCollection { Name = { Value = "1" } });
-                manager.Add(new BeatmapCollection { Name = { Value = "2" } });
-            });
+            // collections need to be added one at a time because these test rely on order of drawable items which are loaded asynchronously.
+            AddStep("add one collection", () => manager.Add(new BeatmapCollection { Name = { Value = "1" } }));
+            assertCollectionCount(1);
 
+            AddStep("add second collection", () => manager.Add(new BeatmapCollection { Name = { Value = "2" } }));
             assertCollectionCount(2);
 
             AddStep("change first collection name", () => dialog.ChildrenOfType<TextBox>().First().Text = "First");
