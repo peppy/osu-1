@@ -43,6 +43,8 @@ namespace osu.Game.Skinning
 
         private readonly AudioContainer<PoolableSkinnableSample> samplesContainer;
 
+        private readonly AudioAdjustments adjustments = new AudioAdjustments();
+
         [Resolved]
         private ISampleStore sampleStore { get; set; }
 
@@ -169,25 +171,25 @@ namespace osu.Game.Skinning
                 Play();
         }
 
-        #region Re-expose AudioContainer
+        #region Re-expose adjustments
 
-        public BindableNumber<double> Volume => samplesContainer.Volume;
+        public BindableNumber<double> Volume => adjustments.Volume;
 
-        public BindableNumber<double> Balance => samplesContainer.Balance;
+        public BindableNumber<double> Balance => adjustments.Balance;
 
-        public BindableNumber<double> Frequency => samplesContainer.Frequency;
+        public BindableNumber<double> Frequency => adjustments.Frequency;
 
-        public BindableNumber<double> Tempo => samplesContainer.Tempo;
+        public BindableNumber<double> Tempo => adjustments.Tempo;
 
-        public void BindAdjustments(IAggregateAudioAdjustment component) => samplesContainer.BindAdjustments(component);
+        public void BindAdjustments(IAggregateAudioAdjustment component) => adjustments.BindAdjustments(component);
 
-        public void UnbindAdjustments(IAggregateAudioAdjustment component) => samplesContainer.UnbindAdjustments(component);
+        public void UnbindAdjustments(IAggregateAudioAdjustment component) => adjustments.UnbindAdjustments(component);
 
-        public void AddAdjustment(AdjustableProperty type, IBindable<double> adjustBindable) => samplesContainer.AddAdjustment(type, adjustBindable);
+        public void AddAdjustment(AdjustableProperty type, IBindable<double> adjustBindable) => adjustments.AddAdjustment(type, adjustBindable);
 
-        public void RemoveAdjustment(AdjustableProperty type, IBindable<double> adjustBindable) => samplesContainer.RemoveAdjustment(type, adjustBindable);
+        public void RemoveAdjustment(AdjustableProperty type, IBindable<double> adjustBindable) => adjustments.RemoveAdjustment(type, adjustBindable);
 
-        public void RemoveAllAdjustments(AdjustableProperty type) => samplesContainer.RemoveAllAdjustments(type);
+        public void RemoveAllAdjustments(AdjustableProperty type) => adjustments.RemoveAllAdjustments(type);
 
         /// <summary>
         /// Whether any samples are currently playing.
@@ -196,13 +198,13 @@ namespace osu.Game.Skinning
 
         public bool IsPlayed => samplesContainer.Any(s => s.Played);
 
-        public IBindable<double> AggregateVolume => samplesContainer.AggregateVolume;
+        public IBindable<double> AggregateVolume => adjustments.AggregateVolume;
 
-        public IBindable<double> AggregateBalance => samplesContainer.AggregateBalance;
+        public IBindable<double> AggregateBalance => adjustments.AggregateBalance;
 
-        public IBindable<double> AggregateFrequency => samplesContainer.AggregateFrequency;
+        public IBindable<double> AggregateFrequency => adjustments.AggregateFrequency;
 
-        public IBindable<double> AggregateTempo => samplesContainer.AggregateTempo;
+        public IBindable<double> AggregateTempo => adjustments.AggregateTempo;
 
         #endregion
     }
