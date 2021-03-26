@@ -200,7 +200,7 @@ namespace osu.Game.Tests.Visual.SongSelect
         {
             public float X => 0;
             public float Y => 0;
-            public Vector2 Position { get; } = Vector2.Zero;
+            public Vector2 Position { get; set; } = Vector2.Zero;
         }
     }
 }
