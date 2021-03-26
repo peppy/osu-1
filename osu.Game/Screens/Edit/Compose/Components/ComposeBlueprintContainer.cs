@@ -105,15 +105,11 @@ namespace osu.Game.Screens.Edit.Compose.Components
         /// <param name="delta"></param>
         private void moveSelection(Vector2 delta)
         {
-            var firstBlueprint = SelectionHandler.SelectedBlueprints.FirstOrDefault();
-
-            if (firstBlueprint == null)
-                return;
-
-            // convert to game space coordinates
-            delta = firstBlueprint.ToScreenSpace(delta) - firstBlueprint.ToScreenSpace(Vector2.Zero);
-
-            SelectionHandler.HandleMovement(new MoveSelectionEvent(firstBlueprint, firstBlueprint.ScreenSpaceSelectionPoint + delta));
+            Beatmap.PerformOnSelection(h =>
+            {
+                if (h is IHasPosition posHitObject)
+                    posHitObject.Position = posHitObject.Position + delta;
+            });
         }
 
         private void updatePlacementNewCombo()
