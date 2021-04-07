@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -16,6 +17,7 @@ using osu.Game.Configuration;
 using osu.Game.Input.Bindings;
 using osu.Game.Input.Handlers;
 using osu.Game.Screens.Play;
+using osu.Game.Skinning;
 using static osu.Game.Input.Handlers.ReplayInputHandler;
 
 namespace osu.Game.Rulesets.UI
@@ -165,9 +167,34 @@ namespace osu.Game.Rulesets.UI
 
         public class RulesetKeyBindingContainer : DatabasedKeyBindingContainer<T>
         {
+            private readonly RulesetInfo ruleset;
+            private readonly int variant;
+
             public RulesetKeyBindingContainer(RulesetInfo ruleset, int variant, SimultaneousBindingMode unique)
-                : base(ruleset, variant, unique)
+                : base(ruleset?.ID, variant, unique)
             {
+                this.ruleset = ruleset;
+                this.variant = variant;
+            }
+
+            protected override void ReloadMappings()
+            {
+                if (ruleset?.ID.HasValue != true)
+                    // if the provided ruleset is not stored to the database, we have no way to retrieve custom bindings.
+                    KeyBindings = DefaultKeyBindings;
+
+                base.ReloadMappings();
+            }
+
+            public override IEnumerable<IKeyBinding> DefaultKeyBindings
+            {
+                get
+                {
+                    if (ruleset == null)
+                        return Enumerable.Empty<IKeyBinding>();
+
+                    return ruleset.CreateInstance().GetDefaultKeyBindings(variant);
+                }
             }
         }
     }
