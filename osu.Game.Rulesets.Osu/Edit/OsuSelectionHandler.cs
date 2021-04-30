@@ -204,7 +204,7 @@ namespace osu.Game.Rulesets.Osu.Edit
         {
             referencePathTypes ??= slider.Path.ControlPoints.Select(p => p.Type.Value).ToList();
 
-            Quad sliderQuad = getSurroundingQuad(slider.Path.ControlPoints.Select(p => p.Position.Value));
+            Quad sliderQuad = GetSurroundingQuad(slider.Path.ControlPoints.Select(p => p.Position.Value));
 
             // Limit minimum distance between control points after scaling to almost 0. Less than 0 causes the slider to flip, exactly 0 causes a crash through division by 0.
             scale = Vector2.ComponentMax(new Vector2(Precision.FLOAT_EPSILON), sliderQuad.Size + scale) - sliderQuad.Size;
@@ -333,7 +333,7 @@ namespace osu.Game.Rulesets.Osu.Edit
         /// </summary>
         /// <param name="hitObjects">The hit objects to calculate a quad for.</param>
         private Quad getSurroundingQuad(OsuHitObject[] hitObjects) =>
-            getSurroundingQuad(hitObjects.SelectMany(h =>
+            GetSurroundingQuad(hitObjects.SelectMany(h =>
             {
                 if (h is IHasPath path)
                 {
@@ -347,30 +347,6 @@ namespace osu.Game.Rulesets.Osu.Edit
 
                 return new[] { h.Position };
             }));
-
-        /// <summary>
-        /// Returns a gamefield-space quad surrounding the provided points.
-        /// </summary>
-        /// <param name="points">The points to calculate a quad for.</param>
-        private Quad getSurroundingQuad(IEnumerable<Vector2> points)
-        {
-            if (!EditorBeatmap.SelectedHitObjects.Any())
-                return new Quad();
-
-            Vector2 minPosition = new Vector2(float.MaxValue, float.MaxValue);
-            Vector2 maxPosition = new Vector2(float.MinValue, float.MinValue);
-
-            // Go through all hitobjects to make sure they would remain in the bounds of the editor after movement, before any movement is attempted
-            foreach (var p in points)
-            {
-                minPosition = Vector2.ComponentMin(minPosition, p);
-                maxPosition = Vector2.ComponentMax(maxPosition, p);
-            }
-
-            Vector2 size = maxPosition - minPosition;
-
-            return new Quad(minPosition.X, minPosition.Y, size.X, size.Y);
-        }
 
         /// <summary>
         /// All osu! hitobjects which can be moved/rotated/scaled.

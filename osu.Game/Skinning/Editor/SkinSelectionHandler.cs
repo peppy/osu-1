@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using osu.Framework.Extensions.EnumExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.UserInterface;
 using osu.Game.Extensions;
@@ -17,6 +18,54 @@ namespace osu.Game.Skinning.Editor
 {
     public class SkinSelectionHandler : SelectionHandler<ISkinnableComponent>
     {
+        public override bool HandleFlip(Direction direction)
+        {
+            var quad = GetSurroundingQuad(SelectedBlueprints.Select(b => b.ScreenSpaceSelectionPoint).ToArray());
+            var centre = quad.Centre;
+
+            foreach (var blueprint in SelectedBlueprints)
+            {
+                var drawable = (Drawable)blueprint.Item;
+
+                var blueprintSelectionPointInParent = drawable.Parent.ToLocalSpace(blueprint.ScreenSpaceSelectionPoint);
+                var centreInParent = drawable.Parent.ToLocalSpace(centre);
+
+                // the offset of this blueprint from the centre of selection in drawable parent coords.
+                // using the selection point for simplicity (each selected component may have different origins etc. - this standardises the calculation).
+                var offset = blueprintSelectionPointInParent - centreInParent;
+
+                // need to apply double the offset to the original drawable position.
+                var flippedLocation = drawable.Position - offset * 2;
+
+                switch (direction)
+                {
+                    case Direction.Horizontal:
+                        drawable.Scale = new Vector2(-drawable.Scale.X, drawable.Scale.Y);
+
+                        if (drawable.Origin.HasFlagFast(Anchor.x2))
+                            drawable.Origin &= ~Anchor.x2;
+                        else if (!drawable.Origin.HasFlagFast(Anchor.x1))
+                            drawable.Origin |= Anchor.x2;
+
+                        drawable.Position = new Vector2(flippedLocation.X, drawable.Position.Y);
+                        break;
+
+                    case Direction.Vertical:
+                        drawable.Scale = new Vector2(drawable.Scale.X, -drawable.Scale.Y);
+
+                        if (drawable.Origin.HasFlagFast(Anchor.y2))
+                            drawable.Origin &= ~Anchor.y2;
+                        else if (!drawable.Origin.HasFlagFast(Anchor.y1))
+                            drawable.Origin |= Anchor.y2;
+
+                        drawable.Position = new Vector2(drawable.Position.X, flippedLocation.Y);
+                        break;
+                }
+            }
+
+            return true;
+        }
+
         protected override void DeleteItems(IEnumerable<ISkinnableComponent> items)
         {
             foreach (var i in items)

@@ -9,6 +9,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
+using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input;
@@ -374,6 +375,34 @@ namespace osu.Game.Screens.Edit.Compose.Components
         /// <returns>The relevant menu items.</returns>
         protected virtual IEnumerable<MenuItem> GetContextMenuItemsForSelection(IEnumerable<SelectionBlueprint<T>> selection)
             => Enumerable.Empty<MenuItem>();
+
+        #endregion
+
+        #region Helper methods
+
+        /// <summary>
+        /// Returns a quad surrounding the provided points.
+        /// </summary>
+        /// <param name="points">The points to calculate a quad for.</param>
+        protected static Quad GetSurroundingQuad(IEnumerable<Vector2> points)
+        {
+            if (!points.Any())
+                return new Quad();
+
+            Vector2 minPosition = new Vector2(float.MaxValue, float.MaxValue);
+            Vector2 maxPosition = new Vector2(float.MinValue, float.MinValue);
+
+            // Go through all hitobjects to make sure they would remain in the bounds of the editor after movement, before any movement is attempted
+            foreach (var p in points)
+            {
+                minPosition = Vector2.ComponentMin(minPosition, p);
+                maxPosition = Vector2.ComponentMax(maxPosition, p);
+            }
+
+            Vector2 size = maxPosition - minPosition;
+
+            return new Quad(minPosition.X, minPosition.Y, size.X, size.Y);
+        }
 
         #endregion
     }
