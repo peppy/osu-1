@@ -18,7 +18,7 @@ namespace osu.Game.Screens.Edit.Setup
         [Resolved]
         protected OsuColour Colours { get; private set; }
 
-        [Resolved]
+        [Resolved(canBeNull: true)]
         protected EditorBeatmap Beatmap { get; private set; }
 
         protected override Container<Drawable> Content => flow;

@@ -12,15 +12,15 @@ namespace osu.Game.Screens.Edit
     /// </summary>
     public abstract class EditorScreen : Container
     {
-        [Resolved]
+        [Resolved(canBeNull: true)]
         protected EditorBeatmap EditorBeatmap { get; private set; }
 
         protected override Container<Drawable> Content => content;
         private readonly Container content;
 
-        public readonly EditorScreenMode Type;
+        public readonly EditorScreenMode? Type;
 
-        protected EditorScreen(EditorScreenMode type)
+        protected EditorScreen(EditorScreenMode? type = null)
         {
             Type = type;
 

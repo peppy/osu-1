@@ -13,6 +13,7 @@ using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Osu.Objects;
 using osu.Game.Rulesets.Osu.Objects.Drawables;
 using osu.Game.Rulesets.Osu.Skinning.Default;
+using osu.Game.Screens.Play.HUD;
 using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
@@ -20,7 +21,7 @@ using static osu.Game.Skinning.LegacySkinConfiguration;
 
 namespace osu.Game.Rulesets.Osu.Skinning.Legacy
 {
-    public class LegacyMainCirclePiece : CompositeDrawable, IMainCirclePiece
+    public class LegacyMainCirclePiece : CompositeDrawable, IMainCirclePiece, ISkinnableComponent
     {
         private readonly string priorityLookup;
         private readonly bool hasNumber;

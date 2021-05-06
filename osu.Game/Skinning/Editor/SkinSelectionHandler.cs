@@ -67,12 +67,20 @@ namespace osu.Game.Skinning.Editor
             }
         }
 
+        private void openComponentEditor()
+        {
+            AddInternal(new SubComponentEditor(SelectedBlueprints.First().Item));
+        }
+
         protected override IEnumerable<MenuItem> GetContextMenuItemsForSelection(IEnumerable<SelectionBlueprint<ISkinnableComponent>> selection)
         {
             yield return new OsuMenuItem("Anchor")
             {
                 Items = createAnchorItems().ToArray()
             };
+
+            if (SelectedBlueprints.Count == 1)
+                yield return new OsuMenuItem("Editor sub-components", MenuItemType.Standard, openComponentEditor);
 
             foreach (var item in base.GetContextMenuItemsForSelection(selection))
                 yield return item;
