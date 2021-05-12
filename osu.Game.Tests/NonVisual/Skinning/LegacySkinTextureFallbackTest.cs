@@ -89,7 +89,7 @@ namespace osu.Game.Tests.NonVisual.Skinning
         private class TestLegacySkin : LegacySkin
         {
             public TestLegacySkin(TextureStore textureStore)
-                : base(new SkinInfo(), null, null, string.Empty)
+                : base(new SkinInfo(), null, string.Empty)
             {
                 Textures = textureStore;
             }

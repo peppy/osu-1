@@ -10,12 +10,12 @@ namespace osu.Game.IO
     public interface IStorageResourceProvider
     {
         /// <summary>
-        /// Retrieve the game-wide audio manager.
+        /// Retrieve the applicable audio manager.
         /// </summary>
         AudioManager AudioManager { get; }
 
         /// <summary>
-        /// Access game-wide user files.
+        /// Access locally applicable user files.
         /// </summary>
         IResourceStore<byte[]> Files { get; }
 

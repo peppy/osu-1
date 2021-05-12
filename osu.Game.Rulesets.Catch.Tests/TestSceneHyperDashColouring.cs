@@ -202,7 +202,7 @@ namespace osu.Game.Rulesets.Catch.Tests
             }
 
             public TestSkin()
-                : base(new SkinInfo(), null, null, string.Empty)
+                : base(new SkinInfo(), null, string.Empty)
             {
             }
         }

@@ -3,6 +3,7 @@
 
 using NUnit.Framework;
 using osu.Framework.IO.Stores;
+using osu.Game.IO;
 using osu.Game.Rulesets.Catch.Skinning;
 using osu.Game.Rulesets.Catch.Skinning.Legacy;
 using osu.Game.Skinning;
@@ -30,7 +31,7 @@ namespace osu.Game.Rulesets.Catch.Tests
         {
             public TestLegacySkin(SkinInfo skin, IResourceStore<byte[]> storage)
                 // Bypass LegacySkinResourceStore to avoid returning null for retrieving files due to bad skin info (SkinInfo.Files = null).
-                : base(skin, storage, null, "skin.ini")
+                : base(skin, new WrappedStorageResourceProvider(null, storage), "skin.ini")
             {
             }
         }

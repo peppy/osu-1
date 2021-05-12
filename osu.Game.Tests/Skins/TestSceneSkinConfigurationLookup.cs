@@ -192,7 +192,7 @@ namespace osu.Game.Tests.Skins
         public class UserSkinSource : LegacySkin
         {
             public UserSkinSource()
-                : base(new SkinInfo(), null, null, string.Empty)
+                : base(new SkinInfo(), null, string.Empty)
             {
             }
         }

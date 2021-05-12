@@ -54,14 +54,14 @@ namespace osu.Game.Skinning
 
         [UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
         public LegacySkin(SkinInfo skin, IStorageResourceProvider resources)
-            : this(skin, new LegacySkinResourceStore<SkinFileInfo>(skin, resources.Files), resources, "skin.ini")
+            : this(skin, new WrappedStorageResourceProvider(resources, new LegacySkinResourceStore<SkinFileInfo>(skin, resources.Files)), "skin.ini")
         {
         }
 
-        protected LegacySkin(SkinInfo skin, [CanBeNull] IResourceStore<byte[]> storage, [CanBeNull] IStorageResourceProvider resources, string filename)
+        protected LegacySkin(SkinInfo skin, [CanBeNull] IStorageResourceProvider resources, string filename)
             : base(skin, resources)
         {
-            using (var stream = storage?.GetStream(filename))
+            using (var stream = resources?.Files.GetStream(filename))
             {
                 if (stream != null)
                 {
@@ -82,16 +82,16 @@ namespace osu.Game.Skinning
                     Configuration = new LegacySkinConfiguration();
             }
 
-            if (storage != null)
+            if (resources?.Files != null)
             {
-                var samples = resources?.AudioManager?.GetSampleStore(storage);
+                var samples = resources.AudioManager?.GetSampleStore(resources.Files);
                 if (samples != null)
                     samples.PlaybackConcurrency = OsuGameBase.SAMPLE_CONCURRENCY;
 
                 Samples = samples;
-                Textures = new TextureStore(resources?.CreateTextureLoaderStore(storage));
+                Textures = new TextureStore(resources?.CreateTextureLoaderStore(resources.Files));
 
-                (storage as ResourceStore<byte[]>)?.AddExtension("ogg");
+                (resources.Files as ResourceStore<byte[]>)?.AddExtension("ogg");
             }
 
             // todo: this shouldn't really be duplicated here (from ManiaLegacySkinTransformer). we need to come up with a better solution.

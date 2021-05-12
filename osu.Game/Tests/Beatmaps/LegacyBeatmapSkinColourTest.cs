@@ -148,7 +148,7 @@ namespace osu.Game.Tests.Beatmaps
             public static readonly Color4 HYPER_DASH_FRUIT_COLOUR = Color4.LightCyan;
 
             public TestSkin(bool hasCustomColours)
-                : base(new SkinInfo(), new ResourceStore<byte[]>(), null, string.Empty)
+                : base(new SkinInfo(), null, string.Empty)
             {
                 if (hasCustomColours)
                 {
