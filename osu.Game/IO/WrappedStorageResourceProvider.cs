@@ -5,6 +5,8 @@ using osu.Framework.Audio;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
 
+#nullable enable
+
 namespace osu.Game.IO
 {
     /// <summary>
@@ -12,23 +14,20 @@ namespace osu.Game.IO
     /// </summary>
     public class WrappedStorageResourceProvider : IStorageResourceProvider
     {
-        private readonly IStorageResourceProvider resources;
+        private readonly IStorageResourceProvider? resources;
 
-        private readonly IResourceStore<byte[]> overridingResourceStore;
-
-        public WrappedStorageResourceProvider(IStorageResourceProvider resources, IResourceStore<byte[]> overridingResourceStore)
+        public WrappedStorageResourceProvider(IStorageResourceProvider? resources, IResourceStore<byte[]> overridingResourceStore)
         {
             this.resources = resources;
-            this.overridingResourceStore = overridingResourceStore;
+
+            Files = overridingResourceStore;
         }
 
-        public AudioManager AudioManager => resources.AudioManager;
+        public AudioManager? AudioManager => resources?.AudioManager ?? null;
 
-        public IResourceStore<byte[]> Files => overridingResourceStore ?? resources.Files;
+        public IResourceStore<byte[]> Files { get; }
 
-        public IResourceStore<TextureUpload> CreateTextureLoaderStore(IResourceStore<byte[]> underlyingStore)
-        {
-            return resources.CreateTextureLoaderStore(underlyingStore);
-        }
+        public IResourceStore<TextureUpload>? CreateTextureLoaderStore(IResourceStore<byte[]> underlyingStore) =>
+            resources?.CreateTextureLoaderStore(underlyingStore) ?? null;
     }
 }
