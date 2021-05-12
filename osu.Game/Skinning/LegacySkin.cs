@@ -58,29 +58,32 @@ namespace osu.Game.Skinning
         {
         }
 
-        protected LegacySkin(SkinInfo skin, [CanBeNull] IStorageResourceProvider resources, string filename)
+        protected LegacySkin(SkinInfo skin, [CanBeNull] IStorageResourceProvider resources, [CanBeNull] string filename)
             : base(skin, resources)
         {
-            using (var stream = resources?.Files.GetStream(filename))
+            if (!string.IsNullOrEmpty(filename))
             {
-                if (stream != null)
+                using (var stream = resources?.Files.GetStream(filename))
                 {
-                    using (LineBufferedReader reader = new LineBufferedReader(stream, true))
-                        Configuration = new LegacySkinDecoder().Decode(reader);
-
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    using (LineBufferedReader reader = new LineBufferedReader(stream))
+                    if (stream != null)
                     {
-                        var maniaList = new LegacyManiaSkinDecoder().Decode(reader);
+                        using (LineBufferedReader reader = new LineBufferedReader(stream, true))
+                            Configuration = new LegacySkinDecoder().Decode(reader);
 
-                        foreach (var config in maniaList)
-                            maniaConfigurations[config.Keys] = config;
+                        stream.Seek(0, SeekOrigin.Begin);
+
+                        using (LineBufferedReader reader = new LineBufferedReader(stream))
+                        {
+                            var maniaList = new LegacyManiaSkinDecoder().Decode(reader);
+
+                            foreach (var config in maniaList)
+                                maniaConfigurations[config.Keys] = config;
+                        }
                     }
                 }
-                else
-                    Configuration = new LegacySkinConfiguration();
             }
+
+            Configuration ??= new LegacySkinConfiguration();
 
             if (resources?.Files != null)
             {
