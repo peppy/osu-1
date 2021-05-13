@@ -58,6 +58,9 @@ namespace osu.Game.Skinning
         {
         }
 
+        /// <summary>
+        /// This constructor does not provide any mapping of <paramref name="resources"/> to the provided <paramref name="skin"/>.
+        /// </summary>
         protected LegacySkin(SkinInfo skin, [CanBeNull] IStorageResourceProvider resources, [CanBeNull] string filename)
             : base(skin, resources)
         {
@@ -92,7 +95,7 @@ namespace osu.Game.Skinning
                     samples.PlaybackConcurrency = OsuGameBase.SAMPLE_CONCURRENCY;
 
                 Samples = samples;
-                Textures = new TextureStore(resources?.CreateTextureLoaderStore(resources.Files));
+                Textures = new TextureStore(resources.CreateTextureLoaderStore(resources.Files));
 
                 (resources.Files as ResourceStore<byte[]>)?.AddExtension("ogg");
             }

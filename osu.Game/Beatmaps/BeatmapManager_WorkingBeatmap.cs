@@ -132,7 +132,7 @@ namespace osu.Game.Beatmaps
             {
                 try
                 {
-                    return new LegacyBeatmapSkin(BeatmapInfo, resources.Files, resources);
+                    return new LegacyBeatmapSkin(BeatmapInfo, new LegacySkinResourceStore<BeatmapSetFileInfo>(BeatmapSetInfo, resources.Files), resources);
                 }
                 catch (Exception e)
                 {
@@ -141,7 +141,7 @@ namespace osu.Game.Beatmaps
                 }
             }
 
-            public override Stream GetStream(string storagePath) => resources.Files.GetStream(storagePath);
+            public override Stream GetStream(string storagePath) => resources.Files?.GetStream(storagePath);
         }
     }
 }
