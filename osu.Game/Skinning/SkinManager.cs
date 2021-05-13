@@ -38,7 +38,7 @@ namespace osu.Game.Skinning
 
         private readonly GameHost host;
 
-        private readonly IResourceStore<byte[]> legacyDefaultResources;
+        private readonly IResourceStore<byte[]> gameResources;
 
         public readonly Bindable<Skin> CurrentSkin = new Bindable<Skin>(new DefaultSkin(null));
         public readonly Bindable<SkinInfo> CurrentSkinInfo = new Bindable<SkinInfo>(SkinInfo.Default) { Default = SkinInfo.Default };
@@ -49,13 +49,12 @@ namespace osu.Game.Skinning
 
         protected override string ImportFromStablePath => "Skins";
 
-        public SkinManager(Storage storage, DatabaseContextFactory contextFactory, GameHost host, AudioManager audio, IResourceStore<byte[]> legacyDefaultResources)
+        public SkinManager(Storage storage, DatabaseContextFactory contextFactory, GameHost host, AudioManager audio, IResourceStore<byte[]> gameResources)
             : base(storage, contextFactory, new SkinStore(contextFactory, storage), host)
         {
             this.audio = audio;
             this.host = host;
-
-            this.legacyDefaultResources = legacyDefaultResources;
+            this.gameResources = gameResources;
 
             CurrentSkinInfo.ValueChanged += skin => CurrentSkin.Value = GetSkin(skin.NewValue);
             CurrentSkin.ValueChanged += skin =>
@@ -153,7 +152,13 @@ namespace osu.Game.Skinning
         /// </summary>
         /// <param name="skinInfo">The skin to lookup.</param>
         /// <returns>A <see cref="Skin"/> instance correlating to the provided <see cref="SkinInfo"/>.</returns>
-        public Skin GetSkin(SkinInfo skinInfo) => skinInfo.CreateInstance(legacyDefaultResources, this);
+        public Skin GetSkin(SkinInfo skinInfo)
+        {
+            // legacy "osu!classic" skin resources must be re-routed to the game storage, rather than user file storage.
+            var legacyResources = new NamespacedResourceStore<byte[]>(gameResources, "Skins/Legacy");
+
+            return skinInfo.CreateInstance(legacyResources, this);
+        }
 
         /// <summary>
         /// Ensure that the current skin is in a state it can accept user modifications.

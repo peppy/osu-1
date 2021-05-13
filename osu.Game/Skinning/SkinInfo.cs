@@ -27,6 +27,12 @@ namespace osu.Game.Skinning
 
         public string InstantiationInfo { get; set; }
 
+        /// <summary>
+        /// Create an instance of this skin with the provided resources.
+        /// </summary>
+        /// <param name="legacyDefaultResources">A resource store with access to the "osu!classic" resources.</param>
+        /// <param name="resources">Game wide resources.</param>
+        /// <returns>An instance of this skin.</returns>
         public virtual Skin CreateInstance(IResourceStore<byte[]> legacyDefaultResources, IStorageResourceProvider resources)
         {
             var type = string.IsNullOrEmpty(InstantiationInfo)

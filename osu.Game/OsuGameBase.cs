@@ -217,7 +217,7 @@ namespace osu.Game
 
             runMigrations();
 
-            dependencies.Cache(SkinManager = new SkinManager(Storage, contextFactory, Host, Audio, new NamespacedResourceStore<byte[]>(Resources, "Skins/Legacy")));
+            dependencies.Cache(SkinManager = new SkinManager(Storage, contextFactory, Host, Audio, Resources));
             dependencies.CacheAs<ISkinSource>(SkinManager);
 
             // needs to be done here rather than inside SkinManager to ensure thread safety of CurrentSkinInfo.
