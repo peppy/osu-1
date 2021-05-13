@@ -10,6 +10,10 @@ using osu.Game.Database;
 
 namespace osu.Game.Skinning
 {
+    /// <summary>
+    /// A resource store which maps <see cref="INamedFileInfo"/> to their underlying files.
+    /// Ignores filename case.
+    /// </summary>
     public class LegacySkinResourceStore<T> : ResourceStore<byte[]>
         where T : INamedFileInfo
     {
