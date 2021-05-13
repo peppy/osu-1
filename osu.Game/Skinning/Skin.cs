@@ -44,7 +44,7 @@ namespace osu.Game.Skinning
             {
                 string filename = $"{skinnableTarget}.json";
 
-                var bytes = resources?.Files.Get(filename);
+                var bytes = resources?.Files?.Get(filename);
 
                 if (bytes == null)
                     continue;

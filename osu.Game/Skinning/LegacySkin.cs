@@ -63,7 +63,7 @@ namespace osu.Game.Skinning
         {
             if (!string.IsNullOrEmpty(filename))
             {
-                using (var stream = resources?.Files.GetStream(filename))
+                using (var stream = resources?.Files?.GetStream(filename))
                 {
                     if (stream != null)
                     {
