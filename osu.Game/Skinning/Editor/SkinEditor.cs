@@ -168,7 +168,19 @@ namespace osu.Game.Skinning.Editor
             if (!(Activator.CreateInstance(type) is ISkinnableDrawable component))
                 throw new InvalidOperationException("Attempted to instantiate a component for placement which was not an {typeof(ISkinnableComponent)}.");
 
-            getTarget(SkinnableTarget.MainHUDComponents)?.Add(component);
+            var targetContainer = getTarget(SkinnableTarget.MainHUDComponents);
+
+            if (targetContainer == null)
+                return;
+
+            var drawableComponent = (Drawable)component;
+
+            // give newly added components a sane starting location.
+            drawableComponent.Origin = Anchor.TopCentre;
+            drawableComponent.Anchor = Anchor.TopCentre;
+            drawableComponent.Y = targetContainer.DrawSize.Y / 2;
+
+            targetContainer.Add(component);
 
             SelectedComponents.Clear();
             SelectedComponents.Add(component);
