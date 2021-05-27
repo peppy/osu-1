@@ -10,6 +10,7 @@ using JetBrains.Annotations;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.OpenGL.Textures;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
@@ -402,6 +403,30 @@ namespace osu.Game.Skinning
 
                     return null;
                 }
+
+                case GameplaySkinComponent<GameplaySkinSamples> sampleComponent:
+
+                    var applause = GetSample(new SampleInfo("applause"));
+
+                    switch (sampleComponent.Component)
+                    {
+                        case GameplaySkinSamples.Applause:
+
+                            if (applause != null)
+                                return new DrawableSample(applause);
+
+                            break;
+
+                        case GameplaySkinSamples.Fail:
+                            // legacy skins don't have a fail sound, but this avoids playing the default fail if an "applause" is present.
+
+                            if (applause != null)
+                                return Drawable.Empty();
+
+                            break;
+                    }
+
+                    break;
 
                 case GameplaySkinComponent<HitResult> resultComponent:
                     Func<Drawable> createDrawable = () => getJudgementAnimation(resultComponent.Component);

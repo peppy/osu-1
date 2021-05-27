@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.OpenGL.Textures;
 using osu.Framework.Graphics.Textures;
 using osu.Game.Audio;
@@ -58,6 +59,19 @@ namespace osu.Game.Skinning
 
             switch (component)
             {
+                case GameplaySkinComponent<GameplaySkinSamples> sample:
+
+                    switch (sample.Component)
+                    {
+                        case GameplaySkinSamples.Applause:
+                            return new DrawableSample(GetSample(new SampleInfo("Results/rankpass")));
+
+                        case GameplaySkinSamples.Fail:
+                            return new DrawableSample(GetSample(new SampleInfo("Results/rankfail")));
+                    }
+
+                    break;
+
                 case SkinnableTargetComponent target:
                     switch (target.Target)
                     {

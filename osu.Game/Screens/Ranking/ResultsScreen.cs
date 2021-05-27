@@ -8,11 +8,11 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Screens;
-using osu.Game.Audio;
 using osu.Game.Graphics.Containers;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Input.Bindings;
@@ -64,7 +64,7 @@ namespace osu.Game.Screens.Ranking
         private readonly bool allowRetry;
         private readonly bool allowWatchingReplay;
 
-        private SkinnableSound applauseSound;
+        private DrawableSample applauseSound;
 
         protected ResultsScreen(ScoreInfo score, bool allowRetry, bool allowWatchingReplay = true)
         {
@@ -76,7 +76,7 @@ namespace osu.Game.Screens.Ranking
         }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(ISkinSource skin)
         {
             FillFlowContainer buttons;
 
@@ -159,9 +159,13 @@ namespace osu.Game.Screens.Ranking
 
                 if (shouldFlair)
                 {
-                    AddInternal(applauseSound = Score.Rank >= ScoreRank.A
-                        ? new SkinnableSound(new SampleInfo("Results/rankpass", "applause"))
-                        : new SkinnableSound(new SampleInfo("Results/rankfail")));
+                    var sample = Score.Rank >= ScoreRank.A
+                        ? skin.GetDrawableComponent(new GameplaySkinComponent<GameplaySkinSamples>(GameplaySkinSamples.Applause))
+                        : skin.GetDrawableComponent(new GameplaySkinComponent<GameplaySkinSamples>(GameplaySkinSamples.Fail));
+
+                    applauseSound = sample as DrawableSample;
+
+                    AddInternal(sample);
                 }
             }
 
