@@ -9,7 +9,7 @@ using osuTK;
 namespace osu.Game.Rulesets.Osu.Tests
 {
     [TestFixture]
-    public class TestSceneHitCircleLongCombo : TestSceneOsuPlayer
+    public class TestSceneHitCircleLongCombo : TestSceneOsuAutoplayPlayer
     {
         protected override IBeatmap CreateBeatmap(RulesetInfo ruleset)
         {

@@ -23,7 +23,7 @@ namespace osu.Game.Tests.Visual.Gameplay
         protected override Player CreatePlayer(Ruleset ruleset)
         {
             SelectedMods.Value = new[] { ruleset.GetAutoplayMod() };
-            return new TestPlayer(false);
+            return new TestReplayPlayer(false);
         }
 
         protected override void AddCheckSteps()

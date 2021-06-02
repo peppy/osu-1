@@ -12,7 +12,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Catch.Tests
 {
-    public class TestSceneJuiceStream : TestSceneCatchPlayer
+    public class TestSceneJuiceStream : TestSceneCatchAutoplayPlayer
     {
         [Test]
         public void TestJuiceStreamEndingCombo()

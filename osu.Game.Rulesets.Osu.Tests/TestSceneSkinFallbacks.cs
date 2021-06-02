@@ -26,7 +26,7 @@ using osu.Game.Tests.Visual;
 namespace osu.Game.Rulesets.Osu.Tests
 {
     [TestFixture]
-    public class TestSceneSkinFallbacks : TestSceneOsuPlayer
+    public class TestSceneSkinFallbacks : TestSceneOsuAutoplayPlayer
     {
         private readonly TestSource testUserSkin;
         private readonly TestSource testBeatmapSkin;
@@ -99,7 +99,7 @@ namespace osu.Game.Rulesets.Osu.Tests
         [Resolved]
         private AudioManager audio { get; set; }
 
-        protected override TestPlayer CreatePlayer(Ruleset ruleset) => new SkinProvidingPlayer(testUserSkin);
+        protected override TestReplayPlayer CreatePlayer(Ruleset ruleset) => new SkinProvidingPlayer(testUserSkin);
 
         protected override WorkingBeatmap CreateWorkingBeatmap(IBeatmap beatmap, Storyboard storyboard = null) => new CustomSkinWorkingBeatmap(beatmap, storyboard, Clock, audio, testBeatmapSkin);
 
@@ -116,7 +116,7 @@ namespace osu.Game.Rulesets.Osu.Tests
             protected override ISkin GetSkin() => skin;
         }
 
-        public class SkinProvidingPlayer : TestPlayer
+        public class SkinProvidingPlayer : TestReplayPlayer
         {
             private readonly TestSource userSkin;
 

@@ -28,14 +28,12 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Osu.Tests
 {
-    public class TestSceneSpinnerRotation : TestSceneOsuPlayer
+    public class TestSceneSpinnerRotation : TestSceneOsuAutoplayPlayer
     {
         [Resolved]
         private AudioManager audioManager { get; set; }
 
-        protected override bool Autoplay => true;
-
-        protected override TestPlayer CreatePlayer(Ruleset ruleset) => new ScoreExposedPlayer();
+        protected override TestReplayPlayer CreatePlayer(Ruleset ruleset) => new ScoreExposedPlayer();
 
         protected override WorkingBeatmap CreateWorkingBeatmap(IBeatmap beatmap, Storyboard storyboard = null)
             => new ClockBackedTestWorkingBeatmap(beatmap, storyboard, new FramedClock(new ManualClock { Rate = 1 }), audioManager);
@@ -246,7 +244,7 @@ namespace osu.Game.Rulesets.Osu.Tests
             }
         };
 
-        private class ScoreExposedPlayer : TestPlayer
+        private class ScoreExposedPlayer : TestReplayPlayer
         {
             public new ScoreProcessor ScoreProcessor => base.ScoreProcessor;
 

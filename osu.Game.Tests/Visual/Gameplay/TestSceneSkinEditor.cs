@@ -12,14 +12,12 @@ using osu.Game.Skinning.Editor;
 
 namespace osu.Game.Tests.Visual.Gameplay
 {
-    public class TestSceneSkinEditor : PlayerTestScene
+    public class TestSceneSkinEditor : AutoplayPlayerTestScene
     {
         private SkinEditor skinEditor;
 
         [Resolved]
         private SkinManager skinManager { get; set; }
-
-        protected override bool Autoplay => true;
 
         [SetUpSteps]
         public override void SetUpSteps()

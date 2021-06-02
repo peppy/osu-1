@@ -14,7 +14,7 @@ namespace osu.Game.Rulesets.Taiko.Tests
     /// Taiko has some interesting rules for legacy mappings.
     /// </summary>
     [HeadlessTest]
-    public class TestSceneSampleOutput : TestSceneTaikoPlayer
+    public class TestSceneSampleOutput : TestSceneTaikoAutoplayPlayer
     {
         public override void SetUpSteps()
         {

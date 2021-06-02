@@ -26,7 +26,7 @@ using osu.Game.Users;
 namespace osu.Game.Tests.Beatmaps
 {
     [HeadlessTest]
-    public abstract class HitObjectSampleTest : PlayerTestScene, IStorageResourceProvider
+    public abstract class HitObjectSampleTest : AutoplayPlayerTestScene, IStorageResourceProvider
     {
         protected abstract IResourceStore<byte[]> RulesetResources { get; }
         protected LegacySkin Skin { get; private set; }
@@ -51,7 +51,6 @@ namespace osu.Game.Tests.Beatmaps
         private IBeatmap currentTestBeatmap;
 
         protected sealed override bool HasCustomSteps => true;
-        protected override bool Autoplay => true;
 
         protected sealed override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
             => new DependencyContainer(dependencies = new SkinSourceDependencyContainer(base.CreateChildDependencies(parent)));
@@ -60,8 +59,6 @@ namespace osu.Game.Tests.Beatmaps
 
         protected sealed override WorkingBeatmap CreateWorkingBeatmap(IBeatmap beatmap, Storyboard storyboard = null)
             => new TestWorkingBeatmap(beatmapInfo, beatmapSkinResourceStore, beatmap, storyboard, Clock, this);
-
-        protected override TestPlayer CreatePlayer(Ruleset ruleset) => new TestPlayer(false);
 
         protected void CreateTestWithBeatmap(string filename)
         {

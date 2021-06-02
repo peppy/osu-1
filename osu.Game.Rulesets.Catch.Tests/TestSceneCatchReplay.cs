@@ -9,10 +9,8 @@ using osu.Game.Rulesets.Catch.UI;
 
 namespace osu.Game.Rulesets.Catch.Tests
 {
-    public class TestSceneCatchReplay : TestSceneCatchPlayer
+    public class TestSceneCatchReplay : TestSceneCatchAutoplayPlayer
     {
-        protected override bool Autoplay => true;
-
         private const int object_count = 10;
 
         [Test]

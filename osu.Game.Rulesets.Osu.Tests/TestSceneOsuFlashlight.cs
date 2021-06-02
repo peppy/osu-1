@@ -7,9 +7,9 @@ using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Osu.Tests
 {
-    public class TestSceneOsuFlashlight : TestSceneOsuPlayer
+    public class TestSceneOsuFlashlight : TestSceneOsuAutoplayPlayer
     {
-        protected override TestPlayer CreatePlayer(Ruleset ruleset)
+        protected override TestReplayPlayer CreatePlayer(Ruleset ruleset)
         {
             SelectedMods.Value = new Mod[] { new OsuModAutoplay(), new OsuModFlashlight(), };
 

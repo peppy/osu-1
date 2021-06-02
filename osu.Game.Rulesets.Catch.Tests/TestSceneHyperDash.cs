@@ -15,10 +15,8 @@ using osuTK;
 namespace osu.Game.Rulesets.Catch.Tests
 {
     [TestFixture]
-    public class TestSceneHyperDash : TestSceneCatchPlayer
+    public class TestSceneHyperDash : TestSceneCatchAutoplayPlayer
     {
-        protected override bool Autoplay => true;
-
         private int hyperDashCount;
         private bool inHyperDash;
 

@@ -8,7 +8,7 @@ using osu.Game.Rulesets.Taiko.Objects;
 
 namespace osu.Game.Rulesets.Taiko.Tests
 {
-    public class TestSceneSwellJudgements : TestSceneTaikoPlayer
+    public class TestSceneSwellJudgements : TestSceneTaikoAutoplayPlayer
     {
         [Test]
         public void TestZeroTickTimeOffsets()
@@ -16,8 +16,6 @@ namespace osu.Game.Rulesets.Taiko.Tests
             AddUntilStep("gameplay finished", () => Player.ScoreProcessor.HasCompleted.Value);
             AddAssert("all tick offsets are 0", () => Player.Results.Where(r => r.HitObject is SwellTick).All(r => r.TimeOffset == 0));
         }
-
-        protected override bool Autoplay => true;
 
         protected override IBeatmap CreateBeatmap(RulesetInfo ruleset)
         {

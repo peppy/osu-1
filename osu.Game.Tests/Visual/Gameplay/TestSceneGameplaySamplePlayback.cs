@@ -13,7 +13,7 @@ using osu.Game.Skinning;
 
 namespace osu.Game.Tests.Visual.Gameplay
 {
-    public class TestSceneGameplaySamplePlayback : PlayerTestScene
+    public class TestSceneGameplaySamplePlayback : AutoplayPlayerTestScene
     {
         [Test]
         public void TestAllSamplesStopDuringSeek()
@@ -60,8 +60,6 @@ namespace osu.Game.Tests.Visual.Gameplay
         private IEnumerable<PausableSkinnableSound> allLoopingSounds => allSounds.Where(sound => sound.Looping);
 
         private bool allStopped(IEnumerable<PausableSkinnableSound> sounds) => sounds.All(sound => !sound.IsPlaying);
-
-        protected override bool Autoplay => true;
 
         protected override Ruleset CreatePlayerRuleset() => new OsuRuleset();
     }

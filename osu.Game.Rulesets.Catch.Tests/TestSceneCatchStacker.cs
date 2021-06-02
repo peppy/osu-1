@@ -9,7 +9,7 @@ using osu.Game.Rulesets.Catch.UI;
 namespace osu.Game.Rulesets.Catch.Tests
 {
     [TestFixture]
-    public class TestSceneCatchStacker : TestSceneCatchPlayer
+    public class TestSceneCatchStacker : TestSceneCatchAutoplayPlayer
     {
         protected override IBeatmap CreateBeatmap(RulesetInfo ruleset)
         {

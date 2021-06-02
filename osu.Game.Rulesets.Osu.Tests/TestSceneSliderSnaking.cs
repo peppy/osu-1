@@ -26,13 +26,10 @@ using osuTK;
 namespace osu.Game.Rulesets.Osu.Tests
 {
     [TestFixture]
-    public class TestSceneSliderSnaking : TestSceneOsuPlayer
+    public class TestSceneSliderSnaking : TestSceneOsuAutoplayPlayer
     {
         [Resolved]
         private AudioManager audioManager { get; set; }
-
-        protected override bool Autoplay => autoplay;
-        private bool autoplay;
 
         private readonly BindableBool snakingIn = new BindableBool();
         private readonly BindableBool snakingOut = new BindableBool();
@@ -63,7 +60,6 @@ namespace osu.Game.Rulesets.Osu.Tests
         [TestCase(2)]
         public void TestSnakingEnabled(int sliderIndex)
         {
-            AddStep("enable autoplay", () => autoplay = true);
             base.SetUpSteps();
             AddUntilStep("wait for track to start running", () => Beatmap.Value.Track.IsRunning);
 
@@ -89,7 +85,6 @@ namespace osu.Game.Rulesets.Osu.Tests
         [TestCase(2)]
         public void TestSnakingDisabled(int sliderIndex)
         {
-            AddStep("have autoplay", () => autoplay = true);
             base.SetUpSteps();
             AddUntilStep("wait for track to start running", () => Beatmap.Value.Track.IsRunning);
 
@@ -110,7 +105,6 @@ namespace osu.Game.Rulesets.Osu.Tests
         [Test]
         public void TestRepeatArrowDoesNotMoveWhenHit()
         {
-            AddStep("enable autoplay", () => autoplay = true);
             setSnaking(true);
             base.SetUpSteps();
 
@@ -122,7 +116,6 @@ namespace osu.Game.Rulesets.Osu.Tests
         [Test]
         public void TestRepeatArrowMovesWhenNotHit()
         {
-            AddStep("disable autoplay", () => autoplay = false);
             setSnaking(true);
             base.SetUpSteps();
 

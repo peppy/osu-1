@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Testing;
 using osu.Game.Configuration;
 using osu.Game.Rulesets;
@@ -12,14 +13,14 @@ using osu.Game.Rulesets.Mods;
 
 namespace osu.Game.Tests.Visual
 {
-    public abstract class PlayerTestScene : RateAdjustedBeatmapTestScene
+    public abstract class AutoplayPlayerTestScene : RateAdjustedBeatmapTestScene
     {
         /// <summary>
         /// Whether custom test steps are provided. Custom tests should invoke <see cref="CreateTest"/> to create the test steps.
         /// </summary>
         protected virtual bool HasCustomSteps => false;
 
-        protected TestPlayer Player;
+        protected TestReplayPlayer Player;
 
         protected OsuConfigManager LocalConfig;
 
@@ -67,6 +68,10 @@ namespace osu.Game.Tests.Visual
                     SelectedMods.Value = new[] { noFailMod };
             }
 
+            var mod = ruleset.GetAutoplayMod();
+            if (mod != null)
+                SelectedMods.Value = SelectedMods.Value.Concat(mod.Yield()).ToArray();
+
             Player = CreatePlayer(ruleset);
             LoadScreen(Player);
         }
@@ -85,6 +90,7 @@ namespace osu.Game.Tests.Visual
 
         protected sealed override Ruleset CreateRuleset() => CreatePlayerRuleset();
 
-        protected virtual TestPlayer CreatePlayer(Ruleset ruleset) => new TestPlayer(false, false);
+        protected virtual TestReplayPlayer CreatePlayer(Ruleset ruleset) =>
+            new TestReplayPlayer(false, false);
     }
 }

@@ -7,7 +7,7 @@ using osu.Game.Tests.Visual;
 namespace osu.Game.Rulesets.Osu.Tests
 {
     [TestFixture]
-    public class TestSceneOsuPlayer : PlayerTestScene
+    public class TestSceneOsuAutoplayPlayer : AutoplayPlayerTestScene
     {
         protected override Ruleset CreatePlayerRuleset() => new OsuRuleset();
     }
