@@ -17,6 +17,7 @@ using osu.Game.Online.Multiplayer;
 using osu.Game.Online.Rooms;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Users;
+using osu.Game.Utils;
 
 namespace osu.Game.Tests.Visual.Multiplayer
 {
@@ -178,16 +179,28 @@ namespace osu.Game.Tests.Visual.Multiplayer
         public void ChangeUserMods(int userId, IEnumerable<Mod> newMods)
             => ChangeUserMods(userId, newMods.Select(m => new APIMod(m)).ToList());
 
-        public void ChangeUserMods(int userId, IEnumerable<APIMod> newMods)
-        {
-            Debug.Assert(Room != null);
-            ((IMultiplayerClient)this).UserModsChanged(userId, newMods.ToList());
-        }
-
         public override Task ChangeUserMods(IEnumerable<APIMod> newMods)
         {
             ChangeUserMods(api.LocalUser.Value.Id, newMods);
             return Task.CompletedTask;
+        }
+
+        public void ChangeUserMods(int userId, IEnumerable<APIMod> newMods)
+        {
+            Debug.Assert(Room != null);
+
+            var newModsList = newMods.ToList();
+
+            var ruleset = Rulesets.GetRuleset(Room.Settings.RulesetID).CreateInstance();
+            IEnumerable<Mod> mods = newMods.Select(m => m.ToMod(ruleset));
+
+            if (!ModUtils.CheckCompatibleSet(mods, out var invalidMods))
+            {
+                foreach (var invalid in invalidMods)
+                    newModsList.RemoveAll(m => m.Acronym == invalid.Acronym);
+            }
+
+            ((IMultiplayerClient)this).UserModsChanged(userId, newModsList);
         }
 
         public override Task StartMatch()
