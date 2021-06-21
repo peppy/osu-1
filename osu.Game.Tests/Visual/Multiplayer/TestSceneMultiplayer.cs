@@ -13,7 +13,9 @@ using osu.Game.Beatmaps;
 using osu.Game.Online.Multiplayer;
 using osu.Game.Online.Rooms;
 using osu.Game.Rulesets;
+using osu.Game.Rulesets.Mania;
 using osu.Game.Rulesets.Osu;
+using osu.Game.Rulesets.Osu.Mods;
 using osu.Game.Screens.OnlinePlay.Components;
 using osu.Game.Screens.OnlinePlay.Multiplayer;
 using osu.Game.Screens.OnlinePlay.Multiplayer.Match;
@@ -52,6 +54,34 @@ namespace osu.Game.Tests.Visual.Multiplayer
             beatmaps.Import(TestResources.GetQuickTestBeatmapForImport()).Wait();
             importedSet = beatmaps.GetAllUsableBeatmapSetsEnumerable(IncludedDetails.All).First();
         });
+
+        [Test]
+        public void TestFreeModSelectedModsResetOnRulesetChange()
+        {
+            loadMultiplayer();
+
+            createRoom(() => new Room
+            {
+                Name = { Value = "Test Room" },
+                Playlist =
+                {
+                    new PlaylistItem
+                    {
+                        Beatmap = { Value = beatmaps.GetWorkingBeatmap(importedSet.Beatmaps.First(b => b.RulesetID == 0)).BeatmapInfo },
+                        Ruleset = { Value = new OsuRuleset().RulesetInfo },
+                        AllowedMods = { new OsuModApproachDifferent() }
+                    }
+                }
+            });
+
+            AddStep("set local player mod selection", () => multiplayerScreen.Client.ChangeUserMods(new[] { new OsuModApproachDifferent() }));
+
+            AddStep("set ruleset where mod unsupported", () => multiplayerScreen.Client.ChangeSettings(item: new PlaylistItem
+            {
+                Beatmap = { Value = beatmaps.GetWorkingBeatmap(importedSet.Beatmaps.First(b => b.RulesetID == 3)).BeatmapInfo },
+                Ruleset = { Value = new ManiaRuleset().RulesetInfo },
+            }));
+        }
 
         [Test]
         public void TestUserSetToIdleWhenBeatmapDeleted()
